@@ -26,7 +26,7 @@ Available Commands:
 Flags:
       --debug         enable verbose output
   -h, --help          help for slctl
-      --home string   location of your config. Overrides $SL_HOME (default "/Users/matt/.sl")
+      --home string   location of your config. Overrides $SL_HOME (default "~/.sl")
 
 Use "slctl [command] --help" for more information about a command.
 ```
