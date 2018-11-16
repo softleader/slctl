@@ -26,9 +26,9 @@ build:
 # build static binaries: https://medium.com/@diogok/on-golang-static-binaries-cross-compiling-and-plugins-1aed33499671
 .PHONY: dist
 dist:
-    ifndef VERSION
-    $(error VERSION is not set)
-    endif
+ifndef VERSION
+	$(error VERSION is not set)
+endif
 	mkdir -p $(BUILD)
 	mkdir -p $(DIST)
 	cp README.md $(BUILD) && cp LICENSE $(BUILD)
