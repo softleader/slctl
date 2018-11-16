@@ -1,6 +1,6 @@
-# SoftLeader Control
+# slctl
 
-Slctl is a command line interface for running commands against SoftLeader Services
+Slctl, stand for SoftLeader Control, is a command line interface for running commands against SoftLeader Services
 
 ## Feature
 
