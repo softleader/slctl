@@ -6,6 +6,7 @@ import (
 	"github.com/spf13/cobra"
 	"html/template"
 	"os"
+	"strings"
 )
 
 var (
@@ -14,7 +15,7 @@ var (
 
 const (
 	Name        = "slctl"
-	globalUsage = `{{.}} controls SoftLeader services.
+	globalUsage = `{{.|title}} against SoftLeader services.
 
 To begin working with {{.}}, run the '{{.}} init' command:
 
@@ -25,7 +26,7 @@ It will set up any necessary local configuration.
 Common actions from this point include:
 
 Environment:
-  $SL_HOME           set an alternative location for {{.}} files.By default, these are stored in ~/.sl
+  $SL_HOME           set an alternative location for {{.}} files. By default, these are stored in ~/.sl
 `
 )
 
@@ -42,9 +43,12 @@ func main() {
 }
 
 func usage() string {
+	funcMap := template.FuncMap{
+		"title": strings.Title,
+	}
 	var buf bytes.Buffer
-	t := template.Must(template.New("").Parse(globalUsage))
-	err := t.Execute(&buf, Name)
+	tmpl := template.Must(template.New("").Funcs(funcMap).Parse(globalUsage))
+	err := tmpl.Execute(&buf, Name)
 	if err != nil {
 		panic(err)
 	}
@@ -52,10 +56,9 @@ func usage() string {
 }
 
 func newRootCmd(args []string) *cobra.Command {
-
 	cmd := &cobra.Command{
 		Use:          Name,
-		Short:        Name + " controls SoftLeader services.",
+		Short:        Name + " interact with SoftLeader services.",
 		Long:         usage(),
 		SilenceUsage: true,
 	}
