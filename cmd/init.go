@@ -39,13 +39,12 @@ This command grants Github access token and sets up local configuration in $SL_H
 )
 
 type initCmd struct {
-	out         io.Writer
-	home        slpath.Home
-	dryRun      bool
-	skipRefresh bool
-	username    string
-	password    string
-	token       string
+	out      io.Writer
+	home     slpath.Home
+	dryRun   bool
+	username string
+	password string
+	token    string
 }
 
 func newInitCmd(out io.Writer) *cobra.Command {
