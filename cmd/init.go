@@ -29,7 +29,7 @@ This command grants Github access token and sets up local configuration in $SL_H
 	$ {{.}} init
 	$ {{.}} init -u <github-username> -p <github-password>
 
-執行 'scopes' 可以列出所有 {{.}} 需要的權限
+執行 'scopes' 可以列出所有 {{.}} 需要的 Access Token 權限
 
 	$ {{.}} init scopes
 
