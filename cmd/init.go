@@ -23,12 +23,15 @@ const (
 	initDesc     = `
 This command grants Github access token and sets up local configuration in $SL_HOME (default ~/.sl/).
 
-{{.|title}} 需要 'read:org' 及 'user' 權限的 GitHub Personal Access Token (https://github.com/settings/tokens)
-執行 '{{.}} init' 透過互動式的問答自動的產生 Access Token
+請執行 '{{.}} init' 透過互動式的問答自動的產生 GitHub Personal Access Token (https://github.com/settings/tokens)
 也可以傳入 '--username' 或 '--password' 來整合非互動式的情境 (e.g. DevOps pipeline):
 
 	$ {{.}} init
 	$ {{.}} init -u <github-username> -p <github-password>
+
+執行 'scopes' 可以列出所有 {{.}} 需要的權限
+
+	$ {{.}} init scopes
 
 當 {{.}} 發現已有重複的 token 時, 會自動的刪除既有的並產生一個新的 Access Token
 若你想完全的自己控制 (請務必確保 Access Token 有足夠的權限)
@@ -68,6 +71,11 @@ func newInitCmd(out io.Writer) *cobra.Command {
 	f.StringVarP(&i.token, "token", "t", "", "github access token")
 	f.StringVarP(&i.username, "username", "u", "", "github username")
 	f.StringVarP(&i.password, "password", "p", "", "github password")
+
+	cmd.AddCommand(
+		newInitCmdScopes(out),
+	)
+
 	return cmd
 }
 
@@ -155,7 +163,7 @@ func grantToken(username, password string, out io.Writer) (token string, err err
 func authorizationRequest() *github.AuthorizationRequest {
 	n := note
 	return &github.AuthorizationRequest{
-		Scopes: []github.Scope{github.ScopeReadOrg, github.ScopeUser},
+		Scopes: tokenScopes,
 		Note:   &n,
 	}
 }
