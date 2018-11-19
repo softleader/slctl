@@ -21,19 +21,31 @@ const (
 	note         = "slctl token (https://github.com/softleader/slctl)"
 	organization = "softleader"
 	initDesc     = `
-This command grants Github access and sets up local configuration in $SL_HOME (default ~/.sl/).
+This command grants Github access token and sets up local configuration in $SL_HOME (default ~/.sl/).
+
+{{.|title}} 需要 'read:org' 及 'user' 權限的 GitHub Personal Access Token (https://github.com/settings/tokens)
+執行 '{{.}} init' 透過互動式的問答自動的產生 Access Token
+也可以傳入 '--username' 或 '--password' 來整合非互動式的情境 (e.g. DevOps pipeline):
+
+	$ {{.}} init
+	$ {{.}} init -u <github-username> -p <github-password>
+
+當 {{.}} 發現已有重複的 token 時, 會自動的刪除既有的並產生一個新的 Access Token
+若你想完全的自己控制 (請務必確保 Access Token 有足夠的權限)
+可以傳入 '--token' 讓 {{.}} 直接將 Token 儲存起來
 
 	$ {{.}} init -t <github-token>
 `
 )
 
 type initCmd struct {
-	out      io.Writer
-	home     slpath.Home
-	dryRun   bool
-	username string
-	password string
-	token    string
+	out         io.Writer
+	home        slpath.Home
+	dryRun      bool
+	skipRefresh bool
+	username    string
+	password    string
+	token       string
 }
 
 func newInitCmd(out io.Writer) *cobra.Command {
