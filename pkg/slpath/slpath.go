@@ -20,3 +20,11 @@ func (h Home) Path(elem ...string) string {
 func (h Home) Plugins() string {
 	return h.Path("plugins")
 }
+
+func (h Home) Config() string {
+	return h.Path("config")
+}
+
+func (h Home) ConfigFile() string {
+	return h.Path("config", "configs.yaml")
+}

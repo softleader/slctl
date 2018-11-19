@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 	"github.com/google/go-github/github"
+	"github.com/softleader/slctl/pkg/config"
 	"github.com/softleader/slctl/pkg/slpath"
 	"github.com/spf13/cobra"
 	"golang.org/x/oauth2"
@@ -52,12 +53,7 @@ func newInitCmd(out io.Writer) *cobra.Command {
 
 func (i *initCmd) run() (err error) {
 	if i.dryRun {
-		return nil
-	}
-
-	var name string
-	if name, err = confirmToken(i.token, i.out); err != nil {
-		return err
+		return
 	}
 
 	if err = ensureDirectories(i.home, i.out); err != nil {
@@ -65,8 +61,20 @@ func (i *initCmd) run() (err error) {
 	}
 	fmt.Fprintf(i.out, "$SL_HOME has been configured at %s.\n", settings.Home)
 
+	if err = ensureConfigFile(i.home, i.out); err != nil {
+		return err
+	}
+
+	var name string
+	if name, err = confirmToken(i.token, i.out); err != nil {
+		return err
+	}
+	if err = refreshConfig(i.home, i.token, i.out); err != nil {
+		return err
+	}
+
 	fmt.Fprintf(i.out, "Welcome aboard %s!\n", name)
-	return nil
+	return
 }
 
 func confirmToken(token string, out io.Writer) (name string, err error) {
@@ -97,12 +105,13 @@ func confirmToken(token string, out io.Writer) (name string, err error) {
 	if settings.Debug {
 		fmt.Fprintf(out, "%s", user)
 	}
-	return user.GetName(), nil
+	return user.GetName(), err
 }
 
 func ensureDirectories(home slpath.Home, out io.Writer) (err error) {
 	configDirectories := []string{
 		home.String(),
+		home.Config(),
 		home.Plugins(),
 	}
 	for _, p := range configDirectories {
@@ -116,5 +125,28 @@ func ensureDirectories(home slpath.Home, out io.Writer) (err error) {
 		}
 	}
 
-	return nil
+	return
+}
+
+func ensureConfigFile(home slpath.Home, out io.Writer) (err error) {
+	conf := home.ConfigFile()
+	if fi, err := os.Stat(conf); err != nil {
+		fmt.Fprintf(out, "Creating %s \n", conf)
+		f := config.NewConfigFile()
+		if err := f.WriteFile(conf, config.ReadWrite); err != nil {
+			return err
+		}
+	} else if fi.IsDir() {
+		return fmt.Errorf("%s must be a file, not a directory", conf)
+	}
+	return
+}
+
+func refreshConfig(home slpath.Home, token string, out io.Writer) (err error) {
+	conf, err := config.LoadConfigFile(home.ConfigFile())
+	if err != nil && err != config.ErrTokenNotExist {
+		return fmt.Errorf("failed to load file (%v)", err)
+	}
+	conf.Token = token
+	return conf.WriteFile(home.ConfigFile(), config.ReadWrite)
 }
