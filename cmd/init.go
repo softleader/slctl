@@ -1,38 +1,31 @@
 package cmd
 
 import (
+	"context"
 	"errors"
 	"fmt"
+	"github.com/google/go-github/github"
 	"github.com/softleader/slctl/pkg/slpath"
 	"github.com/spf13/cobra"
+	"golang.org/x/oauth2"
 	"io"
 	"os"
 )
 
-const initDesc = `
-This command installs Tiller (the Helm server-side component) onto your
-Kubernetes Cluster and sets up local configuration in $HELM_HOME (default ~/.helm/).
+const (
+	organization = "softleader"
+	initDesc     = `
+This command grants Github access and sets up local configuration in $SL_HOME (default ~/.sl/).
 
-As with the rest of the Helm commands, 'helm init' discovers Kubernetes clusters
-by reading $KUBECONFIG (default '~/.kube/config') and using the default context.
-
-To set up just a local environment, use '--client-only'. That will configure
-$HELM_HOME, but not attempt to connect to a Kubernetes cluster and install the Tiller
-deployment.
-
-When installing Tiller, 'helm init' will attempt to install the latest released
-version. You can specify an alternative image with '--tiller-image'. For those
-frequently working on the latest code, the flag '--canary-image' will install
-the latest pre-release version of Tiller (e.g. the HEAD commit in the GitHub
-repository on the master branch).
-
-To dump a manifest containing the Tiller deployment YAML, combine the
-'--dry-run' and '--debug' flags.
+	$ {{.}} init -t <github-token>
 `
+)
 
 type initCmd struct {
-	out  io.Writer
-	home slpath.Home
+	out    io.Writer
+	home   slpath.Home
+	dryRun bool
+	token  string
 }
 
 func newInitCmd(out io.Writer) *cobra.Command {
@@ -41,7 +34,7 @@ func newInitCmd(out io.Writer) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "init",
 		Short: "initialize " + Name,
-		Long:  initDesc,
+		Long:  usage(initDesc),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			if len(args) != 0 {
 				return errors.New("This command does not accept arguments")
@@ -51,20 +44,63 @@ func newInitCmd(out io.Writer) *cobra.Command {
 		},
 	}
 
+	f := cmd.Flags()
+	f.BoolVar(&i.dryRun, "dry-run", false, "do not login github")
+	f.StringVarP(&i.token, "token", "t", "", "github access token")
 	return cmd
 }
 
-func (i *initCmd) run() error {
-	if err := ensureDirectories(i.home, i.out); err != nil {
+func (i *initCmd) run() (err error) {
+	if i.dryRun {
+		return nil
+	}
+
+	var name string
+	if name, err = confirmToken(i.token, i.out); err != nil {
+		return err
+	}
+
+	if err = ensureDirectories(i.home, i.out); err != nil {
 		return err
 	}
 	fmt.Fprintf(i.out, "$SL_HOME has been configured at %s.\n", settings.Home)
 
-	fmt.Fprintln(i.out, "Welcome aboard!")
+	fmt.Fprintf(i.out, "Welcome aboard %s!\n", name)
 	return nil
 }
 
-func ensureDirectories(home slpath.Home, out io.Writer) error {
+func confirmToken(token string, out io.Writer) (name string, err error) {
+	if token == "" {
+		return "", fmt.Errorf("required flag(s) \"token\" not set")
+	}
+	ctx := context.Background()
+	ts := oauth2.StaticTokenSource(
+		&oauth2.Token{AccessToken: token},
+	)
+	tc := oauth2.NewClient(ctx, ts)
+	client := github.NewClient(tc)
+
+	var mem *github.Membership
+	if mem, _, err = client.Organizations.GetOrgMembership(ctx, "", organization); err != nil {
+		return "", err
+	}
+	if settings.Debug {
+		fmt.Fprintf(out, "%s", mem)
+	}
+	if mem.GetState() != "active" {
+		return "", fmt.Errorf("you are not a active member of %s", organization)
+	}
+	var user *github.User
+	if user, _, err = client.Users.Get(ctx, ""); err != nil {
+		return "", err
+	}
+	if settings.Debug {
+		fmt.Fprintf(out, "%s", user)
+	}
+	return user.GetName(), nil
+}
+
+func ensureDirectories(home slpath.Home, out io.Writer) (err error) {
 	configDirectories := []string{
 		home.String(),
 		home.Plugins(),
@@ -72,7 +108,7 @@ func ensureDirectories(home slpath.Home, out io.Writer) error {
 	for _, p := range configDirectories {
 		if fi, err := os.Stat(p); err != nil {
 			fmt.Fprintf(out, "Creating %s \n", p)
-			if err := os.MkdirAll(p, 0755); err != nil {
+			if err = os.MkdirAll(p, 0755); err != nil {
 				return fmt.Errorf("Could not create %s: %s", p, err)
 			}
 		} else if !fi.IsDir() {

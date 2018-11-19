@@ -18,7 +18,7 @@ const (
 
 To begin working with {{.}}, run the '{{.}} init' command:
 
-	$ {{.}} init
+	$ {{.}} init --help
 
 It will set up any necessary local configuration.
 
@@ -29,13 +29,13 @@ Environment:
 `
 )
 
-func usage() string {
+func usage(tmpl string) string {
 	funcMap := template.FuncMap{
 		"title": strings.Title,
 	}
 	var buf bytes.Buffer
-	tmpl := template.Must(template.New("").Funcs(funcMap).Parse(globalUsage))
-	err := tmpl.Execute(&buf, Name)
+	parsed := template.Must(template.New("").Funcs(funcMap).Parse(tmpl))
+	err := parsed.Execute(&buf, Name)
 	if err != nil {
 		panic(err)
 	}
@@ -46,7 +46,7 @@ func NewRootCmd(args []string) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:          Name,
 		Short:        Name + " against SoftLeader services.",
-		Long:         usage(),
+		Long:         usage(globalUsage),
 		SilenceUsage: true,
 	}
 	flags := cmd.PersistentFlags()

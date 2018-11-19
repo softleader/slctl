@@ -1,18 +1,24 @@
-hash: c1d390343b5a109d257174c47587b2021c25b3a9bce79a6148631c5524e2c16c
-updated: 2018-11-16T15:47:21.279847+08:00
+hash: 20cbab0ad5938c46b9cb701b45e37158061831eab85edced1a54acaca22bc709
+updated: 2018-11-19T11:00:48.150155+08:00
 imports:
 - name: github.com/ghodss/yaml
   version: 0ca9ea5df5451ffdf184b4428c902747c2c11cd7
-- name: github.com/helm/helm
-  version: 3a8a797eab0e1d02456c7944bf41631546ee2e47
+- name: github.com/google/go-github
+  version: f55b50f38167644bb7e4be03d9a2bde71d435239
   subpackages:
-  - pkg/helm/helmpath
+  - github
+- name: github.com/google/go-querystring
+  version: 53e6ce116135b80d037921a7fdd5138cf32d7a8a
+  subpackages:
+  - query
 - name: github.com/inconshreveable/mousetrap
   version: 76626ae9c91c4f2a10f34cad8ce83ea42c93bb75
 - name: github.com/spf13/cobra
   version: ef82de70bb3f60c65fb8eebacbb2d122ef517385
 - name: github.com/spf13/pflag
   version: 3ebe029320b2676d667ae88da602a5f854788a8a
+- name: golang.org/x/oauth2
+  version: d2e6202438beef2727060aa7cabdd924d92ebfd9
 - name: gopkg.in/yaml.v2
   version: 5420a8b6744d3b0345ab293f6fcba19c978f1183
 testImports: []

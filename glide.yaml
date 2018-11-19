@@ -4,3 +4,8 @@ import:
   version: ^0.0.3
 - package: github.com/ghodss/yaml
   version: ^1.0.0
+- package: github.com/google/go-github
+  version: ^18.2.0
+  subpackages:
+  - github
+- package: golang.org/x/oauth2
