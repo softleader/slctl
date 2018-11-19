@@ -12,15 +12,15 @@ const ReadWrite = 0644
 
 var ErrTokenNotExist = errors.New("token is no exist")
 
-type ConfigFile struct {
+type ConfFile struct {
 	Token string `json:"token"`
 }
 
-func NewConfigFile() *ConfigFile {
-	return &ConfigFile{}
+func NewConfFile() *ConfFile {
+	return &ConfFile{}
 }
 
-func LoadConfigFile(path string) (*ConfigFile, error) {
+func LoadConfFile(path string) (*ConfFile, error) {
 	b, err := ioutil.ReadFile(path)
 	if err != nil {
 		if os.IsNotExist(err) {
@@ -31,7 +31,7 @@ func LoadConfigFile(path string) (*ConfigFile, error) {
 		return nil, err
 	}
 
-	conf := &ConfigFile{}
+	conf := &ConfFile{}
 	err = yaml.Unmarshal(b, conf)
 	if err != nil {
 		return nil, err
@@ -44,8 +44,8 @@ func LoadConfigFile(path string) (*ConfigFile, error) {
 	return conf, nil
 }
 
-func (r *ConfigFile) WriteFile(path string, perm os.FileMode) error {
-	data, err := yaml.Marshal(r)
+func (c *ConfFile) WriteFile(path string, perm os.FileMode) error {
+	data, err := yaml.Marshal(c)
 	if err != nil {
 		return err
 	}

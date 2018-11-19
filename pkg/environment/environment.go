@@ -11,14 +11,14 @@ import (
 var DefaultHome = filepath.Join(homedir.HomeDir(), ".sl")
 
 type EnvSettings struct {
-	Home  slpath.Home
-	Debug bool
+	Home    slpath.Home
+	Verbose bool
 }
 
 // AddFlags binds flags to the given flagset.
 func (s *EnvSettings) AddFlags(fs *pflag.FlagSet) {
 	fs.StringVar((*string)(&s.Home), "home", DefaultHome, "location of your config. Overrides $SL_HOME")
-	fs.BoolVar(&s.Debug, "debug", false, "enable verbose output")
+	fs.BoolVarP(&s.Verbose, "verbose", "v", false, "enable verbose output")
 }
 
 // Init sets values from the environment.

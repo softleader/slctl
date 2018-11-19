@@ -1,8 +1,12 @@
-hash: 20cbab0ad5938c46b9cb701b45e37158061831eab85edced1a54acaca22bc709
-updated: 2018-11-19T11:00:48.150155+08:00
+hash: 24e3f937097ab2b7169c18931920fdbf2b37da13c8de8d7f6d0cf6a04dd5cb88
+updated: 2018-11-19T14:29:15.031715+08:00
 imports:
 - name: github.com/ghodss/yaml
   version: 0ca9ea5df5451ffdf184b4428c902747c2c11cd7
+- name: github.com/golang/protobuf
+  version: b27b920f9e71b439b873b17bf99f56467623814a
+  subpackages:
+  - proto
 - name: github.com/google/go-github
   version: f55b50f38167644bb7e4be03d9a2bde71d435239
   subpackages:
@@ -17,8 +21,34 @@ imports:
   version: ef82de70bb3f60c65fb8eebacbb2d122ef517385
 - name: github.com/spf13/pflag
   version: 3ebe029320b2676d667ae88da602a5f854788a8a
+- name: golang.org/x/crypto
+  version: de0752318171da717af4ce24d0a2e8626afaeb11
+  subpackages:
+  - ssh/terminal
+- name: golang.org/x/net
+  version: c39426892332e1bb5ec0a434a079bf82f5d30c54
+  subpackages:
+  - context
+  - context/ctxhttp
 - name: golang.org/x/oauth2
   version: d2e6202438beef2727060aa7cabdd924d92ebfd9
+  subpackages:
+  - internal
+- name: golang.org/x/sys
+  version: 98c5dad5d1a0e8a73845ecc8897d0bd56586511d
+  subpackages:
+  - unix
+  - windows
+- name: google.golang.org/appengine
+  version: 03cac3b07182cfb08c0d0c0b6ee72a1ceb151c92
+  subpackages:
+  - internal
+  - internal/base
+  - internal/datastore
+  - internal/log
+  - internal/remote_api
+  - internal/urlfetch
+  - urlfetch
 - name: gopkg.in/yaml.v2
   version: 5420a8b6744d3b0345ab293f6fcba19c978f1183
 testImports: []

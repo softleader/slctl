@@ -8,7 +8,7 @@ import (
 )
 
 func TestWriteFile(t *testing.T) {
-	cf := NewConfigFile()
+	cf := NewConfFile()
 	cf.Token = "this.is.a.fake.token"
 
 	repoFile, err := ioutil.TempFile("", "sl-config")
@@ -21,7 +21,7 @@ func TestWriteFile(t *testing.T) {
 		t.Errorf("failed to write file (%v)", err)
 	}
 
-	loaded, err := LoadConfigFile(repoFile.Name())
+	loaded, err := LoadConfFile(repoFile.Name())
 	if err != nil {
 		t.Errorf("failed to load file (%v)", err)
 	}
@@ -31,7 +31,7 @@ func TestWriteFile(t *testing.T) {
 }
 
 func TestConfigNotExists(t *testing.T) {
-	_, err := LoadConfigFile("/this/path/does/not/exist.yaml")
+	_, err := LoadConfFile("/this/path/does/not/exist.yaml")
 	if err == nil {
 		t.Errorf("expected err to be non-nil when path does not exist")
 	} else if !strings.Contains(err.Error(), "You might need to run `slctl init --help`") {

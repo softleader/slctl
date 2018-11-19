@@ -167,7 +167,7 @@ func SetupPluginEnv(settings environment.EnvSettings,
 		os.Setenv(key, val)
 	}
 
-	if settings.Debug {
+	if settings.Verbose {
 		os.Setenv("SL_DEBUG", "1")
 	}
 }

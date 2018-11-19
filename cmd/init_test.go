@@ -12,7 +12,7 @@ import (
 
 // need read:org & read:user permission
 func TestConfirmToken(t *testing.T) {
-	settings.Debug = true
+	settings.Verbose = true
 	b := bytes.NewBuffer(nil)
 	token := "997f19253fccc351bfcf4cf1622f494f7708522a"
 	var err error
@@ -39,7 +39,7 @@ func TestRefreshConfig(t *testing.T) {
 	hh := slpath.Home(home)
 	settings.Home = hh
 
-	settings.Debug = true
+	settings.Verbose = true
 
 	if err = ensureDirectories(hh, b); err != nil {
 		t.Error(err)
@@ -53,11 +53,23 @@ func TestRefreshConfig(t *testing.T) {
 		t.Error(err)
 	}
 
-	var conf *config.ConfigFile
-	if conf, err = config.LoadConfigFile(hh.ConfigFile()); err != nil {
+	var conf *config.ConfFile
+	if conf, err = config.LoadConfFile(hh.ConfigFile()); err != nil {
 		t.Error(err)
 	}
 	if conf.Token != token {
 		t.Errorf("expected token to be %s", conf.Token)
 	}
 }
+
+//func TestGrantToken(t *testing.T) {
+//	b := bytes.NewBuffer(nil)
+//	var token string
+//	var err error
+//	if token, err = grantToken("", "", b); err != nil {
+//		t.Error(err)
+//	}
+//	if token == "" {
+//		t.Errorf("expected token not empty")
+//	}
+//}
