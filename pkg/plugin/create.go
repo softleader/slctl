@@ -29,9 +29,13 @@ func main() {
 		Short: "{{.Usage}}",
 		Long:  "{{.Description}}",
 		RunE: func(cmd *cobra.Command, args []string) error {
-			for _, arg := range args {
-				fmt.Println(arg)
-			}
+			fmt.Println("SL_PLUGIN_NAME:", os.Getenv("SL_PLUGIN_NAME"))
+			fmt.Println("SL_PLUGIN_DIR:", os.Getenv("SL_PLUGIN_DIR"))
+			fmt.Println("SL_BIN:", os.Getenv("SL_BIN"))
+			fmt.Println("SL_PLUGIN:", os.Getenv("SL_PLUGIN"))
+			fmt.Println("SL_HOME:", os.Getenv("SL_HOME"))
+			fmt.Println("SL_TOKEN:", os.Getenv("SL_TOKEN"))
+			fmt.Println("SL_VERBOSE:", os.Getenv("SL_VERBOSE"))
 			return nil
 		},
 	}

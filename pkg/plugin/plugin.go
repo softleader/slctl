@@ -2,10 +2,12 @@ package plugin
 
 import (
 	"github.com/ghodss/yaml"
+	"github.com/softleader/slctl/pkg/config"
 	"github.com/softleader/slctl/pkg/environment"
 	"io/ioutil"
 	"os"
 	"path/filepath"
+	"strconv"
 	"strings"
 )
 
@@ -153,7 +155,12 @@ func FindPlugins(plugdirs string) ([]*Plugin, error) {
 // the plugin subsystem itself needs access to the environment variables
 // created here.
 func SetupPluginEnv(settings environment.EnvSettings,
-	shortName, base string) {
+	shortName, base string) (err error) {
+	var conf *config.ConfFile
+	if conf, err = config.LoadConfFile(settings.Home.ConfigFile()); err != nil && err != config.ErrTokenNotExist {
+		return err
+	}
+
 	for key, val := range map[string]string{
 		"SL_PLUGIN_NAME": shortName,
 		"SL_PLUGIN_DIR":  base,
@@ -161,21 +168,13 @@ func SetupPluginEnv(settings environment.EnvSettings,
 
 		// Set vars that may not have been set, and save client the
 		// trouble of re-parsing.
-		"SL_PLUGIN": settings.PluginDirs(),
-		"SL_HOME":   settings.Home.String(),
-
-		// Set vars that convey common information.
-		//"SL_PATH_REPOSITORY":       settings.Home.Repository(),
-		//"SL_PATH_REPOSITORY_FILE":  settings.Home.RepositoryFile(),
-		//"SL_PATH_CACHE":            settings.Home.Cache(),
-		//"SL_PATH_LOCAL_REPOSITORY": settings.Home.LocalRepository(),
-		//"SL_PATH_STARTER":          settings.Home.Starters(),
-
+		"SL_PLUGIN":  settings.PluginDirs(),
+		"SL_HOME":    settings.Home.String(),
+		"SL_VERBOSE": strconv.FormatBool(settings.Verbose),
+		"SL_TOKEN":   conf.Token,
 	} {
 		os.Setenv(key, val)
 	}
 
-	if settings.Verbose {
-		os.Setenv("SL_VERBOSE", "1")
-	}
+	return nil
 }

@@ -8,7 +8,6 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
-
 )
 
 // collectPlugins scans for getter plugins.
@@ -49,7 +48,9 @@ type pluginGetter struct {
 func (p *pluginGetter) Get(href string) (*bytes.Buffer, error) {
 	argv := []string{p.certFile, p.keyFile, p.cAFile, href}
 	prog := exec.Command(filepath.Join(p.base, p.command), argv...)
-	plugin.SetupPluginEnv(p.settings, p.name, p.base)
+	if err := plugin.SetupPluginEnv(p.settings, p.name, p.base); err != nil {
+		return nil, err
+	}
 	prog.Env = os.Environ()
 	buf := bytes.NewBuffer(nil)
 	prog.Stdout = buf

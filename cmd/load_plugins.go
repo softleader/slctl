@@ -65,7 +65,9 @@ func loadPlugins(baseCmd *cobra.Command, out io.Writer) {
 				// Call setupEnv before PrepareCommand because
 				// PrepareCommand uses os.ExpandEnv and expects the
 				// setupEnv vars.
-				plugin.SetupPluginEnv(settings, md.Name, plug.Dir)
+				if err = plugin.SetupPluginEnv(settings, md.Name, plug.Dir); err != nil {
+					return err
+				}
 				main, argv := plug.PrepareCommand(u)
 
 				prog := exec.Command(main, argv...)
