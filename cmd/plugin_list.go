@@ -28,7 +28,7 @@ func newPluginListCmd(out io.Writer) *cobra.Command {
 	return cmd
 }
 
-func (pcmd *pluginListCmd) run() error {
+func (c *pluginListCmd) run() error {
 	v.Println("search in plugin dirs: %s", settings.PluginDirs())
 	plugins, err := findPlugins(settings.PluginDirs())
 	if err != nil {
@@ -40,6 +40,6 @@ func (pcmd *pluginListCmd) run() error {
 	for _, p := range plugins {
 		table.AddRow(p.Metadata.Name, p.Metadata.Version, p.Metadata.Description)
 	}
-	fmt.Fprintln(pcmd.out, table)
+	fmt.Fprintln(c.out, table)
 	return nil
 }

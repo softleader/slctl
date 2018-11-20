@@ -11,7 +11,19 @@ import (
 
 const pluginFileName = "plugin.yaml"
 
+// Downloaders represents the plugins capability if it can retrieve
+// charts from special sources
+type Downloaders struct {
+	// Protocols are the list of schemes from the charts URL.
+	Protocols []string `json:"protocols"`
+	// Command is the executable path with which the plugin performs
+	// the actual download for the corresponding Protocols
+	Command string `json:"command"`
+}
+
 // Metadata describes a plugin.
+//
+// This is the plugin equivalent of a chart.Metadata.
 type Metadata struct {
 	// Name is the name of the plugin
 	Name string `json:"name"`
@@ -41,6 +53,18 @@ type Metadata struct {
 	// is false, `--debug` will be appended to `--command`. If this is true,
 	// the `--debug` flag will be discarded.
 	IgnoreFlags bool `json:"ignoreFlags"`
+
+	// UseTunnel indicates that this command needs a tunnel.
+	// Setting this will cause a number of side effects, such as the
+	// automatic setting of HELM_HOST.
+	UseTunnel bool `json:"useTunnel"`
+
+	// Hooks are commands that will run on events.
+	Hooks Hooks
+
+	// Downloaders field is used if the plugin supply downloader mechanism
+	// for special protocols.
+	Downloaders []Downloaders `json:"downloaders"`
 }
 
 // Plugin represents a plugin.
@@ -139,11 +163,19 @@ func SetupPluginEnv(settings environment.EnvSettings,
 		// trouble of re-parsing.
 		"SL_PLUGIN": settings.PluginDirs(),
 		"SL_HOME":   settings.Home.String(),
+
+		// Set vars that convey common information.
+		//"SL_PATH_REPOSITORY":       settings.Home.Repository(),
+		//"SL_PATH_REPOSITORY_FILE":  settings.Home.RepositoryFile(),
+		//"SL_PATH_CACHE":            settings.Home.Cache(),
+		//"SL_PATH_LOCAL_REPOSITORY": settings.Home.LocalRepository(),
+		//"SL_PATH_STARTER":          settings.Home.Starters(),
+
 	} {
 		os.Setenv(key, val)
 	}
 
 	if settings.Verbose {
-		os.Setenv("SL_DEBUG", "1")
+		os.Setenv("SL_VERBOSE", "1")
 	}
 }

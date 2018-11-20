@@ -31,6 +31,10 @@ Flags:
 Use "slctl [command] --help" for more information about a command.
 ```
 
+## Plugins
+
+> TODO
+
 ## Feature
 
 - [ ] Port to [Homebrew](https://brew.sh/index_zh-tw) for mac users

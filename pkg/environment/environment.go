@@ -27,8 +27,8 @@ func (s *EnvSettings) Init(fs *pflag.FlagSet) {
 }
 
 var envMap = map[string]string{
-	"debug": "SL_DEBUG",
-	"home":  "SL_HOME",
+	"verbose": "SL_VERBOSE",
+	"home":    "SL_HOME",
 }
 
 func (s EnvSettings) PluginDirs() string {

@@ -13,3 +13,5 @@ import:
   subpackages:
   - ssh/terminal
 - package: github.com/gosuri/uitable
+- package: github.com/cyphar/filepath-securejoin
+  version: ^0.2.2

@@ -87,30 +87,30 @@ func newInitCmd(out io.Writer) *cobra.Command {
 	return cmd
 }
 
-func (i *initCmd) run() (err error) {
-	if err = ensureDirectories(i.home, i.out); err != nil {
+func (c *initCmd) run() (err error) {
+	if err = ensureDirectories(c.home, c.out); err != nil {
 		return err
 	}
-	fmt.Fprintf(i.out, "$SL_HOME has been configured at %s.\n", settings.Home)
+	fmt.Fprintf(c.out, "$SL_HOME has been configured at %s.\n", settings.Home)
 
-	if err = ensureConfigFile(i.home, i.out); err != nil {
+	if err = ensureConfigFile(c.home, c.out); err != nil {
 		return err
 	}
 	var username string
-	if !i.dryRun {
-		if i.token == "" {
-			if i.token, err = grantToken(i.username, i.password, i.out, i.refresh); err != nil {
+	if !c.dryRun {
+		if c.token == "" {
+			if c.token, err = grantToken(c.username, c.password, c.out, c.refresh); err != nil {
 				return err
 			}
 		}
-		if username, err = confirmToken(i.token, i.out); err != nil {
+		if username, err = confirmToken(c.token, c.out); err != nil {
 			return err
 		}
 	}
-	if err = refreshConfig(i.home, i.token, i.out); err != nil {
+	if err = refreshConfig(c.home, c.token, c.out); err != nil {
 		return err
 	}
-	fmt.Fprintf(i.out, "Welcome aboard %s!\n", username)
+	fmt.Fprintf(c.out, "Welcome aboard %s!\n", username)
 	return
 }
 func grantToken(username, password string, out io.Writer, refresh bool) (token string, err error) {

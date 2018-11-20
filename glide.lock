@@ -1,12 +1,16 @@
-hash: db562623ee04b0d4ccdd9532aa59335af56bab29e3eec54c250ddff54dcd102d
-updated: 2018-11-20T10:35:24.434512+08:00
+hash: 1ae45b8eeeb7328d2de047dc9f3fd625f56d13d2a81d1050156079dda03cae17
+updated: 2018-11-20T13:55:41.457696+08:00
 imports:
+- name: github.com/cyphar/filepath-securejoin
+  version: a261ee33d7a517f054effbf451841abaafe3e0fd
 - name: github.com/ghodss/yaml
   version: 0ca9ea5df5451ffdf184b4428c902747c2c11cd7
 - name: github.com/golang/protobuf
-  version: b27b920f9e71b439b873b17bf99f56467623814a
+  version: 1643683e1b54a9e88ad26d98f81400c8c9d9f4f9
   subpackages:
   - proto
+  - ptypes/any
+  - ptypes/timestamp
 - name: github.com/google/go-github
   version: f55b50f38167644bb7e4be03d9a2bde71d435239
   subpackages:
@@ -22,8 +26,12 @@ imports:
   - util/wordwrap
 - name: github.com/inconshreveable/mousetrap
   version: 76626ae9c91c4f2a10f34cad8ce83ea42c93bb75
+- name: github.com/Masterminds/semver
+  version: 517734cc7d6470c0d07130e40fd40bdeb9bcd3fd
 - name: github.com/mattn/go-runewidth
   version: c88d7e5f2e24de48a200a2655ac8a0910be9a0f7
+- name: github.com/pkg/errors
+  version: 816c9085562cd7ee03e7f8188a1cfd942858cded
 - name: github.com/spf13/cobra
   version: ef82de70bb3f60c65fb8eebacbb2d122ef517385
 - name: github.com/spf13/pflag
@@ -59,13 +67,19 @@ imports:
 - name: gopkg.in/yaml.v2
   version: 5420a8b6744d3b0345ab293f6fcba19c978f1183
 - name: k8s.io/client-go
-  version: 3dda0e178874793c2401fcf92356ab800727785b
+  version: 1638f8970cefaa404ff3a62950f88b08292b2696
   subpackages:
   - util/homedir
 - name: k8s.io/helm
   version: 560b84d53c05885ba84384574520fdcf626937a3
   subpackages:
+  - pkg/getter
   - pkg/helm/environment
   - pkg/helm/helmpath
   - pkg/plugin
+  - pkg/plugin/cache
+  - pkg/proto/hapi/version
+  - pkg/tlsutil
+  - pkg/urlutil
+  - pkg/version
 testImports: []

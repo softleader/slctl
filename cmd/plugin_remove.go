@@ -43,19 +43,19 @@ func (pcmd *pluginRemoveCmd) complete(args []string) error {
 	return nil
 }
 
-func (pcmd *pluginRemoveCmd) run() error {
+func (c *pluginRemoveCmd) run() error {
 	v.Println("loading installed plugins from %s", settings.PluginDirs())
 	plugins, err := findPlugins(settings.PluginDirs())
 	if err != nil {
 		return err
 	}
 	var errorPlugins []string
-	for _, name := range pcmd.names {
+	for _, name := range c.names {
 		if found := findPlugin(plugins, name); found != nil {
 			if err := removePlugin(found); err != nil {
 				errorPlugins = append(errorPlugins, fmt.Sprintf("Failed to remove plugin %s, got error (%v)", name, err))
 			} else {
-				fmt.Fprintf(pcmd.out, "Removed plugin: %s\n", name)
+				fmt.Fprintf(c.out, "Removed plugin: %s\n", name)
 			}
 		} else {
 			errorPlugins = append(errorPlugins, fmt.Sprintf("Plugin: %s not found", name))
@@ -68,7 +68,7 @@ func (pcmd *pluginRemoveCmd) run() error {
 }
 
 func removePlugin(p *plugin.Plugin) error {
-	if err := os.Remove(p.Dir); err != nil {
+	if err := os.RemoveAll(p.Dir); err != nil {
 		return err
 	}
 	return nil
