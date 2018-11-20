@@ -13,6 +13,7 @@ Common actions from this point include:
 
 Environment:
   $SL_HOME           set an alternative location for slctl files. By default, these are stored in ~/.sl
+  $SL_NO_PLUGINS     disable plugins. Set $SL_NO_PLUGINS=1 to disable plugins.
 
 Usage:
   slctl [command]
@@ -20,11 +21,12 @@ Usage:
 Available Commands:
   help        Help about any command
   init        initialize slctl
+  plugin      list, or remove plugins
 
 Flags:
-      --debug         enable verbose output
   -h, --help          help for slctl
       --home string   location of your config. Overrides $SL_HOME (default "~/.sl")
+  -v, --verbose       enable verbose output
 
 Use "slctl [command] --help" for more information about a command.
 ```

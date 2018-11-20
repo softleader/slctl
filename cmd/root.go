@@ -14,7 +14,7 @@ var (
 
 const (
 	Name        = "slctl"
-	globalUsage = `{{.|title}}] is a command line interface for running commands against SoftLeader services.
+	globalUsage = `{{.|title}} is a command line interface for running commands against SoftLeader services.
 
 To begin working with {{.}}, run the '{{.}} init' command:
 
