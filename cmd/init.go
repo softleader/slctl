@@ -27,19 +27,24 @@ This command grants Github access token and sets up local configuration in $SL_H
 也可以傳入 '--username' 或 '--password' 來整合非互動式的情境 (e.g. DevOps pipeline):
 
 	$ {{.}} init
-	$ {{.}} init -u <github-username> -p <github-password>
+	$ {{.}} iniu <github-username> -p <github-password>
 
 執行 'scopes' 可以列出所有 {{.}} 需要的 Access Token 權限
 
 	$ {{.}} init scopes
 
-當 {{.}} 發現已有重複的 token 時, 會自動的刪除既有的並產生一個新的 Access Token
-若你想完全的自己控制 (請務必確保 Access Token 有足夠的權限)
-可以傳入 '--token' 讓 {{.}} 直接將 Token 儲存起來
+使用 '--refresh' 可以讓 {{.}} 發現有重複的 token 時, 自動的刪除既有的並產生一個新的 Access Token
+若你想自己維護 Access Token (請務必確保有足夠的權限), 可以使用 '--token' 讓 {{.}} 直接將 Token 儲存起來
 
+	$ {{.}} init --refresh
 	$ {{.}} init -t <github-token>
 `
 )
+
+var ErrOauthAccessAlreadyExists = errors.New(`access token already exists.
+To store a token already on https://github.com/settings/tokens, use '--token' flag.  
+To automatically re-generate a new one, use '--refresh' flag.
+Use 'init --help' for more information about the command.`)
 
 type initCmd struct {
 	out      io.Writer
@@ -48,6 +53,7 @@ type initCmd struct {
 	username string
 	password string
 	token    string
+	refresh  bool
 }
 
 func newInitCmd(out io.Writer) *cobra.Command {
@@ -67,7 +73,8 @@ func newInitCmd(out io.Writer) *cobra.Command {
 	}
 
 	f := cmd.Flags()
-	f.BoolVar(&i.dryRun, "dry-run", false, "do not login github")
+	f.BoolVar(&i.dryRun, "dry-run", false, "do not against github services")
+	f.BoolVar(&i.refresh, "refresh", false, "automatically re-generate a new one if token already exists")
 	f.StringVarP(&i.token, "token", "t", "", "github access token")
 	f.StringVarP(&i.username, "username", "u", "", "github username")
 	f.StringVarP(&i.password, "password", "p", "", "github password")
@@ -80,10 +87,6 @@ func newInitCmd(out io.Writer) *cobra.Command {
 }
 
 func (i *initCmd) run() (err error) {
-	if i.dryRun {
-		return
-	}
-
 	if err = ensureDirectories(i.home, i.out); err != nil {
 		return err
 	}
@@ -92,25 +95,24 @@ func (i *initCmd) run() (err error) {
 	if err = ensureConfigFile(i.home, i.out); err != nil {
 		return err
 	}
-
-	if i.token == "" {
-		if i.token, err = grantToken(i.username, i.password, i.out); err != nil {
+	var username string
+	if !i.dryRun {
+		if i.token == "" {
+			if i.token, err = grantToken(i.username, i.password, i.out, i.refresh); err != nil {
+				return err
+			}
+		}
+		if username, err = confirmToken(i.token, i.out); err != nil {
+			return err
+		}
+		if err = refreshConfig(i.home, i.token, i.out); err != nil {
 			return err
 		}
 	}
-
-	var username string
-	if username, err = confirmToken(i.token, i.out); err != nil {
-		return err
-	}
-	if err = refreshConfig(i.home, i.token, i.out); err != nil {
-		return err
-	}
-
 	fmt.Fprintf(i.out, "Welcome aboard %s!\n", username)
 	return
 }
-func grantToken(username, password string, out io.Writer) (token string, err error) {
+func grantToken(username, password string, out io.Writer, refresh bool) (token string, err error) {
 	r := bufio.NewReader(os.Stdin)
 	if username == "" {
 		fmt.Fprint(out, "GitHub Username: ")
@@ -141,8 +143,11 @@ func grantToken(username, password string, out io.Writer) (token string, err err
 
 	for _, auth := range auths {
 		if auth.GetNote() == note {
+			if !refresh {
+				return "", ErrOauthAccessAlreadyExists
+			}
 			if settings.Verbose {
-				fmt.Fprint(out, "\nRemoving exist token")
+				fmt.Fprintln(out, "\nRemoving exist token")
 			}
 			if _, err = client.Authorizations.Delete(ctx, auth.GetID()); err != nil {
 				return "", err
@@ -184,7 +189,7 @@ func confirmToken(token string, out io.Writer) (name string, err error) {
 		return "", err
 	}
 	if settings.Verbose {
-		fmt.Fprintf(out, "%s", github.Stringify(mem))
+		fmt.Fprintf(out, "%s\n", github.Stringify(mem))
 	}
 	if mem.GetState() != "active" {
 		return "", fmt.Errorf("you are not a active member of %s", organization)
@@ -194,8 +199,9 @@ func confirmToken(token string, out io.Writer) (name string, err error) {
 		return "", err
 	}
 	if settings.Verbose {
-		fmt.Fprintf(out, "%s", github.Stringify(user))
+		fmt.Fprintf(out, "%s\n", github.Stringify(user))
 	}
+
 	return user.GetName(), err
 }
 

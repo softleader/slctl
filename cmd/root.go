@@ -18,7 +18,7 @@ const (
 
 To begin working with {{.}}, run the '{{.}} init' command:
 
-	$ {{.}} init --help
+	$ {{.}} init
 
 It will set up any necessary local configuration.
 
