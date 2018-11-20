@@ -33,11 +33,14 @@ This command grants Github access token and sets up local configuration in $SL_H
 
 	$ {{.}} init scopes
 
-使用 '--refresh' 讓 {{.}} 發現有重複的 token 時, 自動的刪除既有的並產生一個新的 Access Token
-若你想自己維護 Access Token (請務必確保有足夠的權限), 可以使用 '--token' 讓 {{.}} 直接將 Token 儲存起來
+使用 '--refresh' 讓 {{.}} 發現有重複的 Token 時, 自動的刪除既有的並產生一個全新的 Access Token
+若你想自己維護 Access Token (請務必確保有足夠的權限), 可以使用 '--token' 讓 {{.}} 驗證後直接儲存起來
 
 	$ {{.}} init --refresh
 	$ {{.}} init --token <github-token>
+
+使用 '--dry-run' 則 {{.}} 不會跟 GitHub API 有任何互動, 只會配置 $SL_HOME 環境目錄.
+同時使用 '--dry-run' 及 '--token' 可跳過 Token 驗證直接儲存起來 (e.g. 沒網路環境下)
 `
 )
 
@@ -105,9 +108,9 @@ func (i *initCmd) run() (err error) {
 		if username, err = confirmToken(i.token, i.out); err != nil {
 			return err
 		}
-		if err = refreshConfig(i.home, i.token, i.out); err != nil {
-			return err
-		}
+	}
+	if err = refreshConfig(i.home, i.token, i.out); err != nil {
+		return err
 	}
 	fmt.Fprintf(i.out, "Welcome aboard %s!\n", username)
 	return
