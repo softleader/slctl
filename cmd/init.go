@@ -27,17 +27,17 @@ This command grants Github access token and sets up local configuration in $SL_H
 也可以傳入 '--username' 或 '--password' 來整合非互動式的情境 (e.g. DevOps pipeline):
 
 	$ {{.}} init
-	$ {{.}} iniu <github-username> -p <github-password>
+	$ {{.}} init -u <github-username> -p <github-password>
 
 執行 'scopes' 可以列出所有 {{.}} 需要的 Access Token 權限
 
 	$ {{.}} init scopes
 
-使用 '--refresh' 可以讓 {{.}} 發現有重複的 token 時, 自動的刪除既有的並產生一個新的 Access Token
+使用 '--refresh' 讓 {{.}} 發現有重複的 token 時, 自動的刪除既有的並產生一個新的 Access Token
 若你想自己維護 Access Token (請務必確保有足夠的權限), 可以使用 '--token' 讓 {{.}} 直接將 Token 儲存起來
 
 	$ {{.}} init --refresh
-	$ {{.}} init -t <github-token>
+	$ {{.}} init --token <github-token>
 `
 )
 
@@ -75,7 +75,7 @@ func newInitCmd(out io.Writer) *cobra.Command {
 	f := cmd.Flags()
 	f.BoolVar(&i.dryRun, "dry-run", false, "do not against github services")
 	f.BoolVar(&i.refresh, "refresh", false, "automatically re-generate a new one if token already exists")
-	f.StringVarP(&i.token, "token", "t", "", "github access token")
+	f.StringVar(&i.token, "token", "", "github access token")
 	f.StringVarP(&i.username, "username", "u", "", "github username")
 	f.StringVarP(&i.password, "password", "p", "", "github password")
 
