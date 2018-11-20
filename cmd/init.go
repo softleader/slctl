@@ -68,9 +68,6 @@ func newInitCmd(out io.Writer) *cobra.Command {
 		Short: "initialize " + Name,
 		Long:  usage(initDesc),
 		RunE: func(cmd *cobra.Command, args []string) error {
-			if len(args) != 0 {
-				return errors.New("this command does not accept arguments")
-			}
 			i.home = settings.Home
 			return i.run()
 		},

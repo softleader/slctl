@@ -59,6 +59,7 @@ func NewRootCmd(args []string) *cobra.Command {
 	cmd.AddCommand(
 		newInitCmd(out),
 		newPluginCmd(out),
+		newWhereisCmd(out),
 	)
 
 	flags.Parse(args)

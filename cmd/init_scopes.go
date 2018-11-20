@@ -27,15 +27,11 @@ func newInitCmdScopes(out io.Writer) *cobra.Command {
 			if len(args) != 0 {
 				return errors.New("this command does not accept arguments")
 			}
-			return run(out)
+			for _, scope := range tokenScopes {
+				fmt.Fprintln(out, scope)
+			}
+			return nil
 		},
 	}
 	return cmd
-}
-
-func run(out io.Writer) (err error) {
-	for _, scope := range tokenScopes {
-		fmt.Fprintln(out, scope)
-	}
-	return nil
 }
