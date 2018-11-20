@@ -21,6 +21,7 @@ import (
 	"fmt"
 	"github.com/spf13/cobra"
 	"os"
+	"strings"
 )
 
 func main() {
@@ -29,13 +30,12 @@ func main() {
 		Short: "{{.Usage}}",
 		Long:  "{{.Description}}",
 		RunE: func(cmd *cobra.Command, args []string) error {
-			fmt.Println("SL_PLUGIN_NAME:", os.Getenv("SL_PLUGIN_NAME"))
-			fmt.Println("SL_PLUGIN_DIR:", os.Getenv("SL_PLUGIN_DIR"))
-			fmt.Println("SL_BIN:", os.Getenv("SL_BIN"))
-			fmt.Println("SL_PLUGIN:", os.Getenv("SL_PLUGIN"))
-			fmt.Println("SL_HOME:", os.Getenv("SL_HOME"))
-			fmt.Println("SL_TOKEN:", os.Getenv("SL_TOKEN"))
-			fmt.Println("SL_VERBOSE:", os.Getenv("SL_VERBOSE"))
+			// use os.LookupEnv to retrieve the specific value of the environment (e.g. os.LookupEnv("SL_TOKEN"))
+			for _, env := range os.Environ() {
+				if strings.HasPrefix(env, "SL_") {
+					fmt.Println(env)
+				}
+			}
 			return nil
 		},
 	}
@@ -118,7 +118,7 @@ func Create(plugin *Metadata, dir string) (string, error) {
 		return pluginDir, err
 	}
 
-	units := []unit{
+	files := []file{
 		marshal{
 			path: filepath.Join(pluginDir, PluginFileName),
 			in:   plugin,
@@ -135,16 +135,16 @@ func Create(plugin *Metadata, dir string) (string, error) {
 		},
 	}
 
-	for _, unit := range units {
-		if err := save(unit); err != nil {
+	for _, file := range files {
+		if err := save(file); err != nil {
 			return pluginDir, err
 		}
 	}
 	return pluginDir, nil
 }
 
-type unit interface {
-	filename() string
+type file interface {
+	filepath() string
 	content() ([]byte, error)
 }
 
@@ -153,7 +153,7 @@ type marshal struct {
 	in   interface{}
 }
 
-func (u marshal) filename() string {
+func (u marshal) filepath() string {
 	return u.path
 }
 
@@ -167,7 +167,7 @@ type compile struct {
 	template string
 }
 
-func (u compile) filename() string {
+func (u compile) filepath() string {
 	return u.path
 }
 
@@ -180,10 +180,10 @@ func (u compile) content() ([]byte, error) {
 	return buf.Bytes(), nil
 }
 
-func save(unit unit) (err error) {
-	out, err := unit.content()
+func save(file file) (err error) {
+	out, err := file.content()
 	if err != nil {
 		return
 	}
-	return ioutil.WriteFile(unit.filename(), out, 0644)
+	return ioutil.WriteFile(file.filepath(), out, 0644)
 }
