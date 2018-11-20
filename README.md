@@ -21,7 +21,7 @@ Usage:
 Available Commands:
   help        Help about any command
   init        initialize slctl
-  plugin      list, or remove plugins
+  plugin      add, list, remove, or create plugins
 
 Flags:
   -h, --help          help for slctl
