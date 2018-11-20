@@ -26,6 +26,7 @@ Common actions from this point include:
 
 Environment:
   $SL_HOME           set an alternative location for {{.}} files. By default, these are stored in ~/.sl
+  $SL_NO_PLUGINS     disable plugins. Set $SL_NO_PLUGINS=1 to disable plugins.
 `
 )
 
@@ -57,6 +58,7 @@ func NewRootCmd(args []string) *cobra.Command {
 
 	cmd.AddCommand(
 		newInitCmd(out),
+		newPluginCmd(out),
 	)
 
 	flags.Parse(args)

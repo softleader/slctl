@@ -10,7 +10,9 @@ import (
 
 const ReadWrite = 0644
 
-var ErrTokenNotExist = errors.New("token is no exist")
+var ErrTokenNotExist = errors.New(`token not exist.
+You might need to run 'slctl init'
+`)
 
 type ConfFile struct {
 	Token string `json:"token"`
@@ -26,7 +28,7 @@ func LoadConfFile(path string) (*ConfFile, error) {
 		if os.IsNotExist(err) {
 			return nil, fmt.Errorf(
 				"Couldn't load config file (%s).\n"+
-					"You might need to run `slctl init --help`", path)
+					"You might need to run `slctl init`", path)
 		}
 		return nil, err
 	}

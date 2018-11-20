@@ -5,11 +5,8 @@ import (
 	"runtime"
 )
 
-// HomeDir returns the home directory for the current user
 func HomeDir() string {
 	if runtime.GOOS == "windows" {
-
-		// First prefer the HOME environmental variable
 		if home := os.Getenv("HOME"); len(home) > 0 {
 			if _, err := os.Stat(home); err == nil {
 				return home
