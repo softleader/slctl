@@ -15,6 +15,11 @@ endif
 	docker build -t slctl .
 	docker run --rm -it slctl bash
 
+
+.PHONY: link
+link: bootstrap test build
+	ln -sf $(BUILD)/$(BINARY) /usr/local/bin
+
 .PHONY: test
 test:
 	go test -v
@@ -49,3 +54,4 @@ endif
 .PHONY: clean
 clean:
 	rm -rf _*
+	rm -f /usr/local/bin/$(BINARY)

@@ -8,7 +8,8 @@ import (
 const pluginHelp = `
 Manage {{.}} plugins.
 
-'plugin install' command is not supported for now! please manually drop plugin into $SL_HOME/plugins.
+'plugin install' command is not supported for now! 
+Please manually drop plugin folder into $SL_PLUGIN (default $SL_HOME/plugins).
 `
 
 func newPluginCmd(out io.Writer) *cobra.Command {

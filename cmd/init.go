@@ -19,7 +19,7 @@ import (
 )
 
 const (
-	note         = "slctl token (https://github.com/softleader/slctl)"
+	note         = Name + " token (https://github.com/softleader/slctl)"
 	organization = "softleader"
 	initDesc     = `
 This command grants Github access token and sets up local configuration in $SL_HOME (default ~/.sl/).
