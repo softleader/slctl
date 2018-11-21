@@ -9,8 +9,8 @@ import (
 )
 
 const (
-	initScopeDesc = `
-可以列出所有 {{.}} 需要的 GitHub Personal Access Token 權限 (https://github.com/settings/tokens)
+	initScopesDesc = `
+列出所有 {{.}} 需要的 GitHub Personal Access Token 權限 (https://github.com/settings/tokens)
 
 	$ {{.}} init scopes
 `
@@ -18,11 +18,11 @@ const (
 
 var tokenScopes = []github.Scope{github.ScopeReadOrg, github.ScopeUser}
 
-func newInitCmdScopes(out io.Writer) *cobra.Command {
+func newInitScopesCmd(out io.Writer) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "scopes",
 		Short: "list scopes of token that " + Name + " required",
-		Long:  usage(initScopeDesc),
+		Long:  usage(initScopesDesc),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			if len(args) != 0 {
 				return errors.New("this command does not accept arguments")

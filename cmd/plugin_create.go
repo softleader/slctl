@@ -28,6 +28,7 @@ type pluginCreateCmd struct {
 	home slpath.Home
 	name string
 	out  io.Writer
+	lang string
 }
 
 func newPluginCreateCmd(out io.Writer) *cobra.Command {
@@ -45,6 +46,14 @@ func newPluginCreateCmd(out io.Writer) *cobra.Command {
 			return pcc.run()
 		},
 	}
+
+	f := cmd.Flags()
+	f.StringVarP(&pcc.lang, "lang", "", "golang", "language of template to create")
+
+	cmd.AddCommand(
+		newPluginCreateLangsCmd(out),
+	)
+
 	return cmd
 }
 
@@ -58,6 +67,6 @@ func (c *pluginCreateCmd) run() (err error) {
 		Version:     "0.1.0",
 		Command:     "$SL_PLUGIN_DIR/" + pluginName,
 	}
-	_, err = plugin.Create(pfile, filepath.Dir(c.name))
+	_, err = plugin.Create(c.lang, pfile, filepath.Dir(c.name))
 	return
 }

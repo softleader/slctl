@@ -8,97 +8,33 @@ import (
 	"io/ioutil"
 	"os"
 	"path/filepath"
+	"reflect"
 )
 
 const (
-	PluginFileName   = "plugin.yaml"
-	MainFileName     = "main.go"
-	MakefileFileName = "Makefile"
+	PluginFileName = "plugin.yaml"
 )
 
-const defaultMain = `package main
-import (
-	"fmt"
-	"github.com/spf13/cobra"
-	"os"
-	"strings"
-)
-
-func main() {
-	cmd := &cobra.Command{
-		Use:   "{{.Name}}",
-		Short: "{{.Usage}}",
-		Long:  "{{.Description}}",
-		RunE: func(cmd *cobra.Command, args []string) error {
-			// use os.LookupEnv to retrieve the specific value of the environment (e.g. os.LookupEnv("SL_TOKEN"))
-			for _, env := range os.Environ() {
-				if strings.HasPrefix(env, "SL_") {
-					fmt.Println(env)
-				}
-			}
-			return nil
-		},
-	}
-	if err := cmd.Execute(); err != nil {
-		os.Exit(1)
-	}
+var Creators = []creator{
+	golang{},
+	java{},
+	node{},
 }
-`
 
-const defaultMakefile = `SL_HOME ?= $(shell slctl home)
-SL_PLUGIN_DIR ?= $(SL_HOME)/plugins/{{.Name}}/
-HAS_GLIDE := $(shell command -v glide;)
-VERSION := $(shell sed -n -e 's/version:[ "]*\([^"]*\).*/\1/p' plugin.yaml)
-DIST := $(CURDIR)/_dist
-BUILD := $(CURDIR)/_build
-LDFLAGS := "-X main.version=${VERSION}"
-BINARY := {{.Name}}
+type creator interface {
+	files(plugin *Metadata, pluginDir string) []file
+}
 
-.PHONY: install
-install: bootstrap test build
-	mkdir -p $(SL_PLUGIN_DIR)
-	cp $(BUILD)/$(BINARY) $(SL_PLUGIN_DIR)
-	cp plugin.yaml $(SL_PLUGIN_DIR)
+func findCreator(lang string) creator {
+	for _, c := range Creators {
+		if reflect.TypeOf(c).Name() == lang {
+			return c
+		}
+	}
+	return nil
+}
 
-.PHONY: test
-test:
-	go test -v
-
-.PHONY: build
-build: clean bootstrap
-	mkdir -p $(BUILD)
-	cp plugin.yaml $(BUILD)
-	go build -o $(BUILD)/$(BINARY)
-
-.PHONY: dist
-dist:
-	go get -u github.com/inconshreveable/mousetrap
-	mkdir -p $(BUILD)
-	mkdir -p $(DIST)
-	sed -E 's/(version: )"(.+)"/\1"$(VERSION)"/g' plugin.yaml > $(BUILD)/plugin.yaml
-	GOOS=linux GOARCH=amd64 go build -o $(BUILD)/$(BINARY) -ldflags $(LDFLAGS) -a -tags netgo
-	tar -C $(BUILD) -zcvf $(DIST)/$(BINARY)-linux-$(VERSION).tgz $(BINARY) plugin.yaml
-	GOOS=darwin GOARCH=amd64 go build -o $(BUILD)/$(BINARY) -ldflags $(LDFLAGS) -a -tags netgo
-	tar -C $(BUILD) -zcvf $(DIST)/$(BINARY)-macos-$(VERSION).tgz $(BINARY) plugin.yaml
-	GOOS=windows GOARCH=amd64 go build -o $(BUILD)/$(BINARY).exe -ldflags $(LDFLAGS) -a -tags netgo
-	tar -C $(BUILD) -llzcvf $(DIST)/$(BINARY)-windows-$(VERSION).tgz $(BINARY).exe plugin.yaml
-
-.PHONY: bootstrap
-bootstrap:
-ifndef HAS_GLIDE
-	go get -u github.com/Masterminds/glide
-endif
-ifeq (,$(wildcard ./glide.yaml))
-	glide init --non-interactive
-endif
-	glide install --strip-vendor	
-
-.PHONY: clean
-clean:
-	rm -rf _*
-`
-
-func Create(plugin *Metadata, dir string) (string, error) {
+func Create(lang string, plugin *Metadata, dir string) (string, error) {
 	path, err := filepath.Abs(dir)
 	if err != nil {
 		return path, err
@@ -118,22 +54,17 @@ func Create(plugin *Metadata, dir string) (string, error) {
 		return pluginDir, err
 	}
 
-	files := []file{
-		marshal{
-			path: filepath.Join(pluginDir, PluginFileName),
-			in:   plugin,
-		},
-		compile{
-			path:     filepath.Join(pluginDir, MainFileName),
-			in:       plugin,
-			template: defaultMain,
-		},
-		compile{
-			path:     filepath.Join(pluginDir, MakefileFileName),
-			in:       plugin,
-			template: defaultMakefile,
-		},
+	creator := findCreator(lang)
+	if creator == nil {
+		return pluginDir, fmt.Errorf(`unsupported creating %s template.
+You might need to run 'slctl plugin create langs'`, lang)
 	}
+
+	files := creator.files(plugin, pluginDir)
+	files = append(files, marshal{
+		path: filepath.Join(pluginDir, PluginFileName),
+		in:   plugin,
+	})
 
 	for _, file := range files {
 		if err := save(file); err != nil {

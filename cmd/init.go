@@ -81,7 +81,7 @@ func newInitCmd(out io.Writer) *cobra.Command {
 	f.StringVarP(&i.password, "password", "p", "", "github password")
 
 	cmd.AddCommand(
-		newInitCmdScopes(out),
+		newInitScopesCmd(out),
 	)
 
 	return cmd
