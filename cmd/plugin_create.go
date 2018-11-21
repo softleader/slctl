@@ -57,7 +57,6 @@ func (c *pluginCreateCmd) run() (err error) {
 		Description: fmt.Sprintf("the %s plugin", pluginName),
 		Version:     "0.1.0",
 		Command:     "$SL_PLUGIN_DIR/" + pluginName,
-		Aliases:     []string{string(pluginName[0:1])},
 	}
 	_, err = plugin.Create(pfile, filepath.Dir(c.name))
 	return
