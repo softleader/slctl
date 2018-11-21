@@ -39,6 +39,9 @@ type Metadata struct {
 	// Description is a long description shown in places like `helm help`
 	Description string `json:"description"`
 
+	// Aliases is an array of aliases that can be used instead of the first word in use of command.
+	Aliases []string `json:"aliases"`
+
 	// Command is the command, as a single string.
 	//
 	// The command will be passed through environment expansion, so env vars can

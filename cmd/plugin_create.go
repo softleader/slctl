@@ -11,11 +11,9 @@ import (
 )
 
 const pluginCreateDesc = `
-This command creates a plugin directory along with the common files and
-directories used in a plugin.
+This command creates a plugin directory.
 
-For example, '{{.}} plugin create foo' will create a directory structure that looks
-something like this:
+For example, '{{.}} plugin create foo' will create a directory structure like this:
 
 	foo/
 	  |
@@ -51,14 +49,15 @@ func newPluginCreateCmd(out io.Writer) *cobra.Command {
 }
 
 func (c *pluginCreateCmd) run() (err error) {
-	n := filepath.Base(c.name)
+	pluginName := filepath.Base(c.name)
 	fmt.Fprintf(c.out, "Creating %s\n", c.name)
 	pfile := &plugin.Metadata{
-		Name:        n,
-		Usage:       n,
-		Description: "A " + Name + " plugin",
+		Name:        pluginName,
+		Usage:       pluginName,
+		Description: fmt.Sprintf("the %s plugin", pluginName),
 		Version:     "0.1.0",
-		Command:     "$SL_PLUGIN_DIR/" + n,
+		Command:     "$SL_PLUGIN_DIR/" + pluginName,
+		Aliases:     []string{string(pluginName[0:1])},
 	}
 	_, err = plugin.Create(pfile, filepath.Dir(c.name))
 	return
