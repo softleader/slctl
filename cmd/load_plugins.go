@@ -53,10 +53,9 @@ func loadPlugins(baseCmd *cobra.Command, out io.Writer) {
 		}
 
 		c := &cobra.Command{
-			Use:     md.Name,
-			Short:   md.Usage,
-			Long:    md.Description,
-			Aliases: md.Aliases,
+			Use:   md.Name,
+			Short: md.Usage,
+			Long:  md.Description,
 			RunE: func(cmd *cobra.Command, args []string) error {
 				u, err := processParent(cmd, args)
 				if err != nil {
