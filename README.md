@@ -1,5 +1,23 @@
 # slctl
 
+## Install
+
+You can also use [Homebrew](https://brew.sh/index_zh-tw) (on macOS):
+
+```sh
+brew install softleader/tap/slctl
+```
+
+Or install using [Chocolatey](https://chocolatey.org/) (on Windows):
+
+```sh
+TODO
+```
+
+Or manually downlaod from [releases page](https://github.com/softleader/slctl/releases).
+
+## Usage
+
 ```sh
 Slctl is a command line interface for running commands against SoftLeader services.
 
@@ -33,10 +51,10 @@ Use "slctl [command] --help" for more information about a command.
 
 ## Plugins
 
-> TODO
+- [foo]() - 這邊開始將會是 plugin 清單
+- [bar]() - 這邊開始將會是 plugin 清單
 
-## Feature
+### Writing Custom Plugins
 
-- [ ] Port to [Homebrew](https://brew.sh/index_zh-tw) for mac users
-- [ ] Port to [Chocolatey](https://chocolatey.org/) for windows users
-- [ ] Plugins support
+*Slctl* 支援任何語言的 Plugin, 請參考 [Plugins Guide](https://github.com/softleader/slctl/wiki/Plugins-Guide)
+
