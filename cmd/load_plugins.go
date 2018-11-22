@@ -8,7 +8,6 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
-	"strings"
 	"syscall"
 )
 
@@ -17,19 +16,12 @@ type PluginError struct {
 	Code int
 }
 
-// loadPlugins loads plugins into the command list.
-//
-// This follows a different pattern than the other commands because it has
-// to inspect its environment and then add commands to the base command
-// as it finds them.
 func loadPlugins(baseCmd *cobra.Command, out io.Writer) {
 
-	// If HELM_NO_PLUGINS is set to 1, do not load plugins.
 	if os.Getenv("SL_NO_PLUGINS") == "1" {
 		return
 	}
 
-	// debug("SL_PLUGIN_DIRS=%s", settings.PluginDirs())
 	found, err := findPlugins(settings.PluginDirs())
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "failed to load plugins: %s", err)
@@ -49,7 +41,7 @@ func loadPlugins(baseCmd *cobra.Command, out io.Writer) {
 		plug := plug
 		md := plug.Metadata
 		if md.Usage == "" {
-			md.Usage = fmt.Sprintf("the %q plugin", md.Name)
+			md.Usage = fmt.Sprintf("The %q plugin", md.Name)
 		}
 
 		c := &cobra.Command{
@@ -103,27 +95,13 @@ func loadPlugins(baseCmd *cobra.Command, out io.Writer) {
 func manuallyProcessArgs(args []string) ([]string, []string) {
 	known := []string{}
 	unknown := []string{}
-	kvargs := []string{"--host", "--kube-context", "--home", "--tiller-namespace"}
-	knownArg := func(a string) bool {
-		for _, pre := range kvargs {
-			if strings.HasPrefix(a, pre+"=") {
-				return true
-			}
-		}
-		return false
-	}
 	for i := 0; i < len(args); i++ {
 		switch a := args[i]; a {
-		case "--debug":
+		case "--verbose":
 			known = append(known, a)
-		case "--host", "--kube-context", "--home", "--tiller-namespace":
-			known = append(known, a, args[i+1])
-			i++
+		case "-v":
+			known = append(known, a)
 		default:
-			if knownArg(a) {
-				known = append(known, a)
-				continue
-			}
 			unknown = append(unknown, a)
 		}
 	}

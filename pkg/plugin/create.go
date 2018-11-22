@@ -4,21 +4,18 @@ import (
 	"bytes"
 	"fmt"
 	"gopkg.in/yaml.v2"
-	"html/template"
 	"io/ioutil"
 	"os"
 	"path/filepath"
 	"reflect"
-)
-
-const (
-	PluginFileName = "plugin.yaml"
+	"strings"
+	"text/template"
 )
 
 var registeredCreators = []creator{
 	golang{},
 	java{},
-	node{},
+	javascript{},
 }
 var Creators = func() (m map[string]creator) {
 	m = make(map[string]creator, len(registeredCreators))
@@ -29,6 +26,7 @@ var Creators = func() (m map[string]creator) {
 }()
 
 type creator interface {
+	command(plugin *Metadata) string
 	files(plugin *Metadata, pluginDir string) []file
 }
 
@@ -44,32 +42,40 @@ func Create(lang string, plugin *Metadata, dir string) (string, error) {
 		return path, fmt.Errorf("no such directory %s", path)
 	}
 
-	pluginDir := filepath.Join(path, plugin.Name)
-	if fi, err := os.Stat(pluginDir); err == nil && !fi.IsDir() {
-		return pluginDir, fmt.Errorf("file %s already exists and is not a directory", pluginDir)
-	}
-	if err := os.MkdirAll(pluginDir, 0755); err != nil {
-		return pluginDir, err
+	pdir := filepath.Join(path, plugin.Name)
+	if err := mkdir(pdir); err != nil {
+		return pdir, err
 	}
 
 	creator, found := Creators[lang]
 	if !found {
-		return pluginDir, fmt.Errorf(`unsupported creating %s template.
+		return pdir, fmt.Errorf(`unsupported creating %s template.
 You might need to run 'slctl plugin create langs'`, lang)
 	}
 
-	files := creator.files(plugin, pluginDir)
+	plugin.Command = creator.command(plugin)
+	files := creator.files(plugin, pdir)
 	files = append(files, marshal{
-		path: filepath.Join(pluginDir, PluginFileName),
+		path: filepath.Join(pdir, pluginFileName),
 		in:   plugin,
 	})
 
 	for _, file := range files {
 		if err := save(file); err != nil {
-			return pluginDir, err
+			return pdir, err
 		}
 	}
-	return pluginDir, nil
+	return pdir, nil
+}
+
+func mkdir(path string) error {
+	if fi, err := os.Stat(path); err == nil && !fi.IsDir() {
+		return fmt.Errorf("file %s already exists and is not a directory", path)
+	}
+	if err := os.MkdirAll(path, 0755); err != nil {
+		return err
+	}
+	return nil
 }
 
 type file interface {
@@ -90,19 +96,22 @@ func (u marshal) content() ([]byte, error) {
 	return yaml.Marshal(u.in)
 }
 
-type compile struct {
+type tmpl struct {
 	path     string
 	in       interface{}
 	template string
 }
 
-func (u compile) filepath() string {
+func (u tmpl) filepath() string {
 	return u.path
 }
 
-func (u compile) content() ([]byte, error) {
+func (u tmpl) content() ([]byte, error) {
+	funcMap := template.FuncMap{
+		"title": strings.Title,
+	}
 	var buf bytes.Buffer
-	parsed := template.Must(template.New("").Parse(u.template))
+	parsed := template.Must(template.New("").Funcs(funcMap).Parse(u.template))
 	if err := parsed.Execute(&buf, u.in); err != nil {
 		return nil, err
 	}
@@ -110,6 +119,7 @@ func (u compile) content() ([]byte, error) {
 }
 
 func save(file file) (err error) {
+	mkdir(filepath.Dir(file.filepath())) // ensure parent exist
 	out, err := file.content()
 	if err != nil {
 		return

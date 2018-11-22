@@ -5,8 +5,8 @@ import (
 	"fmt"
 	"github.com/softleader/slctl/pkg/environment"
 	"github.com/spf13/cobra"
-	"html/template"
 	"strings"
+	"text/template"
 )
 
 var (

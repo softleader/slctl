@@ -11,7 +11,7 @@ import (
 	"strings"
 )
 
-const pluginFileName = "plugin.yaml"
+const pluginFileName = "metadata.yaml"
 
 // Downloaders represents the plugins capability if it can retrieve
 // charts from special sources

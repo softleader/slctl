@@ -8,7 +8,6 @@ import (
 	"github.com/spf13/cobra"
 	"io"
 	"path/filepath"
-	"strings"
 )
 
 const pluginCreateDesc = `
@@ -22,11 +21,14 @@ const pluginCreateDesc = `
 	  |
 	  |- Makefile
 
-Plugin 本身沒有撰寫的語言限制, {{.}} 也已內含了幾種語言的範本 ({{.}} 推薦並預設產生 golang 的範本)
-使用 '--lang' 指定你要產生的語言範本
-或使用 'plugin create langs' 列出所有內含的範本語言
+Plugin 本身沒有撰寫的語言限制, {{.}} 推薦並預設產生 golang 的範本
+選擇不同撰寫語言時, 需注意該語言本身的限制: 如執行 java plugin 的 runtime 必須有 JVM
+{{.}} 已內含了幾種語言的範本, 使用 '--lang' 來指定產生語言範本
 	
 	$ {{.}} plugin create foo --lang java
+
+使用 'plugin create langs' 列出所有內含的範本語言
+
 	$ {{.}} plugin create langs
 `
 
@@ -69,9 +71,8 @@ func (c *pluginCreateCmd) run() (err error) {
 	pfile := &plugin.Metadata{
 		Name:        pname,
 		Usage:       pname,
-		Description: fmt.Sprintf("the %s plugin written in %s", pname, strings.Title(c.lang)),
+		Description: fmt.Sprintf("The %s plugin", pname),
 		Version:     "0.1.0",
-		Command:     "$SL_PLUGIN_DIR/" + pname,
 	}
 	_, err = plugin.Create(c.lang, pfile, filepath.Dir(c.name))
 	return
