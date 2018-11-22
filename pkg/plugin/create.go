@@ -15,7 +15,7 @@ import (
 var registeredCreators = []creator{
 	golang{},
 	java{},
-	javascript{},
+	nodejs{},
 }
 var Creators = func() (m map[string]creator) {
 	m = make(map[string]creator, len(registeredCreators))
@@ -124,5 +124,5 @@ func save(file file) (err error) {
 	if err != nil {
 		return
 	}
-	return ioutil.WriteFile(file.filepath(), out, 0644)
+	return ioutil.WriteFile(file.filepath(), out, 0755)
 }
