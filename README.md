@@ -51,8 +51,10 @@ Use "slctl [command] --help" for more information about a command.
 
 ## Plugins
 
-- [foo]() - 這邊開始將會是 plugin 清單
-- [bar]() - 這邊開始將會是 plugin 清單
+- [foo](#) - The foo plugin
+- [bar](#) - The bar plugin
+
+> TODO: Plugin 清單
 
 ### Writing Custom Plugins
 
