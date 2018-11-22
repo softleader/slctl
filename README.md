@@ -1,5 +1,7 @@
 # slctl
 
+Slctl is a command line interface for running commands against SoftLeader services.
+
 ## Install
 
 You can also use [Homebrew](https://brew.sh/index_zh-tw) (on macOS):
@@ -19,8 +21,6 @@ Or manually downlaod from [releases page](https://github.com/softleader/slctl/re
 ## Usage
 
 ```sh
-Slctl is a command line interface for running commands against SoftLeader services.
-
 To begin working with slctl, run the 'slctl init' command:
 
 	$ slctl init
