@@ -29,6 +29,9 @@ func newPluginCreateLangsCmd(out io.Writer) *cobra.Command {
 			for _, c := range plugin.Creators {
 				fmt.Fprintln(out, reflect.TypeOf(c).Name())
 			}
+			for _, c := range plugin.Creators {
+				fmt.Fprintln(out, reflect.TypeOf(c).Name())
+			}
 			return nil
 		},
 	}

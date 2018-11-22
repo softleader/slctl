@@ -8,12 +8,11 @@ import (
 	"github.com/spf13/cobra"
 	"io"
 	"path/filepath"
+	"strings"
 )
 
 const pluginCreateDesc = `
-This command creates a plugin directory.
-
-For example, '{{.}} plugin create foo' will create a directory structure like this:
+產生 Plugin 範本, 如: '{{.}} plugin create foo' 將會產生 golang plugin 範本, 目錄結構大致如下:
 
 	foo/
 	  |
@@ -22,6 +21,13 @@ For example, '{{.}} plugin create foo' will create a directory structure like th
 	  |- main.go
 	  |
 	  |- Makefile
+
+Plugin 本身沒有撰寫的語言限制, {{.}} 也已內含了幾種語言的範本 ({{.}} 推薦並預設產生 golang 的範本)
+使用 '--lang' 指定你要產生的語言範本
+或使用 'plugin create langs' 列出所有內含的範本語言
+	
+	$ {{.}} plugin create foo --lang java
+	$ {{.}} plugin create langs
 `
 
 type pluginCreateCmd struct {
@@ -36,7 +42,7 @@ func newPluginCreateCmd(out io.Writer) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "create NAME",
 		Short: "create a new plugin with the given name",
-		Long:  pluginCreateDesc,
+		Long:  usage(pluginCreateDesc),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			pcc.home = settings.Home
 			if len(args) == 0 {
@@ -58,14 +64,14 @@ func newPluginCreateCmd(out io.Writer) *cobra.Command {
 }
 
 func (c *pluginCreateCmd) run() (err error) {
-	pluginName := filepath.Base(c.name)
+	pname := filepath.Base(c.name)
 	fmt.Fprintf(c.out, "Creating %s\n", c.name)
 	pfile := &plugin.Metadata{
-		Name:        pluginName,
-		Usage:       pluginName,
-		Description: fmt.Sprintf("the %s plugin", pluginName),
+		Name:        pname,
+		Usage:       pname,
+		Description: fmt.Sprintf("the %s plugin written in %s", pname, strings.Title(c.lang)),
 		Version:     "0.1.0",
-		Command:     "$SL_PLUGIN_DIR/" + pluginName,
+		Command:     "$SL_PLUGIN_DIR/" + pname,
 	}
 	_, err = plugin.Create(c.lang, pfile, filepath.Dir(c.name))
 	return

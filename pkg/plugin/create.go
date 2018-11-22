@@ -15,23 +15,21 @@ const (
 	PluginFileName = "plugin.yaml"
 )
 
-var Creators = []creator{
+var registeredCreators = []creator{
 	golang{},
 	java{},
 	node{},
 }
+var Creators = func() (m map[string]creator) {
+	m = make(map[string]creator, len(registeredCreators))
+	for _, c := range registeredCreators {
+		m[reflect.TypeOf(c).Name()] = c
+	}
+	return
+}()
 
 type creator interface {
 	files(plugin *Metadata, pluginDir string) []file
-}
-
-func findCreator(lang string) creator {
-	for _, c := range Creators {
-		if reflect.TypeOf(c).Name() == lang {
-			return c
-		}
-	}
-	return nil
 }
 
 func Create(lang string, plugin *Metadata, dir string) (string, error) {
@@ -54,8 +52,8 @@ func Create(lang string, plugin *Metadata, dir string) (string, error) {
 		return pluginDir, err
 	}
 
-	creator := findCreator(lang)
-	if creator == nil {
+	creator, found := Creators[lang]
+	if !found {
 		return pluginDir, fmt.Errorf(`unsupported creating %s template.
 You might need to run 'slctl plugin create langs'`, lang)
 	}
