@@ -92,9 +92,7 @@ func loadPlugins(baseCmd *cobra.Command, out io.Writer) {
 // manuallyProcessArgs processes an arg array, removing special args.
 //
 // Returns two sets of args: known and unknown (in that order)
-func manuallyProcessArgs(args []string) ([]string, []string) {
-	known := []string{}
-	unknown := []string{}
+func manuallyProcessArgs(args []string) (known []string, unknown []string) {
 	for i := 0; i < len(args); i++ {
 		switch a := args[i]; a {
 		case "--verbose":
@@ -105,7 +103,7 @@ func manuallyProcessArgs(args []string) ([]string, []string) {
 			unknown = append(unknown, a)
 		}
 	}
-	return known, unknown
+	return
 }
 
 // findPlugins returns a list of YAML files that describe plugins.
