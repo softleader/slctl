@@ -41,10 +41,6 @@ const nodejsPackageJson = `{
     "@oclif/config": "^1.9.0",
     "@oclif/plugin-help": "^2.1.4"
   },
-  "devDependencies": {
-    "eslint": "^5.8.0",
-    "eslint-config-oclif": "^3.1.0"
-  },
   "engines": {
     "node": ">=8.0.0"
   },
@@ -61,7 +57,6 @@ const nodejsPackageJson = `{
     "bin": "{{.Name}}"
   },
   "scripts": {
-    "posttest": "eslint .",
     "test": "echo NO TESTS"
   }
 }
