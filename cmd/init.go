@@ -203,6 +203,9 @@ func ensureDirectories(home slpath.Home, out io.Writer) (err error) {
 		home.String(),
 		home.Config(),
 		home.Plugins(),
+		home.Cache(),
+		home.CachePlugins(),
+		home.CacheArchives(),
 	}
 	for _, p := range configDirectories {
 		if fi, err := os.Stat(p); err != nil {

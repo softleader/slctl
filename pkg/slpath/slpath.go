@@ -28,3 +28,15 @@ func (h Home) Config() string {
 func (h Home) ConfigFile() string {
 	return h.Path("config", "configs.yaml")
 }
+
+func (h Home) Cache() string {
+	return h.Path("cache")
+}
+
+func (h Home) CachePlugins() string {
+	return h.Path("cache", "plugins")
+}
+
+func (h Home) CacheArchives() string {
+	return h.Path("cache", "archives")
+}

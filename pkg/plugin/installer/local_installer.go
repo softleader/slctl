@@ -2,40 +2,43 @@ package installer
 
 import (
 	"fmt"
+	"github.com/softleader/slctl/pkg/plugin"
 	"github.com/softleader/slctl/pkg/slpath"
 	"github.com/softleader/slctl/pkg/v"
+	"os"
 	"path/filepath"
 )
 
-// LocalInstaller installs plugins from the filesystem.
 type LocalInstaller struct {
-	base
+	home   slpath.Home
+	source string
 }
 
-// NewLocalInstaller creates a new LocalInstaller.
-func NewLocalInstaller(source string, home slpath.Home) (*LocalInstaller, error) {
+func (i LocalInstaller) supports(source string) bool {
+	_, err := os.Stat(source)
+	return err == nil
+}
+
+func (i LocalInstaller) new(source, _ string, home slpath.Home) (Installer, error) {
 	src, err := filepath.Abs(source)
 	if err != nil {
 		return nil, fmt.Errorf("unable to get absolute path to plugin: %v", err)
 	}
-	i := &LocalInstaller{
-		base: newBase(src, home),
-	}
-	return i, nil
+	return LocalInstaller{
+		source: src,
+		home:   home,
+	}, nil
 }
 
-// Install creates a symlink to the plugin directory in $HELM_HOME.
-//
-// Implements Installer.
-func (i *LocalInstaller) Install() error {
-	if !isPlugin(i.Source) {
-		return ErrMissingMetadata
+func (i LocalInstaller) Install() (*plugin.Plugin, error) {
+	if !isPlugin(i.source) {
+		return nil, ErrMissingMetadata
 	}
-	return i.link(i.Source)
-}
+	pdir := filepath.Join(i.home.Plugins(), filepath.Base(i.source))
+	v.Printf("symlinking %s to %s", i.source, pdir)
+	if err := os.Symlink(i.source, pdir); err != nil {
+		return nil, err
+	}
 
-// Update updates a local repository
-func (i *LocalInstaller) Update() error {
-	v.Println("local repository is auto-updated")
-	return nil
+	return plugin.LoadDir(pdir)
 }

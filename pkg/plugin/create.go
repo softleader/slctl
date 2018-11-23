@@ -56,7 +56,7 @@ You might need to run 'slctl plugin create langs'`, lang)
 	plugin.Command = creator.command(plugin)
 	files := creator.files(plugin, pdir)
 	files = append(files, marshal{
-		path: filepath.Join(pdir, pluginFileName),
+		path: filepath.Join(pdir, MetadataFileName),
 		in:   plugin,
 	})
 

@@ -15,3 +15,7 @@ import:
 - package: github.com/gosuri/uitable
 - package: github.com/cyphar/filepath-securejoin
   version: ^0.2.2
+- package: github.com/mholt/archiver
+  version: ^3.1.0
+  subpackages:
+  - cmd/arc

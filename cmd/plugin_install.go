@@ -52,21 +52,17 @@ func (pcmd *pluginInstallCmd) complete(args []string) error {
 }
 
 func (pcmd *pluginInstallCmd) run() error {
-	installer.Verbose = settings.Verbose
-
-	i, err := installer.NewForSource(pcmd.source, pcmd.version, pcmd.home)
+	i, err := installer.NewInstaller(pcmd.source, pcmd.version, pcmd.home)
 	if err != nil {
 		return err
 	}
-	if err := installer.Install(i); err != nil {
+	var p *plugin.Plugin
+
+	if p, err = i.Install(); err != nil {
 		return err
 	}
 
-	v.Printf("loading plugin from %s", i.Path())
-	p, err := plugin.LoadDir(i.Path())
-	if err != nil {
-		return err
-	}
+	v.Printf("loading plugin from %s", p.Dir)
 
 	if err := runHook(p, plugin.Install); err != nil {
 		return err

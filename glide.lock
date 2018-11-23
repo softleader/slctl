@@ -1,8 +1,16 @@
-hash: 1ae45b8eeeb7328d2de047dc9f3fd625f56d13d2a81d1050156079dda03cae17
-updated: 2018-11-20T13:55:41.457696+08:00
+hash: 70b83129f12224d6fbbeb7f33a41c8abdf7fb229310cfbcef82a8b8289e71158
+updated: 2018-11-23T15:42:30.066865+08:00
 imports:
 - name: github.com/cyphar/filepath-securejoin
   version: a261ee33d7a517f054effbf451841abaafe3e0fd
+- name: github.com/dsnet/compress
+  version: cc9eb1d7ad760af14e8f918698f745e80377af4f
+  subpackages:
+  - bzip2
+  - bzip2/internal/sais
+  - internal
+  - internal/errors
+  - internal/prefix
 - name: github.com/ghodss/yaml
   version: 0ca9ea5df5451ffdf184b4428c902747c2c11cd7
 - name: github.com/golang/protobuf
@@ -11,6 +19,8 @@ imports:
   - proto
   - ptypes/any
   - ptypes/timestamp
+- name: github.com/golang/snappy
+  version: 2e65f85255dbc3072edf28d6b5b8efc472979f5a
 - name: github.com/google/go-github
   version: f55b50f38167644bb7e4be03d9a2bde71d435239
   subpackages:
@@ -30,12 +40,28 @@ imports:
   version: 517734cc7d6470c0d07130e40fd40bdeb9bcd3fd
 - name: github.com/mattn/go-runewidth
   version: c88d7e5f2e24de48a200a2655ac8a0910be9a0f7
-- name: github.com/pkg/errors
-  version: 816c9085562cd7ee03e7f8188a1cfd942858cded
+- name: github.com/mholt/archiver
+  version: e1ccfb528128bf4ff3bd906823ae2dcb708f79f5
+  subpackages:
+  - cmd/arc
+- name: github.com/nwaples/rardecode
+  version: 197ef08ef68c4454ae5970a9c2692d6056ceb8d7
+- name: github.com/pierrec/lz4
+  version: 623b5a2f4d2a41e411730dcdfbfdaeb5c0c4564e
+  subpackages:
+  - internal/xxh32
 - name: github.com/spf13/cobra
   version: ef82de70bb3f60c65fb8eebacbb2d122ef517385
 - name: github.com/spf13/pflag
   version: 3ebe029320b2676d667ae88da602a5f854788a8a
+- name: github.com/ulikunitz/xz
+  version: 590df8077fbcb06ad62d7714da06c00e5dd2316d
+  subpackages:
+  - internal/hash
+  - internal/xlog
+  - lzma
+- name: github.com/xi2/xz
+  version: 48954b6210f8d154cb5f8484d3a3e1f83489309e
 - name: golang.org/x/crypto
   version: de0752318171da717af4ce24d0a2e8626afaeb11
   subpackages:
@@ -66,18 +92,9 @@ imports:
   - urlfetch
 - name: gopkg.in/yaml.v2
   version: 5420a8b6744d3b0345ab293f6fcba19c978f1183
-- name: k8s.io/client-go
-  version: 1638f8970cefaa404ff3a62950f88b08292b2696
-  subpackages:
-  - util/homedir
 - name: k8s.io/helm
   version: 560b84d53c05885ba84384574520fdcf626937a3
   subpackages:
-  - pkg/getter
-  - pkg/helm/environment
-  - pkg/helm/helmpath
-  - pkg/plugin
-  - pkg/plugin/cache
   - pkg/proto/hapi/version
   - pkg/tlsutil
   - pkg/urlutil
