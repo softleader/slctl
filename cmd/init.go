@@ -40,8 +40,8 @@ This command grants Github access token and sets up local configuration in $SL_H
 	$ {{.}} init --refresh
 	$ {{.}} init --token <github-token>
 
-使用 '--dry-run' 則 {{.}} 不會跟 GitHub API 有任何互動, 只會配置 $SL_HOME 環境目錄.
-同時使用 '--dry-run' 及 '--token' 可跳過 Token 驗證直接儲存起來 (e.g. 沒網路環境下)
+使用 '--offline' 則 {{.}} 不會跟 GitHub API 有任何互動, 只會配置 $SL_HOME 環境目錄.
+同時使用 '--offline' 及 '--token' 可跳過 Token 驗證直接儲存起來 (e.g. 沒網路環境下)
 `
 )
 
@@ -53,7 +53,6 @@ Use 'init --help' for more information about the command.`)
 type initCmd struct {
 	out      io.Writer
 	home     slpath.Home
-	dryRun   bool
 	username string
 	password string
 	token    string
@@ -74,7 +73,6 @@ func newInitCmd(out io.Writer) *cobra.Command {
 	}
 
 	f := cmd.Flags()
-	f.BoolVar(&i.dryRun, "dry-run", false, "do not against github services")
 	f.BoolVar(&i.refresh, "refresh", false, "automatically re-generate a new one if token already exists")
 	f.StringVar(&i.token, "token", "", "github access token")
 	f.StringVarP(&i.username, "username", "u", "", "github username")
@@ -97,7 +95,7 @@ func (c *initCmd) run() (err error) {
 		return err
 	}
 	var username string
-	if !c.dryRun {
+	if !settings.Offline {
 		if c.token == "" {
 			if c.token, err = grantToken(c.username, c.password, c.out, c.refresh); err != nil {
 				return err

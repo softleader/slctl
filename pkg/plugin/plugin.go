@@ -38,7 +38,7 @@ type Metadata struct {
 
 	// Description is a long description shown in places like `helm help`
 	Description string `json:"description"`
-	
+
 	// Command is the command, as a single string.
 	//
 	// The command will be passed through environment expansion, so env vars can
@@ -171,6 +171,7 @@ func SetupPluginEnv(settings environment.EnvSettings,
 		"SL_PLUGIN":  settings.PluginDirs(),
 		"SL_HOME":    settings.Home.String(),
 		"SL_VERBOSE": strconv.FormatBool(settings.Verbose),
+		"SL_OFFLINE": strconv.FormatBool(settings.Offline),
 		"SL_TOKEN":   conf.Token,
 	} {
 		os.Setenv(key, val)

@@ -13,11 +13,13 @@ var DefaultHome = filepath.Join(homedir.HomeDir(), ".sl")
 type EnvSettings struct {
 	Home    slpath.Home
 	Verbose bool
+	Offline bool
 }
 
 func (s *EnvSettings) AddFlags(fs *pflag.FlagSet) {
 	fs.StringVar((*string)(&s.Home), "home", DefaultHome, "location of your config. Overrides $SL_HOME")
 	fs.BoolVarP(&s.Verbose, "verbose", "v", false, "enable verbose output")
+	fs.BoolVar(&s.Offline, "offline", false, "work offline")
 }
 
 func (s *EnvSettings) Init(fs *pflag.FlagSet) {
@@ -27,8 +29,9 @@ func (s *EnvSettings) Init(fs *pflag.FlagSet) {
 }
 
 var envMap = map[string]string{
-	"verbose": "SL_VERBOSE",
 	"home":    "SL_HOME",
+	"verbose": "SL_VERBOSE",
+	"offline": "SL_OFFLINE",
 }
 
 func (s EnvSettings) PluginDirs() string {
