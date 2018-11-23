@@ -11,7 +11,7 @@ import (
 )
 
 const (
-	Name        = "slctl"
+	name        = "slctl"
 	globalUsage = `{{.|title}} is a command line interface for running commands against SoftLeader services.
 
 To begin working with {{.}}, run the '{{.}} init' command:
@@ -46,8 +46,8 @@ func main() {
 }
 func newRootCmd(args []string) *cobra.Command {
 	cmd := &cobra.Command{
-		Use:          Name,
-		Short:        Name + " against SoftLeader services.",
+		Use:          name,
+		Short:        name + " against SoftLeader services.",
 		Long:         usage(globalUsage),
 		SilenceUsage: true,
 	}
@@ -81,7 +81,7 @@ func usage(tpl string) string {
 	}
 	var buf bytes.Buffer
 	parsed := template.Must(template.New("").Funcs(funcMap).Parse(tpl))
-	err := parsed.Execute(&buf, Name)
+	err := parsed.Execute(&buf, name)
 	if err != nil {
 		panic(err)
 	}

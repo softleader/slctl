@@ -21,7 +21,7 @@ var tokenScopes = []github.Scope{github.ScopeReadOrg, github.ScopeUser}
 func newInitScopesCmd(out io.Writer) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "scopes",
-		Short: "list scopes of token that " + Name + " required",
+		Short: "list scopes of token that " + name + " required",
 		Long:  usage(initScopesDesc),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			if len(args) != 0 {
