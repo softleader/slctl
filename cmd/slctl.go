@@ -25,7 +25,7 @@ Common actions from this point include:
 Environment:
   $SL_HOME           set an alternative location for {{.}} files. By default, these are stored in ~/.sl
   $SL_NO_PLUGINS     disable plugins. Set $SL_NO_PLUGINS=true to disable plugins.
-  $SL_OFFLINE   	 work offline. Set $SL_OFFLINE=true to work offline.
+  $SL_OFFLINE        work offline. Set $SL_OFFLINE=true to work offline.
 `
 )
 
