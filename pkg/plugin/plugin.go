@@ -9,6 +9,9 @@ import (
 	"path/filepath"
 	"strconv"
 	"strings"
+	"github.com/softleader/slctl/pkg/slpath"
+	"github.com/softleader/slctl/pkg/v"
+	"errors"
 )
 
 const MetadataFileName = "metadata.yaml"
@@ -75,6 +78,18 @@ type Plugin struct {
 	Metadata *Metadata
 	// Dir is the string path to the directory that holds the plugin.
 	Dir string
+}
+
+func (p *Plugin) LinkTo(home slpath.Home) (string, error) {
+	linked := filepath.Join(home.Plugins(), p.Metadata.Name)
+	if _, err := os.Stat(linked); !os.IsNotExist(err) {
+		return "", errors.New("plugin already exists")
+	}
+	v.Printf("symlinking %s to %s", p.Dir, linked)
+	if err := os.Symlink(p.Dir, linked); err != nil {
+		return "", err
+	}
+	return linked, nil
 }
 
 // PrepareCommand takes a Plugin.Command and prepares it for execution.

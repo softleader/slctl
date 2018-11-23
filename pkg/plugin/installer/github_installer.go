@@ -2,7 +2,6 @@ package installer
 
 import (
 	"context"
-	"errors"
 	"fmt"
 	"github.com/google/go-github/github"
 	"github.com/softleader/slctl/pkg/config"
@@ -11,7 +10,6 @@ import (
 	"github.com/softleader/slctl/pkg/v"
 	"golang.org/x/oauth2"
 	"io"
-	"os"
 	"path/filepath"
 	"regexp"
 	"runtime"
@@ -121,16 +119,10 @@ func (i GitHubInstaller) Install() (*plugin.Plugin, error) {
 		return nil, err
 	}
 
-	pdir := filepath.Join(i.home.Plugins(), plug.Metadata.Name)
-
-	if _, pathErr := os.Stat(pdir); !os.IsNotExist(pathErr) {
-		return nil, errors.New("plugin already exists")
-	}
-
-	v.Printf("symlinking %s to %s", extractDir, pdir)
-	if err = os.Symlink(extractDir, pdir); err != nil {
+	linked, err := plug.LinkTo(i.home)
+	if err != nil {
 		return nil, err
 	}
 
-	return plugin.LoadDir(pdir)
+	return plugin.LoadDir(linked)
 }

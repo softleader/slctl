@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"github.com/softleader/slctl/pkg/plugin"
 	"github.com/softleader/slctl/pkg/slpath"
-	"github.com/softleader/slctl/pkg/v"
 	"os"
 	"path/filepath"
 )
@@ -34,11 +33,16 @@ func (i LocalInstaller) Install() (*plugin.Plugin, error) {
 	if !isPlugin(i.source) {
 		return nil, ErrMissingMetadata
 	}
-	pdir := filepath.Join(i.home.Plugins(), filepath.Base(i.source))
-	v.Printf("symlinking %s to %s", i.source, pdir)
-	if err := os.Symlink(i.source, pdir); err != nil {
+
+	plug, err := plugin.LoadDir(i.source)
+	if err != nil {
 		return nil, err
 	}
 
-	return plugin.LoadDir(pdir)
+	linked, err := plug.LinkTo(i.home)
+	if err != nil {
+		return nil, err
+	}
+
+	return plugin.LoadDir(linked)
 }
