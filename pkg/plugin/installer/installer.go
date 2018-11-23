@@ -14,19 +14,23 @@ var ErrMissingMetadata = errors.New("plugin metadata (" + plugin.MetadataFileNam
 
 type Installer interface {
 	Install() (*plugin.Plugin, error)
+}
+
+type factory interface {
 	supports(source string) bool
 	new(source, version string, home slpath.Home) (Installer, error)
 }
 
-var installers = []Installer{
-	LocalInstaller{},
-	GitHubInstaller{},
+var factories = []factory{
+	localInstaller{},
+	httpInstaller{},
+	gitHubInstaller{},
 }
 
 func NewInstaller(source string, version string, home slpath.Home) (Installer, error) {
-	for _, i := range installers {
-		if i.supports(source) {
-			return i.new(source, version, home)
+	for _, f := range factories {
+		if f.supports(source) {
+			return f.new(source, version, home)
 		}
 	}
 	return nil, fmt.Errorf("unsupported plugin source: %s", source)

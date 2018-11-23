@@ -29,13 +29,13 @@ var supportedExtensions = []string{
 	".xz",
 }
 
-type HttpInstaller struct {
+type httpInstaller struct {
 	home       slpath.Home
 	source     string
 	downloader downloader
 }
 
-func (i HttpInstaller) supports(source string) bool {
+func (i httpInstaller) supports(source string) bool {
 	if strings.HasPrefix(source, "http://") || strings.HasPrefix(source, "https://") {
 		for _, suffix := range supportedExtensions {
 			if strings.HasSuffix(source, suffix) {
@@ -46,19 +46,19 @@ func (i HttpInstaller) supports(source string) bool {
 	return false
 }
 
-func (i HttpInstaller) new(source, _ string, home slpath.Home) (Installer, error) {
+func (i httpInstaller) new(source, _ string, home slpath.Home) (Installer, error) {
 	dl, err := newDownloader(source)
 	if err != nil {
 		return nil, err
 	}
-	return HttpInstaller{
+	return httpInstaller{
 		home:       home,
 		source:     source,
 		downloader: dl,
 	}, nil
 }
 
-func (i HttpInstaller) Install() (*plugin.Plugin, error) {
+func (i httpInstaller) Install() (*plugin.Plugin, error) {
 	archiveName := filepath.Base(i.source)
 	archivePath := filepath.Join(i.home.CacheArchives(), archiveName)
 	i.downloader.downloadTo(archivePath)

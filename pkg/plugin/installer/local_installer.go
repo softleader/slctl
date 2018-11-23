@@ -8,28 +8,28 @@ import (
 	"path/filepath"
 )
 
-type LocalInstaller struct {
+type localInstaller struct {
 	home   slpath.Home
 	source string
 }
 
-func (i LocalInstaller) supports(source string) bool {
+func (i localInstaller) supports(source string) bool {
 	_, err := os.Stat(source)
 	return err == nil
 }
 
-func (i LocalInstaller) new(source, _ string, home slpath.Home) (Installer, error) {
+func (i localInstaller) new(source, _ string, home slpath.Home) (Installer, error) {
 	src, err := filepath.Abs(source)
 	if err != nil {
 		return nil, fmt.Errorf("unable to get absolute path to plugin: %v", err)
 	}
-	return LocalInstaller{
+	return localInstaller{
 		source: src,
 		home:   home,
 	}, nil
 }
 
-func (i LocalInstaller) Install() (*plugin.Plugin, error) {
+func (i localInstaller) Install() (*plugin.Plugin, error) {
 	if !isPlugin(i.source) {
 		return nil, ErrMissingMetadata
 	}

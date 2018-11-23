@@ -18,7 +18,7 @@ import (
 
 var gitHubRepo = regexp.MustCompile(`^(http[s]?://)?github.com/([^/]+)/([^/]+)[/]?$`)
 
-type GitHubInstaller struct {
+type gitHubInstaller struct {
 	home   slpath.Home
 	source string
 	owner  string
@@ -26,13 +26,13 @@ type GitHubInstaller struct {
 	tag    string
 }
 
-func (i GitHubInstaller) supports(source string) bool {
+func (i gitHubInstaller) supports(source string) bool {
 	return gitHubRepo.MatchString(source)
 }
 
-func (i GitHubInstaller) new(source, tag string, home slpath.Home) (Installer, error) {
+func (i gitHubInstaller) new(source, tag string, home slpath.Home) (Installer, error) {
 	match := gitHubRepo.FindStringSubmatch(source)
-	return GitHubInstaller{
+	return gitHubInstaller{
 		home:   home,
 		source: source,
 		owner:  match[2],
@@ -53,7 +53,7 @@ func findAssert(assets []github.ReleaseAsset) (*github.ReleaseAsset, error) {
 	return &assets[0], nil
 }
 
-func (i GitHubInstaller) Install() (*plugin.Plugin, error) {
+func (i gitHubInstaller) Install() (*plugin.Plugin, error) {
 	conf, err := config.LoadConfFile(i.home.ConfigFile())
 	if err != nil {
 		return nil, err
