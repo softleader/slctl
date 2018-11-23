@@ -7,7 +7,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
-var longHomeHelp = `
+const longHomeHelp = `
 This command displays the location of SL_HOME.
 `
 

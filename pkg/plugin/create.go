@@ -96,17 +96,17 @@ func (u marshal) content() ([]byte, error) {
 	return yaml.Marshal(u.in)
 }
 
-type tmpl struct {
+type tpl struct {
 	path     string
 	in       interface{}
 	template string
 }
 
-func (u tmpl) filepath() string {
+func (u tpl) filepath() string {
 	return u.path
 }
 
-func (u tmpl) content() ([]byte, error) {
+func (u tpl) content() ([]byte, error) {
 	funcMap := template.FuncMap{
 		"title": strings.Title,
 	}

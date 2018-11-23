@@ -61,15 +61,3 @@ func TestRefreshConfig(t *testing.T) {
 		t.Errorf("expected token to be %s", conf.Token)
 	}
 }
-
-//func TestGrantToken(t *testing.T) {
-//	b := bytes.NewBuffer(nil)
-//	var token string
-//	var err error
-//	if token, err = grantToken("", "", b); err != nil {
-//		t.Error(err)
-//	}
-//	if token == "" {
-//		t.Errorf("expected token not empty")
-//	}
-//}

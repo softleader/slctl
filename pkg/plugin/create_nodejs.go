@@ -121,27 +121,27 @@ func (c nodejs) command(plugin *Metadata) string {
 
 func (c nodejs) files(plugin *Metadata, pdir string) []file {
 	return []file{
-		tmpl{
+		tpl{
 			path:     filepath.Join(pdir, "src", "index.js"),
 			in:       plugin,
 			template: nodejsIndex,
 		},
-		tmpl{
+		tpl{
 			path:     filepath.Join(pdir, "package.json"),
 			in:       plugin,
 			template: nodejsPackageJson,
 		},
-		tmpl{
+		tpl{
 			path:     filepath.Join(pdir, "bin", "run"),
 			in:       plugin,
 			template: nodejsRun,
 		},
-		tmpl{
+		tpl{
 			path:     filepath.Join(pdir, "bin", "run.cmd"),
 			in:       plugin,
 			template: nodejsRunCmd,
 		},
-		tmpl{
+		tpl{
 			path:     filepath.Join(pdir, "Makefile"),
 			in:       plugin,
 			template: nodejsMakefile,

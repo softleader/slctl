@@ -138,22 +138,22 @@ func (c java) command(plugin *Metadata) string {
 func (c java) files(plugin *Metadata, pdir string) []file {
 	main := filepath.Join(pdir, "src", "main")
 	return []file{
-		tmpl{
+		tpl{
 			path:     filepath.Join(main, "java", "tw", "com", "softleader", strings.Title(plugin.Name)+"Application.java"),
 			in:       plugin,
 			template: javaMain,
 		},
-		tmpl{
+		tpl{
 			path:     filepath.Join(main, "resources", "application.properties"),
 			in:       plugin,
 			template: javaProperties,
 		},
-		tmpl{
+		tpl{
 			path:     filepath.Join(pdir, "pom.xml"),
 			in:       plugin,
 			template: javaPom,
 		},
-		tmpl{
+		tpl{
 			path:     filepath.Join(pdir, "Makefile"),
 			in:       plugin,
 			template: javaMakefile,

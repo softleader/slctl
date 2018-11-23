@@ -95,12 +95,12 @@ func (c golang) command(plugin *Metadata) string {
 
 func (c golang) files(plugin *Metadata, pdir string) []file {
 	return []file{
-		tmpl{
+		tpl{
 			path:     filepath.Join(pdir, "main.go"),
 			in:       plugin,
 			template: golangMain,
 		},
-		tmpl{
+		tpl{
 			path:     filepath.Join(pdir, "Makefile"),
 			in:       plugin,
 			template: golangMakefile,
