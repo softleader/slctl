@@ -51,7 +51,7 @@ install: bootstrap test build
 
 .PHONY: test
 test:
-	go test -v
+	go test ./... -v
 
 .PHONY: build
 build: clean bootstrap

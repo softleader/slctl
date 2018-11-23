@@ -45,10 +45,7 @@ func (d urlDownloader) downloadTo(destination string) error {
 	}
 	defer resp.Body.Close()
 	_, err = io.Copy(out, resp.Body)
-	if err != nil {
-		return err
-	}
-	return nil
+	return err
 }
 
 type rcDownloader struct {
@@ -65,8 +62,6 @@ func (d rcDownloader) downloadTo(destination string) error {
 		return err
 	}
 	defer out.Close()
-	if _, err = io.Copy(out, out); err != nil {
-		return err
-	}
-	return nil
+	_, err = io.Copy(out, out)
+	return err
 }
