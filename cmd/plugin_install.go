@@ -1,4 +1,4 @@
-package cmd
+package main
 
 import (
 	"fmt"
@@ -62,7 +62,7 @@ func (pcmd *pluginInstallCmd) run() error {
 		return err
 	}
 
-	v.Println("loading plugin from %s", i.Path())
+	v.Printf("loading plugin from %s", i.Path())
 	p, err := plugin.LoadDir(i.Path())
 	if err != nil {
 		return err

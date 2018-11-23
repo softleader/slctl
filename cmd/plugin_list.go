@@ -1,4 +1,4 @@
-package cmd
+package main
 
 import (
 	"fmt"
@@ -29,7 +29,7 @@ func newPluginListCmd(out io.Writer) *cobra.Command {
 }
 
 func (c *pluginListCmd) run() error {
-	v.Println("search in plugin dirs: %s", settings.PluginDirs())
+	v.Printf("search in plugin dirs: %s", settings.PluginDirs())
 	plugins, err := findPlugins(settings.PluginDirs())
 	if err != nil {
 		return err

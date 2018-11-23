@@ -1,16 +1,13 @@
-package cmd
+package main
 
 import (
 	"bytes"
 	"fmt"
 	"github.com/softleader/slctl/pkg/environment"
 	"github.com/spf13/cobra"
+	"os"
 	"strings"
 	"text/template"
-)
-
-var (
-	settings environment.EnvSettings
 )
 
 const (
@@ -32,20 +29,22 @@ Environment:
 `
 )
 
-func usage(tpl string) string {
-	funcMap := template.FuncMap{
-		"title": strings.Title,
-	}
-	var buf bytes.Buffer
-	parsed := template.Must(template.New("").Funcs(funcMap).Parse(tpl))
-	err := parsed.Execute(&buf, Name)
-	if err != nil {
-		panic(err)
-	}
-	return buf.String()
-}
+var (
+	settings environment.EnvSettings
+)
 
-func NewRootCmd(args []string) *cobra.Command {
+func main() {
+	command := newRootCmd(os.Args[1:])
+	if err := command.Execute(); err != nil {
+		switch e := err.(type) {
+		case PluginError:
+			os.Exit(e.Code)
+		default:
+			os.Exit(1)
+		}
+	}
+}
+func newRootCmd(args []string) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:          Name,
 		Short:        Name + " against SoftLeader services.",
@@ -74,6 +73,19 @@ func NewRootCmd(args []string) *cobra.Command {
 	loadPlugins(cmd, out)
 
 	return cmd
+}
+
+func usage(tpl string) string {
+	funcMap := template.FuncMap{
+		"title": strings.Title,
+	}
+	var buf bytes.Buffer
+	parsed := template.Must(template.New("").Funcs(funcMap).Parse(tpl))
+	err := parsed.Execute(&buf, Name)
+	if err != nil {
+		panic(err)
+	}
+	return buf.String()
 }
 
 func checkArgsLength(argsReceived int, requiredArgs ...string) error {

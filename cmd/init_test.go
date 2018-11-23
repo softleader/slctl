@@ -1,8 +1,7 @@
-package cmd
+package main
 
 import (
 	"bytes"
-	"fmt"
 	"github.com/softleader/slctl/pkg/config"
 	"github.com/softleader/slctl/pkg/slpath"
 	"io/ioutil"
@@ -12,20 +11,20 @@ import (
 
 // need read:org & read:user permission
 func TestConfirmToken(t *testing.T) {
-	settings.Verbose = true
-	b := bytes.NewBuffer(nil)
-	token := "997f19253fccc351bfcf4cf1622f494f7708522a"
-	var err error
-	var name string
-
-	if name, err = confirmToken(token, b); err != nil {
-		t.Error(err)
-	}
-	if name == "" {
-		t.Errorf("name should not be empty")
-	}
-
-	fmt.Printf("Hello, %s!\n", name)
+	//settings.Verbose = true
+	//b := bytes.NewBuffer(nil)
+	//token := "997f19253fccc351bfcf4cf1622f494f7708522a"
+	//var err error
+	//var name string
+	//
+	//if name, err = confirmToken(token, b); err != nil {
+	//	t.Error(err)
+	//}
+	//if name == "" {
+	//	t.Errorf("name should not be empty")
+	//}
+	//
+	//fmt.Printf("Hello, %s!\n", name)
 }
 
 func TestRefreshConfig(t *testing.T) {

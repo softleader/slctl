@@ -34,7 +34,7 @@ func TestConfigNotExists(t *testing.T) {
 	_, err := LoadConfFile("/this/path/does/not/exist.yaml")
 	if err == nil {
 		t.Errorf("expected err to be non-nil when path does not exist")
-	} else if !strings.Contains(err.Error(), "You might need to run `slctl init --help`") {
-		t.Errorf("expected prompt to run `slctl init --help` when repositories file does not exist")
+	} else if !strings.Contains(err.Error(), "You might need to run `slctl init`") {
+		t.Errorf("expected prompt to run `slctl init` when config file does not exist")
 	}
 }

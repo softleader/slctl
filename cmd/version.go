@@ -1,4 +1,4 @@
-package cmd
+package main
 
 import (
 	"fmt"
@@ -9,8 +9,9 @@ import (
 
 const (
 	versionHelp = `print {{.}} version.`
-	version     = "unreleased"
 )
+
+var version = "unreleased"
 
 func newVersionCmd(out io.Writer) *cobra.Command {
 	cmd := &cobra.Command{

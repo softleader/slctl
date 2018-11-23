@@ -20,7 +20,7 @@ func newBase(source string, home slpath.Home) base {
 
 // link creates a symlink from the plugin source to $HELM_HOME.
 func (b *base) link(from string) error {
-	v.Println("symlinking %s to %s", from, b.Path())
+	v.Printf("symlinking %s to %s", from, b.Path())
 	return os.Symlink(from, b.Path())
 }
 

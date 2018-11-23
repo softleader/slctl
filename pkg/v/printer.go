@@ -14,7 +14,7 @@ var (
 // fmt.Fprintf only if settings.Verbose true
 func Fprintf(w io.Writer, format string, a ...interface{}) (n int, err error) {
 	if settings.Verbose {
-		return fmt.Fprintf(w, format, a)
+		return fmt.Fprintf(w, format, a...)
 	}
 	return
 }
@@ -27,7 +27,7 @@ func Printf(format string, a ...interface{}) (n int, err error) {
 // fmt.Fprint only if settings.Verbose true
 func Fprint(w io.Writer, a ...interface{}) (n int, err error) {
 	if settings.Verbose {
-		return fmt.Fprint(w, a)
+		return fmt.Fprint(w, a...)
 	}
 	return
 }
@@ -40,7 +40,7 @@ func Print(a ...interface{}) (n int, err error) {
 // fmt.Fprintln only if settings.Verbose true
 func Fprintln(w io.Writer, a ...interface{}) (n int, err error) {
 	if settings.Verbose {
-		return fmt.Fprintln(w, a)
+		return fmt.Fprintln(w, a...)
 	}
 	return
 }

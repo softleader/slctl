@@ -1,4 +1,4 @@
-package cmd
+package main
 
 import (
 	"errors"
@@ -44,7 +44,7 @@ func (pcmd *pluginRemoveCmd) complete(args []string) error {
 }
 
 func (c *pluginRemoveCmd) run() error {
-	v.Println("loading installed plugins from %s", settings.PluginDirs())
+	v.Printf("loading installed plugins from %s", settings.PluginDirs())
 	plugins, err := findPlugins(settings.PluginDirs())
 	if err != nil {
 		return err

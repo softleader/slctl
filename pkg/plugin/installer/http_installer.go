@@ -133,7 +133,7 @@ func (i *HTTPInstaller) Update() error {
 
 // Override link because we want to use HttpInstaller.Path() not base.Path()
 func (i *HTTPInstaller) link(from string) error {
-	v.Println("symlinking %s to %s", from, i.Path())
+	v.Printf("symlinking %s to %s", from, i.Path())
 	return os.Symlink(from, i.Path())
 }
 
