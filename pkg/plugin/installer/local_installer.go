@@ -1,6 +1,7 @@
 package installer
 
 import (
+	"errors"
 	"fmt"
 	"github.com/softleader/slctl/pkg/plugin"
 	"github.com/softleader/slctl/pkg/slpath"
@@ -32,18 +33,22 @@ func (i *localInstaller) Install() (*plugin.Plugin, error) {
 	if !isPlugin(i.source) {
 		return nil, ErrMissingMetadata
 	}
-	v.Fprintf(i.out, "loading plugin from source: %s\n", i.source)
 	plug, err := plugin.LoadDir(i.source)
 	if err != nil {
 		return nil, err
 	}
 
-	linked, err := plug.LinkTo(i.home)
-	if err != nil {
+	link := filepath.Join(i.home.Plugins(), plug.Metadata.Name)
+	v.Printf("symlinking %s to %s\n", plug.Dir, link)
+
+	if _, err := os.Stat(link); !os.IsNotExist(err) {
+		return nil, errors.New(`plugin '` + plug.Metadata.Name + `' already exists.`)
+	}
+	if err := os.Symlink(plug.Dir, link); err != nil {
 		return nil, err
 	}
 
-	return plugin.LoadDir(linked)
+	return plugin.LoadDir(link)
 }
 
 func isPlugin(dirname string) bool {

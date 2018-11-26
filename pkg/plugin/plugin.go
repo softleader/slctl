@@ -1,11 +1,8 @@
 package plugin
 
 import (
-	"errors"
 	"github.com/softleader/slctl/pkg/config"
 	"github.com/softleader/slctl/pkg/environment"
-	"github.com/softleader/slctl/pkg/slpath"
-	"github.com/softleader/slctl/pkg/v"
 	"gopkg.in/yaml.v2"
 	"io/ioutil"
 	"os"
@@ -78,18 +75,6 @@ type Plugin struct {
 	Metadata *Metadata
 	// Dir is the string path to the directory that holds the plugin.
 	Dir string
-}
-
-func (p *Plugin) LinkTo(home slpath.Home) (string, error) {
-	linked := filepath.Join(home.Plugins(), p.Metadata.Name)
-	v.Printf("symlinking %s to %s\n", p.Dir, linked)
-	if _, err := os.Stat(linked); !os.IsNotExist(err) {
-		return "", errors.New(`plugin '` + p.Metadata.Name + `' already exists.`)
-	}
-	if err := os.Symlink(p.Dir, linked); err != nil {
-		return "", err
-	}
-	return linked, nil
 }
 
 // PrepareCommand takes a Plugin.Command and prepares it for execution.
