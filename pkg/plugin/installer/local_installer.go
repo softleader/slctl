@@ -13,23 +13,18 @@ type localInstaller struct {
 	source string
 }
 
-func (i localInstaller) supports(source string) bool {
-	_, err := os.Stat(source)
-	return err == nil
-}
-
-func (i localInstaller) new(source, _ string, home slpath.Home) (Installer, error) {
+func newLocalInstaller(source string, home slpath.Home) (*localInstaller, error) {
 	src, err := filepath.Abs(source)
 	if err != nil {
 		return nil, fmt.Errorf("unable to get absolute path to plugin: %v", err)
 	}
-	return localInstaller{
+	return &localInstaller{
 		source: src,
 		home:   home,
 	}, nil
 }
 
-func (i localInstaller) install() (*plugin.Plugin, error) {
+func (i *localInstaller) Install() (*plugin.Plugin, error) {
 	if !isPlugin(i.source) {
 		return nil, ErrMissingMetadata
 	}
@@ -47,7 +42,7 @@ func (i localInstaller) install() (*plugin.Plugin, error) {
 	return plugin.LoadDir(linked)
 }
 
-func (i localInstaller) retrievePlugin() error {
-	// local plugin is already on the host
-	return nil
+func isPlugin(dirname string) bool {
+	_, err := os.Stat(filepath.Join(dirname, plugin.MetadataFileName))
+	return err == nil
 }

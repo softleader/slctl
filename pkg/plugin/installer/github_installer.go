@@ -19,12 +19,7 @@ type gitHubInstaller struct {
 	httpInstaller
 }
 
-func (i gitHubInstaller) supports(source string) bool {
-	return gitHubRepo.MatchString(source)
-}
-
-func (i gitHubInstaller) new(source, tag string, home slpath.Home) (Installer, error) {
-
+func newGitHubInstaller(source, tag string, home slpath.Home) (*gitHubInstaller, error) {
 	conf, err := config.LoadConfFile(home.ConfigFile())
 	if err != nil {
 		return nil, err
@@ -64,7 +59,7 @@ func (i gitHubInstaller) new(source, tag string, home slpath.Home) (Installer, e
 	ghi.home = home
 
 	if url != "" {
-		if ghi.downloader, err = newDownloader(url, home, filepath.Base(url)); err != nil {
+		if ghi.downloader, err = newDownloader(url, home, filepath.Base(asset.GetBrowserDownloadURL())); err != nil {
 			return nil, err
 		}
 	} else {
@@ -73,7 +68,7 @@ func (i gitHubInstaller) new(source, tag string, home slpath.Home) (Installer, e
 		}
 	}
 
-	return ghi, nil
+	return &ghi, nil
 }
 
 func dismantle(url string) (owner, repo string) {

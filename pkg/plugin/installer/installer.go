@@ -3,74 +3,46 @@ package installer
 import (
 	"errors"
 	"fmt"
-	"github.com/mholt/archiver"
 	"github.com/softleader/slctl/pkg/plugin"
 	"github.com/softleader/slctl/pkg/slpath"
 	"os"
-	"path/filepath"
+	"strings"
 )
 
 var ErrMissingMetadata = errors.New("plugin metadata (" + plugin.MetadataFileName + ") missing")
 
 type Installer interface {
-	retrievePlugin() error
-	install() (*plugin.Plugin, error)
-}
-
-func Install(i Installer) (*plugin.Plugin, error) {
-	if err := i.retrieveSource(); err != nil {
-		return nil, err
-	}
-	return i.install()
-}
-
-type factory interface {
-	supports(source string) bool
-	new(source, version string, home slpath.Home) (Installer, error)
-}
-
-var factories = []factory{
-	localInstaller{},
-	httpInstaller{},
-	gitHubInstaller{},
+	Install() (*plugin.Plugin, error)
 }
 
 func NewInstaller(source string, version string, home slpath.Home) (Installer, error) {
-	for _, f := range factories {
-		if f.supports(source) {
-			return f.new(source, version, home)
-		}
+	if isLocalReference(source) {
+		return newLocalInstaller(source, home)
+	} else if isRemoteHTTPArchive(source) {
+		return newHttpInstaller(source, home)
+	} else if isGitHubRepo(source) {
+		return newGitHubInstaller(source, version, home)
 	}
+
 	return nil, fmt.Errorf("unsupported plugin source: %s", source)
 }
 
-func isPlugin(dirname string) bool {
-	_, err := os.Stat(filepath.Join(dirname, plugin.MetadataFileName))
+func isLocalReference(source string) bool {
+	_, err := os.Stat(source)
 	return err == nil
 }
 
-func extract(source, destination string) (err error) {
-	if err = archiver.Unarchive(source, destination); err != nil { // find Unarchiver by header
-		var arc interface{}
-		if arc, err = archiver.ByExtension(source); err != nil { // try again to find by extension
-			return err
-		}
-		if err = arc.(archiver.Unarchiver).Unarchive(source, destination); err != nil {
-			return err
+func isRemoteHTTPArchive(source string) bool {
+	if strings.HasPrefix(source, "http://") || strings.HasPrefix(source, "https://") {
+		for _, suffix := range supportedExtensions {
+			if strings.HasSuffix(source, suffix) {
+				return true
+			}
 		}
 	}
-	return
+	return false
 }
 
-func ensureDirEmpty(path string) error {
-	if fi, err := os.Stat(path); err != nil {
-		if err = os.MkdirAll(path, 0755); err != nil {
-			return fmt.Errorf("could not create %s: %s", path, err)
-		}
-		return nil
-	} else if !fi.IsDir() {
-		return fmt.Errorf("%s must be a directory", path)
-	}
-	// if goes here, dir already exist, so let's delete it
-	return os.RemoveAll(path)
+func isGitHubRepo(source string) bool {
+	return gitHubRepo.MatchString(source)
 }
