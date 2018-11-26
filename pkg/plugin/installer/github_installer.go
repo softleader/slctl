@@ -37,12 +37,12 @@ func newGitHubInstaller(out io.Writer, source, tag string, home slpath.Home) (*g
 
 	var release *github.RepositoryRelease
 	if tag == "" {
-		v.Fprintf(out, "fetching the latest published release of github.com/%s/%s\n", owner, repo)
+		v.Fprintf(out, "fetching the latest published release from github.com/%s/%s\n", owner, repo)
 		if release, _, err = client.Repositories.GetLatestRelease(ctx, owner, repo); err != nil {
 			return nil, err
 		}
 	} else {
-		v.Fprintf(out, "fetching the release of %s/%s with the specified tag: %s\n", owner, repo, tag)
+		v.Fprintf(out, "fetching the release from github.com/%s/%s with tag '%s'\n", owner, repo, tag)
 		if release, _, err = client.Repositories.GetReleaseByTag(ctx, owner, repo, tag); err != nil {
 			return nil, err
 		}
