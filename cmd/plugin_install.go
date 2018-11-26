@@ -63,7 +63,7 @@ func (pcmd *pluginInstallCmd) run() error {
 		return err
 	}
 
-	v.Printf("loading plugin from %s", p.Dir)
+	v.Printf("loading plugin from %s\n", p.Dir)
 
 	if err := runHook(p, plugin.Install); err != nil {
 		return err
