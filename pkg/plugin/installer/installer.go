@@ -3,6 +3,7 @@ package installer
 import (
 	"errors"
 	"fmt"
+	"github.com/softleader/slctl/pkg/environment"
 	"github.com/softleader/slctl/pkg/plugin"
 	"github.com/softleader/slctl/pkg/slpath"
 	"io"
@@ -21,7 +22,11 @@ type Installer interface {
 func NewInstaller(out io.Writer, source string, version string, home slpath.Home) (Installer, error) {
 	if isLocalReference(source) {
 		return newLocalInstaller(out, source, home)
-	} else if isRemoteHTTPArchive(source) {
+	}
+	if environment.Settings.Offline {
+		return nil, fmt.Errorf("non-resolvable plugin source (%s) in offline mode", source)
+	}
+	if isRemoteHTTPArchive(source) {
 		return newHttpInstaller(out, source, home)
 	} else if isGitHubRepo(source) {
 		return newGitHubInstaller(out, source, version, home)
