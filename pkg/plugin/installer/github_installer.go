@@ -48,12 +48,11 @@ func newGitHubInstaller(out io.Writer, source, tag string, home slpath.Home) (*g
 		}
 	}
 
-	asset, err := findAsset(release.Assets)
+	v.Fprintf(out, "trying to find any asset name contains '%s' from release '%s'\n", runtime.GOOS, release.GetName())
+	asset, err := findAsset(out, release.Assets)
 	if err != nil {
 		return nil, err
 	}
-	v.Fprintf(out, "getting asset '%s' of release '%s'\n", asset.GetName(), release.GetName())
-
 	rc, url, err := client.Repositories.DownloadReleaseAsset(ctx, owner, repo, asset.GetID())
 	if err != nil {
 		return nil, err
@@ -65,7 +64,7 @@ func newGitHubInstaller(out io.Writer, source, tag string, home slpath.Home) (*g
 	ghi.out = out
 
 	binary := asset.GetBrowserDownloadURL()
-	v.Fprintf(out, "downloading the asset's binary: %s\n", binary)
+	v.Fprintf(out, "downloading the binary content: %s\n", binary)
 
 	if url != "" {
 		if ghi.downloader, err = newDownloader(url, home, filepath.Base(binary)); err != nil {
@@ -87,7 +86,7 @@ func dismantle(url string) (owner, repo string) {
 	return
 }
 
-func findAsset(assets []github.ReleaseAsset) (*github.ReleaseAsset, error) {
+func findAsset(out io.Writer, assets []github.ReleaseAsset) (*github.ReleaseAsset, error) {
 	if len(assets) < 1 {
 		return nil, fmt.Errorf("no assets found")
 	}
@@ -96,5 +95,6 @@ func findAsset(assets []github.ReleaseAsset) (*github.ReleaseAsset, error) {
 			return &asset, nil
 		}
 	}
+	v.Fprintf(out, "%s asset not found, using the first asset\n", runtime.GOOS)
 	return &assets[0], nil
 }
