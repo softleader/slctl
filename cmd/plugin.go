@@ -44,9 +44,9 @@ func runHook(p *plugin.Plugin, event string) error {
 	// I think its ... ¯\_(ツ)_/¯
 	// prog := exec.Command("cmd", "/C", p.Metadata.Hooks.Install())
 
-	v.Printf("running %s hook: %v", event, prog)
+	v.Printf("running %s hook: %v\n", event, prog)
 
-	if err := plugin.SetupPluginEnv(settings, p.Metadata.Name, p.Dir); err != nil {
+	if err := plugin.SetupPluginEnv(p.Metadata.Name, p.Dir); err != nil {
 		return err
 	}
 	prog.Stdout, prog.Stderr = os.Stdout, os.Stderr

@@ -3,6 +3,7 @@ package main
 import (
 	"bytes"
 	"github.com/softleader/slctl/pkg/config"
+	"github.com/softleader/slctl/pkg/environment"
 	"github.com/softleader/slctl/pkg/slpath"
 	"io/ioutil"
 	"os"
@@ -11,7 +12,7 @@ import (
 
 // need read:org & read:user permission
 func TestConfirmToken(t *testing.T) {
-	//settings.Verbose = true
+	//environment.SettingsVerbose = true
 	//b := bytes.NewBuffer(nil)
 	//token := "997f19253fccc351bfcf4cf1622f494f7708522a"
 	//var err error
@@ -36,9 +37,9 @@ func TestRefreshConfig(t *testing.T) {
 
 	b := bytes.NewBuffer(nil)
 	hh := slpath.Home(home)
-	settings.Home = hh
+	environment.Settings.Home = hh
 
-	settings.Verbose = true
+	environment.Settings.Verbose = true
 
 	if err = ensureDirectories(hh, b); err != nil {
 		t.Error(err)

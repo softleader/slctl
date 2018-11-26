@@ -6,6 +6,7 @@ import (
 	"github.com/softleader/slctl/pkg/plugin"
 	"github.com/softleader/slctl/pkg/slpath"
 	"github.com/softleader/slctl/pkg/v"
+	"io"
 	"os"
 	"path/filepath"
 )
@@ -36,7 +37,8 @@ type httpInstaller struct {
 	downloader downloader
 }
 
-func newHttpInstaller(source string, home slpath.Home) (*httpInstaller, error) {
+func newHttpInstaller(out io.Writer, source string, home slpath.Home) (*httpInstaller, error) {
+	v.Fprintf(out, "downloading the archive: %s\n", source)
 	dl, err := newDownloader(source, home, filepath.Base(source))
 	if err != nil {
 		return nil, err
@@ -61,11 +63,12 @@ func (i *httpInstaller) retrievePlugin() error {
 	if err != nil {
 		return err
 	}
-	v.Println(saved, "downloaded.")
+	v.Fprintf(i.out, "successfully downloaded and saved it to: %s\n", saved)
 	extractDir := filepath.Join(i.home.CachePlugins(), filepath.Base(saved))
 	if err := ensureDirEmpty(extractDir); err != nil {
 		return err
 	}
+	v.Fprintln(i.out, "extracting archive to", extractDir)
 	if err = extract(saved, extractDir); err != nil {
 		return err
 	}

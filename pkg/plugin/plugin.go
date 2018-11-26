@@ -1,17 +1,17 @@
 package plugin
 
 import (
-	"github.com/ghodss/yaml"
+	"errors"
 	"github.com/softleader/slctl/pkg/config"
 	"github.com/softleader/slctl/pkg/environment"
+	"github.com/softleader/slctl/pkg/slpath"
+	"github.com/softleader/slctl/pkg/v"
+	"gopkg.in/yaml.v2"
 	"io/ioutil"
 	"os"
 	"path/filepath"
 	"strconv"
 	"strings"
-	"github.com/softleader/slctl/pkg/slpath"
-	"github.com/softleader/slctl/pkg/v"
-	"errors"
 )
 
 const MetadataFileName = "metadata.yaml"
@@ -82,10 +82,10 @@ type Plugin struct {
 
 func (p *Plugin) LinkTo(home slpath.Home) (string, error) {
 	linked := filepath.Join(home.Plugins(), p.Metadata.Name)
+	v.Printf("symlinking %s to %s\n", p.Dir, linked)
 	if _, err := os.Stat(linked); !os.IsNotExist(err) {
-		return "", errors.New("plugin already exists")
+		return "", errors.New(`plugin '` + p.Metadata.Name + `' already exists.`)
 	}
-	v.Printf("symlinking %s to %s", p.Dir, linked)
 	if err := os.Symlink(p.Dir, linked); err != nil {
 		return "", err
 	}
@@ -169,10 +169,10 @@ func FindPlugins(plugdirs string) ([]*Plugin, error) {
 // SetupPluginEnv prepares os.Env for plugins. It operates on os.Env because
 // the plugin subsystem itself needs access to the environment variables
 // created here.
-func SetupPluginEnv(settings environment.EnvSettings,
+func SetupPluginEnv(
 	shortName, base string) (err error) {
 	var conf *config.ConfFile
-	if conf, err = config.LoadConfFile(settings.Home.ConfigFile()); err != nil && err != config.ErrTokenNotExist {
+	if conf, err = config.LoadConfFile(environment.Settings.Home.ConfigFile()); err != nil && err != config.ErrTokenNotExist {
 		return err
 	}
 
@@ -183,10 +183,10 @@ func SetupPluginEnv(settings environment.EnvSettings,
 
 		// Set vars that may not have been set, and save client the
 		// trouble of re-parsing.
-		"SL_PLUGIN":  settings.PluginDirs(),
-		"SL_HOME":    settings.Home.String(),
-		"SL_VERBOSE": strconv.FormatBool(settings.Verbose),
-		"SL_OFFLINE": strconv.FormatBool(settings.Offline),
+		"SL_PLUGIN":  environment.Settings.PluginDirs(),
+		"SL_HOME":    environment.Settings.Home.String(),
+		"SL_VERBOSE": strconv.FormatBool(environment.Settings.Verbose),
+		"SL_OFFLINE": strconv.FormatBool(environment.Settings.Offline),
 		"SL_TOKEN":   conf.Token,
 	} {
 		os.Setenv(key, val)

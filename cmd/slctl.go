@@ -29,10 +29,6 @@ Environment:
 `
 )
 
-var (
-	settings environment.EnvSettings
-)
-
 func main() {
 	command := newRootCmd(os.Args[1:])
 	if err := command.Execute(); err != nil {
@@ -53,7 +49,7 @@ func newRootCmd(args []string) *cobra.Command {
 	}
 	flags := cmd.PersistentFlags()
 
-	settings.AddFlags(flags)
+	environment.Settings.AddFlags(flags)
 
 	out := cmd.OutOrStdout()
 
@@ -67,7 +63,7 @@ func newRootCmd(args []string) *cobra.Command {
 	flags.Parse(args)
 
 	// set defaults from environment
-	settings.Init(flags)
+	environment.Settings.Init(flags)
 
 	// Find and add plugins
 	loadPlugins(cmd, out)

@@ -8,7 +8,10 @@ import (
 	"path/filepath"
 )
 
-var DefaultHome = filepath.Join(homedir.HomeDir(), ".sl")
+var (
+	DefaultHome = filepath.Join(homedir.HomeDir(), ".sl")
+	Settings    = new(EnvSettings)
+)
 
 type EnvSettings struct {
 	Home    slpath.Home

@@ -3,6 +3,7 @@ package main
 import (
 	"errors"
 	"fmt"
+	"github.com/softleader/slctl/pkg/environment"
 	"github.com/softleader/slctl/pkg/plugin"
 	"github.com/softleader/slctl/pkg/slpath"
 	"github.com/spf13/cobra"
@@ -46,7 +47,7 @@ func newPluginCreateCmd(out io.Writer) *cobra.Command {
 		Short: "create a new plugin with the given name",
 		Long:  usage(pluginCreateDesc),
 		RunE: func(cmd *cobra.Command, args []string) error {
-			pcc.home = settings.Home
+			pcc.home = environment.Settings.Home
 			if len(args) == 0 {
 				return errors.New("the name of the new plugin is required")
 			}

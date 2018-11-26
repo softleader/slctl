@@ -3,6 +3,7 @@ package main
 import (
 	"errors"
 	"fmt"
+	"github.com/softleader/slctl/pkg/environment"
 	"github.com/softleader/slctl/pkg/plugin"
 	"github.com/softleader/slctl/pkg/slpath"
 	"github.com/softleader/slctl/pkg/v"
@@ -39,13 +40,13 @@ func (pcmd *pluginRemoveCmd) complete(args []string) error {
 		return errors.New("please provide plugin name to remove")
 	}
 	pcmd.names = args
-	pcmd.home = settings.Home
+	pcmd.home = environment.Settings.Home
 	return nil
 }
 
 func (c *pluginRemoveCmd) run() error {
-	v.Printf("loading installed plugins from %s", settings.PluginDirs())
-	plugins, err := findPlugins(settings.PluginDirs())
+	v.Printf("loading installed plugins from %s\n", environment.Settings.PluginDirs())
+	plugins, err := findPlugins(environment.Settings.PluginDirs())
 	if err != nil {
 		return err
 	}

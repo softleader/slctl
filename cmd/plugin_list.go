@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"github.com/softleader/slctl/pkg/environment"
 	"github.com/softleader/slctl/pkg/slpath"
 	"github.com/softleader/slctl/pkg/v"
 	"io"
@@ -21,7 +22,7 @@ func newPluginListCmd(out io.Writer) *cobra.Command {
 		Use:   "list",
 		Short: "list installed plugins",
 		RunE: func(cmd *cobra.Command, args []string) error {
-			pcmd.home = settings.Home
+			pcmd.home = environment.Settings.Home
 			return pcmd.run()
 		},
 	}
@@ -29,8 +30,8 @@ func newPluginListCmd(out io.Writer) *cobra.Command {
 }
 
 func (c *pluginListCmd) run() error {
-	v.Printf("search in plugin dirs: %s", settings.PluginDirs())
-	plugins, err := findPlugins(settings.PluginDirs())
+	v.Printf("search in plugin dirs: %s", environment.Settings.PluginDirs())
+	plugins, err := findPlugins(environment.Settings.PluginDirs())
 	if err != nil {
 		return err
 	}

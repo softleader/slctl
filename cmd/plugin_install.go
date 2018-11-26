@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"github.com/softleader/slctl/pkg/environment"
 	"github.com/softleader/slctl/pkg/plugin"
 	"github.com/softleader/slctl/pkg/plugin/installer"
 	"github.com/softleader/slctl/pkg/slpath"
@@ -38,7 +39,7 @@ func newPluginInstallCmd(out io.Writer) *cobra.Command {
 			return pcmd.run()
 		},
 	}
-	cmd.Flags().StringVar(&pcmd.version, "version", "", "specify a version constraint. If this is not specified, the latest version is installed")
+	cmd.Flags().StringVar(&pcmd.version, "tag", "", "specify a tag constraint. If this is not specified, the latest version is installed")
 	return cmd
 }
 
@@ -47,12 +48,12 @@ func (pcmd *pluginInstallCmd) complete(args []string) error {
 		return err
 	}
 	pcmd.source = args[0]
-	pcmd.home = settings.Home
+	pcmd.home = environment.Settings.Home
 	return nil
 }
 
 func (pcmd *pluginInstallCmd) run() error {
-	i, err := installer.NewInstaller(pcmd.source, pcmd.version, pcmd.home)
+	i, err := installer.NewInstaller(pcmd.out, pcmd.source, pcmd.version, pcmd.home)
 	if err != nil {
 		return err
 	}

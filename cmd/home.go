@@ -2,6 +2,8 @@ package main
 
 import (
 	"fmt"
+	"github.com/softleader/slctl/pkg/environment"
+	"github.com/softleader/slctl/pkg/v"
 	"io"
 
 	"github.com/spf13/cobra"
@@ -17,13 +19,11 @@ func newHomeCmd(out io.Writer) *cobra.Command {
 		Short: "displays the location of SL_HOME",
 		Long:  usage(longHomeHelp),
 		Run: func(cmd *cobra.Command, args []string) {
-			h := settings.Home
+			h := environment.Settings.Home
 			fmt.Fprintln(out, h)
-			if settings.Verbose {
-				fmt.Fprintf(out, "Config: %s\n", h.Config())
-				fmt.Fprintf(out, "ConfigFile: %s\n", h.ConfigFile())
-				fmt.Fprintf(out, "Plugins: %s\n", h.Plugins())
-			}
+			v.Fprintf(out, "Config: %s\n", h.Config())
+			v.Fprintf(out, "ConfigFile: %s\n", h.ConfigFile())
+			v.Fprintf(out, "Plugins: %s\n", h.Plugins())
 		},
 	}
 	return cmd

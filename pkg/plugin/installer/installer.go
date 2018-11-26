@@ -3,25 +3,30 @@ package installer
 import (
 	"errors"
 	"fmt"
+	"github.com/softleader/slctl/pkg/environment"
 	"github.com/softleader/slctl/pkg/plugin"
 	"github.com/softleader/slctl/pkg/slpath"
+	"io"
 	"os"
 	"strings"
 )
 
-var ErrMissingMetadata = errors.New("plugin metadata (" + plugin.MetadataFileName + ") missing")
+var (
+	settings           environment.EnvSettings
+	ErrMissingMetadata = errors.New("plugin metadata (" + plugin.MetadataFileName + ") missing")
+)
 
 type Installer interface {
 	Install() (*plugin.Plugin, error)
 }
 
-func NewInstaller(source string, version string, home slpath.Home) (Installer, error) {
+func NewInstaller(out io.Writer, source string, version string, home slpath.Home) (Installer, error) {
 	if isLocalReference(source) {
-		return newLocalInstaller(source, home)
+		return newLocalInstaller(out, source, home)
 	} else if isRemoteHTTPArchive(source) {
-		return newHttpInstaller(source, home)
+		return newHttpInstaller(out, source, home)
 	} else if isGitHubRepo(source) {
-		return newGitHubInstaller(source, version, home)
+		return newGitHubInstaller(out, source, version, home)
 	}
 
 	return nil, fmt.Errorf("unsupported plugin source: %s", source)

@@ -6,7 +6,9 @@ import (
 	"github.com/google/go-github/github"
 	"github.com/softleader/slctl/pkg/config"
 	"github.com/softleader/slctl/pkg/slpath"
+	"github.com/softleader/slctl/pkg/v"
 	"golang.org/x/oauth2"
+	"io"
 	"path/filepath"
 	"regexp"
 	"runtime"
@@ -19,7 +21,7 @@ type gitHubInstaller struct {
 	httpInstaller
 }
 
-func newGitHubInstaller(source, tag string, home slpath.Home) (*gitHubInstaller, error) {
+func newGitHubInstaller(out io.Writer, source, tag string, home slpath.Home) (*gitHubInstaller, error) {
 	conf, err := config.LoadConfFile(home.ConfigFile())
 	if err != nil {
 		return nil, err
@@ -35,10 +37,12 @@ func newGitHubInstaller(source, tag string, home slpath.Home) (*gitHubInstaller,
 
 	var release *github.RepositoryRelease
 	if tag == "" {
+		v.Fprintf(out, "fetching the latest published release of github.com/%s/%s\n", owner, repo)
 		if release, _, err = client.Repositories.GetLatestRelease(ctx, owner, repo); err != nil {
 			return nil, err
 		}
 	} else {
+		v.Fprintf(out, "fetching the release of %s/%s with the specified tag: %s\n", owner, repo, tag)
 		if release, _, err = client.Repositories.GetReleaseByTag(ctx, owner, repo, tag); err != nil {
 			return nil, err
 		}
@@ -48,6 +52,7 @@ func newGitHubInstaller(source, tag string, home slpath.Home) (*gitHubInstaller,
 	if err != nil {
 		return nil, err
 	}
+	v.Fprintf(out, "getting asset '%s' of release '%s'\n", asset.GetName(), release.GetName())
 
 	rc, url, err := client.Repositories.DownloadReleaseAsset(ctx, owner, repo, asset.GetID())
 	if err != nil {
@@ -57,13 +62,17 @@ func newGitHubInstaller(source, tag string, home slpath.Home) (*gitHubInstaller,
 	ghi := gitHubInstaller{}
 	ghi.source = source
 	ghi.home = home
+	ghi.out = out
+
+	binary := asset.GetBrowserDownloadURL()
+	v.Fprintf(out, "downloading the asset's binary: %s\n", binary)
 
 	if url != "" {
-		if ghi.downloader, err = newDownloader(url, home, filepath.Base(asset.GetBrowserDownloadURL())); err != nil {
+		if ghi.downloader, err = newDownloader(url, home, filepath.Base(binary)); err != nil {
 			return nil, err
 		}
 	} else {
-		if ghi.downloader, err = newDownloader(rc, home, filepath.Base(asset.GetBrowserDownloadURL())); err != nil {
+		if ghi.downloader, err = newDownloader(rc, home, filepath.Base(binary)); err != nil {
 			return nil, err
 		}
 	}

@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"github.com/softleader/slctl/pkg/environment"
 	"github.com/softleader/slctl/pkg/plugin"
 	"github.com/spf13/cobra"
 	"io"
@@ -22,7 +23,7 @@ func loadPlugins(baseCmd *cobra.Command, out io.Writer) {
 		return
 	}
 
-	found, err := findPlugins(settings.PluginDirs())
+	found, err := findPlugins(environment.Settings.PluginDirs())
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "failed to load plugins: %s", err)
 		return
@@ -57,7 +58,7 @@ func loadPlugins(baseCmd *cobra.Command, out io.Writer) {
 				// Call setupEnv before PrepareCommand because
 				// PrepareCommand uses os.ExpandEnv and expects the
 				// setupEnv vars.
-				if err = plugin.SetupPluginEnv(settings, md.Name, plug.Dir); err != nil {
+				if err = plugin.SetupPluginEnv(md.Name, plug.Dir); err != nil {
 					return err
 				}
 				main, argv := plug.PrepareCommand(u)

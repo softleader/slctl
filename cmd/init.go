@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"github.com/google/go-github/github"
 	"github.com/softleader/slctl/pkg/config"
+	"github.com/softleader/slctl/pkg/environment"
 	"github.com/softleader/slctl/pkg/slpath"
 	"github.com/softleader/slctl/pkg/v"
 	"github.com/spf13/cobra"
@@ -67,7 +68,7 @@ func newInitCmd(out io.Writer) *cobra.Command {
 		Short: "initialize " + name,
 		Long:  usage(initDesc),
 		RunE: func(cmd *cobra.Command, args []string) error {
-			i.home = settings.Home
+			i.home = environment.Settings.Home
 			return i.run()
 		},
 	}
@@ -89,13 +90,13 @@ func (c *initCmd) run() (err error) {
 	if err = ensureDirectories(c.home, c.out); err != nil {
 		return err
 	}
-	fmt.Fprintf(c.out, "$SL_HOME has been configured at %s.\n", settings.Home)
+	fmt.Fprintf(c.out, "$SL_HOME has been configured at %s.\n", environment.Settings.Home)
 
 	if err = ensureConfigFile(c.home, c.out); err != nil {
 		return err
 	}
 	var username string
-	if !settings.Offline {
+	if !environment.Settings.Offline {
 		if c.token == "" {
 			if c.token, err = grantToken(c.username, c.password, c.out, c.refresh); err != nil {
 				return err
@@ -145,7 +146,7 @@ func grantToken(username, password string, out io.Writer, refresh bool) (token s
 			if !refresh {
 				return "", ErrOauthAccessAlreadyExists
 			}
-			v.Println(out, "\nRemoving exist token")
+			v.Fprintln(out, "\nRemoving exist token")
 			if _, err = client.Authorizations.Delete(ctx, auth.GetID()); err != nil {
 				return "", err
 			}
@@ -185,7 +186,7 @@ func confirmToken(token string, out io.Writer) (name string, err error) {
 	if mem, _, err = client.Organizations.GetOrgMembership(ctx, "", organization); err != nil {
 		return "", err
 	}
-	v.Fprintf(out, "%s\n", github.Stringify(mem))
+	// v.Fprintf(out, "%s\n", github.Stringify(mem))
 	if mem.GetState() != "active" {
 		return "", fmt.Errorf("you are not a active member of %s", organization)
 	}
@@ -193,8 +194,7 @@ func confirmToken(token string, out io.Writer) (name string, err error) {
 	if user, _, err = client.Users.Get(ctx, ""); err != nil {
 		return "", err
 	}
-	v.Fprintf(out, "%s\n", github.Stringify(user))
-
+	// v.Fprintf(out, "%s\n", github.Stringify(user))
 	return user.GetName(), err
 }
 
