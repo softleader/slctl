@@ -5,11 +5,8 @@ import (
 	"fmt"
 	"github.com/google/go-github/github"
 	"github.com/softleader/slctl/pkg/config"
-	"github.com/softleader/slctl/pkg/plugin"
 	"github.com/softleader/slctl/pkg/slpath"
-	"github.com/softleader/slctl/pkg/v"
 	"golang.org/x/oauth2"
-	"io"
 	"path/filepath"
 	"regexp"
 	"runtime"
@@ -19,11 +16,7 @@ import (
 var gitHubRepo = regexp.MustCompile(`^(http[s]?://)?github.com/([^/]+)/([^/]+)[/]?$`)
 
 type gitHubInstaller struct {
-	home   slpath.Home
-	source string
-	owner  string
-	repo   string
-	tag    string
+	httpInstaller
 }
 
 func (i gitHubInstaller) supports(source string) bool {
@@ -31,30 +24,8 @@ func (i gitHubInstaller) supports(source string) bool {
 }
 
 func (i gitHubInstaller) new(source, tag string, home slpath.Home) (Installer, error) {
-	match := gitHubRepo.FindStringSubmatch(source)
-	return gitHubInstaller{
-		home:   home,
-		source: source,
-		owner:  match[2],
-		repo:   match[3],
-		tag:    tag,
-	}, nil
-}
 
-func findAssert(assets []github.ReleaseAsset) (*github.ReleaseAsset, error) {
-	if len(assets) < 1 {
-		return nil, fmt.Errorf("no assets to find")
-	}
-	for _, asset := range assets {
-		if strings.Contains(asset.GetName(), runtime.GOOS) {
-			return &asset, nil
-		}
-	}
-	return &assets[0], nil
-}
-
-func (i gitHubInstaller) Install() (*plugin.Plugin, error) {
-	conf, err := config.LoadConfFile(i.home.ConfigFile())
+	conf, err := config.LoadConfFile(home.ConfigFile())
 	if err != nil {
 		return nil, err
 	}
@@ -65,64 +36,61 @@ func (i gitHubInstaller) Install() (*plugin.Plugin, error) {
 	tc := oauth2.NewClient(ctx, ts)
 	client := github.NewClient(tc)
 
+	owner, repo := dismantle(source)
+
 	var release *github.RepositoryRelease
-	if i.tag == "" {
-		if release, _, err = client.Repositories.GetLatestRelease(ctx, i.owner, i.repo); err != nil {
+	if tag == "" {
+		if release, _, err = client.Repositories.GetLatestRelease(ctx, owner, repo); err != nil {
 			return nil, err
 		}
 	} else {
-		if release, _, err = client.Repositories.GetReleaseByTag(ctx, i.owner, i.repo, i.tag); err != nil {
+		if release, _, err = client.Repositories.GetReleaseByTag(ctx, owner, repo, tag); err != nil {
 			return nil, err
 		}
 	}
 
-	assert, err := findAssert(release.Assets)
+	asset, err := findAsset(release.Assets)
 	if err != nil {
 		return nil, err
 	}
 
-	var dl downloader
-	var url string
-	var rc io.ReadCloser
-	if rc, url, err = client.Repositories.DownloadReleaseAsset(ctx, i.owner, i.repo, assert.GetID()); err != nil {
+	rc, url, err := client.Repositories.DownloadReleaseAsset(ctx, owner, repo, asset.GetID())
+	if err != nil {
 		return nil, err
 	}
+
+	ghi := gitHubInstaller{}
+	ghi.source = source
+	ghi.home = home
+
 	if url != "" {
-		if dl, err = newDownloader(url); err != nil {
+		if ghi.downloader, err = newDownloader(url, home, filepath.Base(url)); err != nil {
 			return nil, err
 		}
 	} else {
-		if dl, err = newDownloader(rc); err != nil {
+		if ghi.downloader, err = newDownloader(rc, home, filepath.Base(asset.GetBrowserDownloadURL())); err != nil {
 			return nil, err
 		}
 	}
 
-	archiveName := filepath.Base(assert.GetBrowserDownloadURL())
-	archivePath := filepath.Join(i.home.CacheArchives(), archiveName)
-	dl.downloadTo(archivePath)
+	return ghi, nil
+}
 
-	v.Println(archivePath, "downloaded.")
+func dismantle(url string) (owner, repo string) {
+	match := gitHubRepo.FindStringSubmatch(url)
+	owner = match[2]
+	repo = match[3]
+	return
+}
 
-	extractDir := filepath.Join(i.home.CachePlugins(), archiveName)
-	ensureDirEmpty(extractDir)
-
-	if err = extract(archivePath, extractDir); err != nil {
-		return nil, err
+func findAsset(assets []github.ReleaseAsset) (*github.ReleaseAsset, error) {
+	if len(assets) < 1 {
+		return nil, fmt.Errorf("no assets found")
 	}
-
-	if !isPlugin(extractDir) {
-		return nil, ErrMissingMetadata
+	for _, asset := range assets {
+		if strings.Contains(asset.GetName(), runtime.GOOS) {
+			return &asset, nil
+		}
 	}
-
-	plug, err := plugin.LoadDir(extractDir)
-	if err != nil {
-		return nil, err
-	}
-
-	linked, err := plug.LinkTo(i.home)
-	if err != nil {
-		return nil, err
-	}
-
-	return plugin.LoadDir(linked)
+	return &assets[0], nil
 }

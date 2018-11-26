@@ -29,7 +29,7 @@ func (i localInstaller) new(source, _ string, home slpath.Home) (Installer, erro
 	}, nil
 }
 
-func (i localInstaller) Install() (*plugin.Plugin, error) {
+func (i localInstaller) install() (*plugin.Plugin, error) {
 	if !isPlugin(i.source) {
 		return nil, ErrMissingMetadata
 	}
@@ -45,4 +45,9 @@ func (i localInstaller) Install() (*plugin.Plugin, error) {
 	}
 
 	return plugin.LoadDir(linked)
+}
+
+func (i localInstaller) retrievePlugin() error {
+	// local plugin is already on the host
+	return nil
 }

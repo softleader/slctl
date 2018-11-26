@@ -13,7 +13,15 @@ import (
 var ErrMissingMetadata = errors.New("plugin metadata (" + plugin.MetadataFileName + ") missing")
 
 type Installer interface {
-	Install() (*plugin.Plugin, error)
+	retrievePlugin() error
+	install() (*plugin.Plugin, error)
+}
+
+func Install(i Installer) (*plugin.Plugin, error) {
+	if err := i.retrieveSource(); err != nil {
+		return nil, err
+	}
+	return i.install()
 }
 
 type factory interface {

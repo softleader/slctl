@@ -2,24 +2,30 @@ package installer
 
 import (
 	"fmt"
+	"github.com/softleader/slctl/pkg/slpath"
 	"io"
 	"net/http"
 	"os"
+	"path/filepath"
 )
 
 type downloader interface {
-	downloadTo(destination string) error
+	download() (string, error)
 }
 
-func newDownloader(source interface{}) (downloader, error) {
+// the final dst will be home.CacheArchives() + dstDir
+func newDownloader(source interface{}, home slpath.Home, dstDir string) (downloader, error) {
+	dst := filepath.Join(home.CacheArchives(), dstDir)
 	switch src := source.(type) {
 	case string:
 		return urlDownloader{
+			dst: dst,
 			url: src,
 		}, nil
 	case io.ReadCloser:
 		return rcDownloader{
-			rc: src,
+			dst: dst,
+			rc:  src,
 		}, nil
 	default:
 		return nil, fmt.Errorf("unsupported type '%s' of source to new downloader", src)
@@ -27,41 +33,47 @@ func newDownloader(source interface{}) (downloader, error) {
 }
 
 type urlDownloader struct {
+	dst string
 	url string
 }
 
-func (d urlDownloader) downloadTo(destination string) error {
-	if _, err := os.Stat(destination); os.IsExist(err) {
-		os.Remove(destination)
+func (d urlDownloader) download() (string, error) {
+	if _, err := os.Stat(d.dst); os.IsExist(err) {
+		os.Remove(d.dst)
 	}
-	out, err := os.Create(destination)
+	out, err := os.Create(d.dst)
 	if err != nil {
-		return err
+		return "", err
 	}
 	defer out.Close()
 	resp, err := http.Get(d.url)
 	if err != nil {
-		return err
+		return "", err
 	}
 	defer resp.Body.Close()
-	_, err = io.Copy(out, resp.Body)
-	return err
+	if _, err = io.Copy(out, resp.Body); err != nil {
+		return "", err
+	}
+	return d.dst, nil
 }
 
 type rcDownloader struct {
-	rc io.ReadCloser
+	dst string
+	rc  io.ReadCloser
 }
 
-func (d rcDownloader) downloadTo(destination string) error {
+func (d rcDownloader) download() (string, error) {
 	defer d.rc.Close()
-	if _, err := os.Stat(destination); os.IsExist(err) {
-		os.Remove(destination)
+	if _, err := os.Stat(d.dst); os.IsExist(err) {
+		os.Remove(d.dst)
 	}
-	out, err := os.Create(destination)
+	out, err := os.Create(d.dst)
 	if err != nil {
-		return err
+		return "", err
 	}
 	defer out.Close()
-	_, err = io.Copy(out, out)
-	return err
+	if _, err = io.Copy(out, d.rc); err != nil {
+		return "", err
+	}
+	return d.dst, nil
 }

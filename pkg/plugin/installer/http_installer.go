@@ -1,7 +1,6 @@
 package installer
 
 import (
-	"github.com/softleader/slctl/pkg/plugin"
 	"github.com/softleader/slctl/pkg/slpath"
 	"github.com/softleader/slctl/pkg/v"
 	"path/filepath"
@@ -30,8 +29,7 @@ var supportedExtensions = []string{
 }
 
 type httpInstaller struct {
-	home       slpath.Home
-	source     string
+	localInstaller
 	downloader downloader
 }
 
@@ -47,44 +45,27 @@ func (i httpInstaller) supports(source string) bool {
 }
 
 func (i httpInstaller) new(source, _ string, home slpath.Home) (Installer, error) {
-	dl, err := newDownloader(source)
+	dl, err := newDownloader(source, home, filepath.Base(source))
 	if err != nil {
 		return nil, err
 	}
-	return httpInstaller{
-		home:       home,
-		source:     source,
-		downloader: dl,
-	}, nil
+
+	hi := httpInstaller{}
+	hi.source = source
+	hi.home = home
+	hi.downloader = dl
+	return hi, nil
 }
 
-func (i httpInstaller) Install() (*plugin.Plugin, error) {
-	archiveName := filepath.Base(i.source)
-	archivePath := filepath.Join(i.home.CacheArchives(), archiveName)
-	i.downloader.downloadTo(archivePath)
-
-	v.Println(archivePath, "downloaded.")
-
-	extractDir := filepath.Join(i.home.CachePlugins(), archiveName)
-	ensureDirEmpty(extractDir)
-
-	if err := extract(archivePath, extractDir); err != nil {
-		return nil, err
-	}
-
-	if !isPlugin(extractDir) {
-		return nil, ErrMissingMetadata
-	}
-
-	plug, err := plugin.LoadDir(extractDir)
+func (i httpInstaller) retrievePlugin() error {
+	saved, err := i.downloader.download()
 	if err != nil {
-		return nil, err
+		return err
 	}
-
-	linked, err := plug.LinkTo(i.home)
-	if err != nil {
-		return nil, err
+	v.Println(saved, "downloaded.")
+	extractDir := filepath.Join(i.home.CachePlugins(), filepath.Base(saved))
+	if err := ensureDirEmpty(extractDir); err != nil {
+		return err
 	}
-
-	return plugin.LoadDir(linked)
+	return extract(saved, extractDir)
 }
