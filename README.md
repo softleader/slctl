@@ -18,40 +18,32 @@ TODO
 
 Or manually downlaod from [releases page](https://github.com/softleader/slctl/releases).
 
-## Usage
+## Getting Started 
+
+請執行 'slctl init' 透過互動式的問答自動的產生並儲存 GitHub Personal Access Token (https://github.com/settings/tokens)
+也可以傳入 '--username' 或 '--password' 來整合非互動式的情境 (e.g. DevOps pipeline):
 
 ```sh
-To begin working with slctl, run the 'slctl init' command:
-
-	$ slctl init
-
-It will set up any necessary local configuration.
-
-Common actions from this point include:
-
-Environment:
-  $SL_HOME           set an alternative location for slctl files. By default, these are stored in ~/.sl
-  $SL_NO_PLUGINS     disable plugins. Set $SL_NO_PLUGINS=true to disable plugins.
-  $SL_OFFLINE        work offline. Set $SL_OFFLINE=true to work offline.
-
-Usage:
-  slctl [command]
-
-Available Commands:
-  help        Help about any command
-  home        displays the location of SL_HOME
-  init        initialize slctl
-  plugin      add, list, remove, or create plugins
-  version     print slctl version.
-
-Flags:
-  -h, --help          help for slctl
-      --home string   location of your config. Overrides $SL_HOME (default "~/.sl")
-      --offline       work offline
-  -v, --verbose       enable verbose output
-
-Use "slctl [command] --help" for more information about a command.
+$ slctl init
+$ slctl init -u <github-username> -p <github-password>
 ```
+
+執行 'scopes' 可以列出所有 slctl 需要的 Access Token 權限
+
+```sh
+$ slctl init scopes
+```
+
+使用 '--refresh' 讓 slctl 發現有重複的 Token 時, 自動的刪除既有的並產生一個全新的 Access Token
+若你想自己維護 Access Token (請務必確保有足夠的權限), 可以使用 '--token' 讓 slctl 驗證後直接儲存起來
+
+```
+$ slctl init --refresh
+$ slctl init --token <github-token>
+```
+
+使用 '--offline' 則 slctl 不會跟 GitHub API 有任何互動, 只會配置 $SL_HOME 環境目錄.
+同時使用 '--offline' 及 '--token' 可跳過 Token 驗證直接儲存起來 (e.g. 沒網路環境下)
 
 ## Plugins
 
