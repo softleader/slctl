@@ -28,7 +28,7 @@ $ slctl init
 $ slctl init -u <GITHUB_USERNAME> -p <GITHUB_PASSWORD>
 ```
 
-執行 'scopes' 可以列出所有 slctl 需要的 Access Token 權限
+執行 `scopes` 可以列出所有 slctl 需要的 Access Token 權限
 
 ```sh
 $ slctl init scopes
