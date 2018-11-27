@@ -44,7 +44,7 @@ $ slctl init --token <GITHUB_TOKEN>
 
 ## Plugins
 
-執行 `$ slctl plugin install <SOURCE>` 即可安裝 plugin, *SOURCE* 支援多種來源, 點擊 [Installing a Plugin](https://github.com/softleader/slctl/wiki/Plugins-Guide#installing-a-plugin) 查看更詳細的說明
+執行 `$ slctl plugin install <SOURCE>` 即可安裝, 點擊 [Installing a Plugin](https://github.com/softleader/slctl/wiki/Plugins-Guide#installing-a-plugin) 查看多種 *SOURCE* 的安裝方式
 
 - [foo](#) - The foo plugin
 - [bar](#) - The bar plugin
