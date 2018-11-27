@@ -24,7 +24,7 @@ Or manually downlaod from [releases page](https://github.com/softleader/slctl/re
 
 ```sh
 $ slctl init
-$ slctl init -u <GITHUB_USERNAME> -p <GITHUB_PASSWORD>
+$ slctl init -u GITHUB_USERNAME -p GITHUB_PASSWORD
 ```
 
 執行 `scopes` 可以列出所有 slctl 需要的 Access Token 權限
@@ -35,16 +35,16 @@ $ slctl init scopes
 
 使用 `--refresh` 讓 slctl 發現有重複的 Token 時, 自動的刪除既有的並產生一個全新的 Access Token, 若你想自己維護 Access Token (請務必確保有足夠的權限), 可以使用 `--token` 讓 slctl 驗證後直接儲存起來
 
-```
+```sh
 $ slctl init --refresh
-$ slctl init --token <GITHUB_TOKEN>
+$ slctl init --token GITHUB_TOKEN
 ```
 
 使用 `--offline` 則 slctl 不會跟 GitHub API 有任何互動, 只會配置 *$SL_HOME* 環境目錄. 同時使用 `--offline` 及 `--token` 可跳過 Token 驗證直接儲存起來 (e.g. 沒網路環境下)
 
 ## Plugins
 
-執行 `$ slctl plugin install <SOURCE>` 即可安裝, 點擊 [Installing a Plugin](https://github.com/softleader/slctl/wiki/Plugins-Guide#installing-a-plugin) 查看多種 *SOURCE* 的安裝方式
+執行 `$ slctl plugin install SOURCE` 即可安裝, 點擊 [Installing a Plugin](https://github.com/softleader/slctl/wiki/Plugins-Guide#installing-a-plugin) 查看多種 *SOURCE* 的安裝方式
 
 - [foo](#) - The foo plugin
 - [bar](#) - The bar plugin
