@@ -20,8 +20,7 @@ Or manually downlaod from [releases page](https://github.com/softleader/slctl/re
 
 ## Getting Started 
 
-執行 `slctl init` 透過互動式的問答產生並儲存 [GitHub Personal Access Token](https://github.com/settings/tokens)
-也可以傳入 `--username` 或 `--password` 來整合非互動式的情境 (e.g. DevOps pipeline):
+執行 `slctl init` 透過互動式的問答產生並儲存 [GitHub Personal Access Token](https://github.com/settings/tokens), 也可以傳入 `--username` 或 `--password` 來整合非互動式的情境 (e.g. DevOps pipeline):
 
 ```sh
 $ slctl init
@@ -34,16 +33,14 @@ $ slctl init -u <GITHUB_USERNAME> -p <GITHUB_PASSWORD>
 $ slctl init scopes
 ```
 
-使用 `--refresh` 讓 slctl 發現有重複的 Token 時, 自動的刪除既有的並產生一個全新的 Access Token
-若你想自己維護 Access Token (請務必確保有足夠的權限), 可以使用 `--token` 讓 slctl 驗證後直接儲存起來
+使用 `--refresh` 讓 slctl 發現有重複的 Token 時, 自動的刪除既有的並產生一個全新的 Access Token, 若你想自己維護 Access Token (請務必確保有足夠的權限), 可以使用 `--token` 讓 slctl 驗證後直接儲存起來
 
 ```
 $ slctl init --refresh
 $ slctl init --token <GITHUB_TOKEN>
 ```
 
-使用 `--offline` 則 slctl 不會跟 GitHub API 有任何互動, 只會配置 *$SL_HOME* 環境目錄.
-同時使用 `--offline` 及 `--token` 可跳過 Token 驗證直接儲存起來 (e.g. 沒網路環境下)
+使用 `--offline` 則 slctl 不會跟 GitHub API 有任何互動, 只會配置 *$SL_HOME* 環境目錄. 同時使用 `--offline` 及 `--token` 可跳過 Token 驗證直接儲存起來 (e.g. 沒網路環境下)
 
 ## Plugins
 
