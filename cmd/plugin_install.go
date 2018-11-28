@@ -26,18 +26,15 @@ Plugin 可以是本機上的任何目錄, 透過給予絕對或相對路徑來�
 
 	$ slctl plugin install /path/to/plugin-dir/
 
-
 Plugin 也可以是來自於網路上或在本機中壓縮檔, 透過給予網址或路徑來安裝
 
 	$ slctl plugin install /path/to/plugin-archive.zip
 	$ slctl plugin install http://host/plugin-archive.zip
 
-
 Plugin 也可以是一個 GitHub repo, 傳入 'github.com/OWNER/REPO', {{.}} 會自動收尋最新一版的 release
 並從該 release 的所有下載檔中, 嘗試找出含有當前 OS 名稱的壓縮檔來安裝, 當找不到時會改下載第一個壓縮檔來安裝
 
 	$ slctl plugin install github.com/softleader/slctl-whereis
-
 
 傳入 '--tag' 可以指定 release 版本
 
