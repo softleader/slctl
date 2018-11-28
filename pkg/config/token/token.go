@@ -43,7 +43,7 @@ func EnsureScopes(out io.Writer, scopes []github.Scope) (err error) {
 		return nil
 	}
 
-	v.Fprintf(out, "granting more scopes: %q\n", addScopes)
+	fmt.Fprintf(out, "granting scopes: %q\n", addScopes)
 
 	r := bufio.NewReader(os.Stdin)
 
