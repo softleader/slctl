@@ -131,9 +131,14 @@ clean:
 
 type java struct{}
 
-func (c java) command(plugin *Metadata) Commands {
+func (c java) exec(plugin *Metadata) Commands {
+	command := fmt.Sprintf("java -jar $SL_PLUGIN_DIR/%s.jar", plugin.Name)
 	return Commands{
-		Command: fmt.Sprintf("java -jar $SL_PLUGIN_DIR/%s.jar", plugin.Name),
+		Command: command,
+		Platform: []Platform{
+			{Os: "darwin", Command: command,},
+			{Os: "windows", Command: command,},
+		},
 	}
 }
 

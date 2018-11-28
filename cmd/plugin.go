@@ -36,12 +36,16 @@ func runHook(p *plugin.Plugin) error {
 	if err := plugin.SetupPluginEnv(p.Metadata.Name, p.Dir); err != nil {
 		return err
 	}
-	main, argv, err := p.PrepareCommand(nil)
+	command, err := p.Metadata.Hook.GetCommand()
+	if err != nil {
+		return err
+	}
+	main, argv, err := p.PrepareCommand(command, nil)
 	if err != nil {
 		return err
 	}
 	prog := exec.Command(main, argv...)
-	v.Printf("running hook: %v\n", prog)
+	v.Printf("running hook: %v\n", command)
 	prog.Stdout, prog.Stderr = os.Stdout, os.Stderr
 	if err := prog.Run(); err != nil {
 		if e, ok := err.(*exec.ExitError); ok {

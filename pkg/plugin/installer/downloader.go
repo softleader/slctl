@@ -1,7 +1,6 @@
 package installer
 
 import (
-	"fmt"
 	"github.com/softleader/slctl/pkg/slpath"
 	"io"
 	"net/http"
@@ -13,22 +12,10 @@ type downloader interface {
 	download() (string, error)
 }
 
-// the final dst will be home.CacheArchives() + dstDir
-func newDownloader(source interface{}, home slpath.Home, dstDir string) (downloader, error) {
-	dst := filepath.Join(home.CacheArchives(), dstDir)
-	switch src := source.(type) {
-	case string:
-		return urlDownloader{
-			dst: dst,
-			url: src,
-		}, nil
-	case io.ReadCloser:
-		return rcDownloader{
-			dst: dst,
-			rc:  src,
-		}, nil
-	default:
-		return nil, fmt.Errorf("unsupported type '%s' of source to new downloader", src)
+func newUrlDownloader(url string, home slpath.Home, dstDir string) *urlDownloader {
+	return &urlDownloader{
+		dst: filepath.Join(home.CacheArchives(), dstDir),
+		url: url,
 	}
 }
 
@@ -37,9 +24,12 @@ type urlDownloader struct {
 	url string
 }
 
-func (d urlDownloader) download() (string, error) {
+func (d *urlDownloader) download() (string, error) {
 	if _, err := os.Stat(d.dst); os.IsExist(err) {
 		os.Remove(d.dst)
+	}
+	if err := os.MkdirAll(filepath.Dir(d.dst), 0755); err != nil {
+		return "", err
 	}
 	out, err := os.Create(d.dst)
 	if err != nil {
@@ -57,22 +47,62 @@ func (d urlDownloader) download() (string, error) {
 	return d.dst, nil
 }
 
-type rcDownloader struct {
-	dst string
-	rc  io.ReadCloser
+func newReaderDownloader(r *io.Reader, home slpath.Home, dstDir string) *readerDownloader {
+	return &readerDownloader{
+		dst: filepath.Join(home.CacheArchives(), dstDir),
+		r:   r,
+	}
 }
 
-func (d rcDownloader) download() (string, error) {
-	defer d.rc.Close()
+type readerDownloader struct {
+	dst string
+	r   *io.Reader
+}
+
+func (d *readerDownloader) download() (string, error) {
 	if _, err := os.Stat(d.dst); os.IsExist(err) {
 		os.Remove(d.dst)
+	}
+	if err := os.MkdirAll(filepath.Dir(d.dst), 0755); err != nil {
+		return "", err
 	}
 	out, err := os.Create(d.dst)
 	if err != nil {
 		return "", err
 	}
 	defer out.Close()
-	if _, err = io.Copy(out, d.rc); err != nil {
+	if _, err = io.Copy(out, *d.r); err != nil {
+		return "", err
+	}
+	return d.dst, nil
+}
+
+func newReadCloserDownloader(rc *io.ReadCloser, home slpath.Home, dstDir string) *readCloserDownloader {
+	return &readCloserDownloader{
+		dst: filepath.Join(home.CacheArchives(), dstDir),
+		rc:  rc,
+	}
+}
+
+type readCloserDownloader struct {
+	dst string
+	rc  *io.ReadCloser
+}
+
+func (d *readCloserDownloader) download() (string, error) {
+	defer (*d.rc).Close()
+	if _, err := os.Stat(d.dst); os.IsExist(err) {
+		os.Remove(d.dst)
+	}
+	if err := os.MkdirAll(filepath.Dir(d.dst), 0755); err != nil {
+		return "", err
+	}
+	out, err := os.Create(d.dst)
+	if err != nil {
+		return "", err
+	}
+	defer out.Close()
+	if _, err = io.Copy(out, *d.rc); err != nil {
 		return "", err
 	}
 	return d.dst, nil

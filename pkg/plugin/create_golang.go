@@ -89,9 +89,14 @@ clean:
 
 type golang struct{}
 
-func (c golang) command(plugin *Metadata) Commands {
+func (c golang) exec(plugin *Metadata) Commands {
+	command := "$SL_BIN"
 	return Commands{
-		Command: "$SL_BIN",
+		Command: command,
+		Platform: []Platform{
+			{Os: "darwin", Command: command,},
+			{Os: "windows", Command: command,},
+		},
 	}
 }
 

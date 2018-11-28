@@ -115,9 +115,14 @@ clean:
 
 type nodejs struct{}
 
-func (c nodejs) command(plugin *Metadata) Commands {
+func (c nodejs) exec(plugin *Metadata) Commands {
+	command := "node $SL_PLUGIN_DIR/bin/run"
 	return Commands{
-		Command: "node $SL_PLUGIN_DIR/bin/run",
+		Command: command,
+		Platform: []Platform{
+			{Os: "darwin", Command: command,},
+			{Os: "windows", Command: command,},
+		},
 	}
 }
 

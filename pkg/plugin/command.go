@@ -6,12 +6,14 @@ import (
 )
 
 type Commands struct {
-	Command  string `json:"command"`
-	Platform []struct {
-		Os      string `json:"os"`
-		Arch    string `json:"arch"`
-		Command string `json:"command"`
-	} `json:"platform"`
+	Command  string     `json:"command"`
+	Platform []Platform `json:"platform"`
+}
+
+type Platform struct {
+	Os      string `json:"os"`
+	Arch    string `json:"arch"`
+	Command string `json:"command"`
 }
 
 func (c *Commands) GetCommand() (command string, err error) {

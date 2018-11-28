@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"github.com/google/go-github/github"
 	"github.com/softleader/slctl/pkg/config"
+	"github.com/softleader/slctl/pkg/environment"
 	"github.com/softleader/slctl/pkg/slpath"
 	"github.com/softleader/slctl/pkg/v"
 	"golang.org/x/oauth2"
@@ -18,10 +19,13 @@ import (
 var gitHubRepo = regexp.MustCompile(`^(http[s]?://)?github.com/([^/]+)/([^/]+)[/]?$`)
 
 type gitHubInstaller struct {
-	httpInstaller
+	archiveInstaller
 }
 
 func newGitHubInstaller(out io.Writer, source, tag string, home slpath.Home) (*gitHubInstaller, error) {
+	if environment.Settings.Offline {
+		return nil, ErrNonResolvableInOfflineMode
+	}
 	conf, err := config.LoadConfFile(home.ConfigFile())
 	if err != nil {
 		return nil, err
@@ -67,13 +71,9 @@ func newGitHubInstaller(out io.Writer, source, tag string, home slpath.Home) (*g
 	v.Fprintf(out, "downloading the binary content: %s\n", binary)
 
 	if url != "" {
-		if ghi.downloader, err = newDownloader(url, home, filepath.Base(binary)); err != nil {
-			return nil, err
-		}
+		ghi.downloader = newUrlDownloader(url, home, filepath.Base(binary))
 	} else {
-		if ghi.downloader, err = newDownloader(rc, home, filepath.Base(binary)); err != nil {
-			return nil, err
-		}
+		ghi.downloader = newReadCloserDownloader(&rc, home, filepath.Base(binary))
 	}
 
 	return &ghi, nil

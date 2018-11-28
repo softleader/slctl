@@ -2,7 +2,6 @@ package installer
 
 import (
 	"fmt"
-	"github.com/softleader/slctl/pkg/environment"
 	"github.com/softleader/slctl/pkg/plugin"
 	"github.com/softleader/slctl/pkg/slpath"
 	"io"
@@ -10,25 +9,29 @@ import (
 	"strings"
 )
 
+var ErrNonResolvableInOfflineMode = fmt.Errorf("non-resolvable plugin source in offline mode")
 
 type Installer interface {
 	Install() (*plugin.Plugin, error)
 }
 
 func NewInstaller(out io.Writer, source string, version string, home slpath.Home) (Installer, error) {
-	if isLocalReference(source) {
+	if isLocalDirReference(source) {
 		return newLocalInstaller(out, source, home)
 	}
-	if environment.Settings.Offline {
-		return nil, fmt.Errorf("non-resolvable plugin source (%s) in offline mode", source)
+	if isArchive(source) {
+		return newArchiveInstaller(out, source, home)
 	}
-	if isRemoteHTTPArchive(source) {
-		return newHttpInstaller(out, source, home)
-	} else if isGitHubRepo(source) {
+	if isGitHubRepo(source) {
 		return newGitHubInstaller(out, source, version, home)
 	}
 
 	return nil, fmt.Errorf("unsupported plugin source: %s", source)
+}
+
+func isLocalDirReference(source string) bool {
+	f, err := os.Stat(source)
+	return err == nil && f.IsDir()
 }
 
 func isLocalReference(source string) bool {
@@ -36,12 +39,10 @@ func isLocalReference(source string) bool {
 	return err == nil
 }
 
-func isRemoteHTTPArchive(source string) bool {
-	if strings.HasPrefix(source, "http://") || strings.HasPrefix(source, "https://") {
-		for _, suffix := range supportedExtensions {
-			if strings.HasSuffix(source, suffix) {
-				return true
-			}
+func isArchive(source string) bool {
+	for _, suffix := range supportedExtensions {
+		if strings.HasSuffix(source, suffix) {
+			return true
 		}
 	}
 	return false

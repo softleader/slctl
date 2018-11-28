@@ -3,6 +3,7 @@ package installer
 import (
 	"fmt"
 	"github.com/mholt/archiver"
+	"github.com/softleader/slctl/pkg/environment"
 	"github.com/softleader/slctl/pkg/plugin"
 	"github.com/softleader/slctl/pkg/slpath"
 	"github.com/softleader/slctl/pkg/v"
@@ -32,33 +33,40 @@ var supportedExtensions = []string{
 	".xz",
 }
 
-type httpInstaller struct {
+type archiveInstaller struct {
 	localInstaller
 	downloader downloader
 }
 
-func newHttpInstaller(out io.Writer, source string, home slpath.Home) (*httpInstaller, error) {
+func newArchiveInstaller(out io.Writer, source string, home slpath.Home) (ai *archiveInstaller, err error) {
 	v.Fprintf(out, "downloading the archive: %s\n", source)
-	dl, err := newDownloader(source, home, filepath.Base(source))
-	if err != nil {
-		return nil, err
+	ai = &archiveInstaller{}
+	ai.out = out
+	ai.source = source
+	ai.home = home
+	if isLocalReference(source) {
+		var r io.Reader
+		if r, err = os.Open(source); err != nil {
+			return nil, err
+		}
+		ai.downloader = newReaderDownloader(&r, home, filepath.Base(source))
+	} else {
+		if environment.Settings.Offline {
+			return nil, ErrNonResolvableInOfflineMode
+		}
+		ai.downloader = newUrlDownloader(source, home, filepath.Base(source))
 	}
-
-	hi := httpInstaller{}
-	hi.source = source
-	hi.home = home
-	hi.downloader = dl
-	return &hi, nil
+	return ai, nil
 }
 
-func (i *httpInstaller) Install() (*plugin.Plugin, error) {
+func (i *archiveInstaller) Install() (*plugin.Plugin, error) {
 	if err := i.retrievePlugin(); err != nil {
 		return nil, err
 	}
 	return i.localInstaller.Install()
 }
 
-func (i *httpInstaller) retrievePlugin() error {
+func (i *archiveInstaller) retrievePlugin() error {
 	saved, err := i.downloader.download()
 	if err != nil {
 		return err

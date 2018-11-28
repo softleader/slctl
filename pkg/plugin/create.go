@@ -27,7 +27,7 @@ var Creators = func() (m map[string]creator) {
 }()
 
 type creator interface {
-	command(plugin *Metadata) Commands
+	exec(plugin *Metadata) Commands
 	hook(plugin *Metadata) Commands
 	files(plugin *Metadata, pluginDir string) []file
 }
@@ -54,9 +54,9 @@ func Create(lang string, plugin *Metadata, dir string) (string, error) {
 		return pdir, fmt.Errorf(`unsupported creating %s template.
 You might need to run 'slctl plugin create langs'`, lang)
 	}
-	plugin.Command = creator.command(plugin)
+	plugin.Exec = creator.exec(plugin)
 	plugin.Hook = creator.hook(plugin)
-	plugin.Scopes = token.Scopes
+	plugin.GitHub.Scopes = token.Scopes
 	plugin.IgnoreGlobalFlags = false
 	files := creator.files(plugin, pdir)
 	files = append(files, marshal{

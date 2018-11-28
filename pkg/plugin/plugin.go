@@ -1,7 +1,6 @@
 package plugin
 
 import (
-	"github.com/google/go-github/github"
 	"github.com/softleader/slctl/pkg/config"
 	"github.com/softleader/slctl/pkg/environment"
 	"gopkg.in/yaml.v2"
@@ -15,14 +14,14 @@ import (
 const MetadataFileName = "metadata.yaml"
 
 type Metadata struct {
-	Name              string         `json:"name"`
-	Version           string         `json:"version"`
-	Usage             string         `json:"usage"`
-	Description       string         `json:"description"`
-	Command           Commands       `json:"command"`
-	Hook              Commands       `json:"hook"`
-	IgnoreGlobalFlags bool           `json:"ignoreGlobalFlags"`
-	Scopes            []github.Scope `json:"scopes"`
+	Name              string   `json:"name"`
+	Version           string   `json:"version"`
+	Usage             string   `json:"usage"`
+	Description       string   `json:"description"`
+	Exec              Commands `json:"exec"`
+	Hook              Commands `json:"hook"`
+	IgnoreGlobalFlags bool     `json:"ignoreGlobalFlags"`
+	GitHub            GitHub   `json:"github"`
 }
 
 type Plugin struct {
@@ -36,11 +35,7 @@ type Plugin struct {
 // returns the name of the command and an args array.
 //
 // The result is suitable to pass to exec.Command.
-func (p *Plugin) PrepareCommand(extraArgs []string) (main string, argv []string, err error) {
-	command, err := p.Metadata.Command.GetCommand()
-	if err != nil {
-		return
-	}
+func (p *Plugin) PrepareCommand(command string, extraArgs []string) (main string, argv []string, err error) {
 	parts := strings.Split(os.ExpandEnv(command), " ")
 	main = parts[0]
 	if len(parts) > 1 {
