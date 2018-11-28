@@ -2,11 +2,11 @@ package main
 
 import (
 	"fmt"
+	"github.com/softleader/slctl/pkg/config/token"
 	"github.com/softleader/slctl/pkg/environment"
 	"github.com/softleader/slctl/pkg/plugin"
 	"github.com/softleader/slctl/pkg/plugin/installer"
 	"github.com/softleader/slctl/pkg/slpath"
-	"github.com/softleader/slctl/pkg/v"
 	"io"
 
 	"github.com/spf13/cobra"
@@ -78,7 +78,9 @@ func (pcmd *pluginInstallCmd) run() error {
 		return err
 	}
 
-	v.Printf("loading plugin from %s\n", p.Dir)
+	if err = token.EnsureScopes(pcmd.out, p.Metadata.GitHub.Scopes); err != nil {
+		return err
+	}
 
 	if err := runHook(p); err != nil {
 		return err

@@ -3,7 +3,9 @@ package config
 import (
 	"errors"
 	"fmt"
+	"github.com/softleader/slctl/pkg/slpath"
 	"gopkg.in/yaml.v2"
+	"io"
 	"io/ioutil"
 	"os"
 )
@@ -52,4 +54,13 @@ func (c *ConfFile) WriteFile(path string, perm os.FileMode) error {
 		return err
 	}
 	return ioutil.WriteFile(path, data, perm)
+}
+
+func Refresh(home slpath.Home, token string, _ io.Writer) (err error) {
+	conf, err := LoadConfFile(home.ConfigFile())
+	if err != nil && err != ErrTokenNotExist {
+		return fmt.Errorf("failed to load file (%v)", err)
+	}
+	conf.Token = token
+	return conf.WriteFile(home.ConfigFile(), ReadWrite)
 }

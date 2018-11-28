@@ -49,7 +49,7 @@ func TestRefreshConfig(t *testing.T) {
 	}
 
 	token := "this.is.a.fake.token"
-	if err = refreshConfig(hh, token, b); err != nil {
+	if err = config.Refresh(hh, token, b); err != nil {
 		t.Error(err)
 	}
 

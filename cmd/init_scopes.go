@@ -3,7 +3,7 @@ package main
 import (
 	"errors"
 	"fmt"
-	"github.com/softleader/slctl/pkg/token"
+	"github.com/softleader/slctl/pkg/config/token"
 	"github.com/spf13/cobra"
 	"io"
 )

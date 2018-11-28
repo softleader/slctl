@@ -3,7 +3,7 @@ package plugin
 import (
 	"bytes"
 	"fmt"
-	"github.com/softleader/slctl/pkg/token"
+	"github.com/softleader/slctl/pkg/config/token"
 	"gopkg.in/yaml.v2"
 	"io/ioutil"
 	"os"
