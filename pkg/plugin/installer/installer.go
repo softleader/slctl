@@ -1,7 +1,6 @@
 package installer
 
 import (
-	"errors"
 	"fmt"
 	"github.com/softleader/slctl/pkg/environment"
 	"github.com/softleader/slctl/pkg/plugin"
@@ -11,9 +10,6 @@ import (
 	"strings"
 )
 
-var (
-	ErrMissingMetadata = errors.New("plugin metadata (" + plugin.MetadataFileName + ") missing")
-)
 
 type Installer interface {
 	Install() (*plugin.Plugin, error)

@@ -20,16 +20,33 @@ type pluginInstallCmd struct {
 }
 
 const pluginInstallDesc = `
-To install a plugin from a url or a local path.
+To install a plugin from a local path, a archive url, or a GitHub repo
 
-Example usage:
-    $ helm plugin install https://github.com/softleader/slctl-whereis
+Plugin 可以是本機上的任何目錄, 透過給予絕對或相對路徑來安裝
+
+	$ slctl plugin install /path/to/plugin/dir
+
+
+Plugin 也可以是來自於網路上的壓縮檔, 透過給予網址來安裝
+
+	$ slctl plugin install http://some-host/some-plugin-archive.zip
+
+
+Plugin 也可以是一個 GitHub repo, 傳入 'github.com/OWNER/REPO', {{.}} 會自動收尋最新一版的 release
+並從該 release 的所有下載檔中, 嘗試找出含有當前 OS 名稱的壓縮檔來安裝, 當找不到時會改下載第一個壓縮檔來安裝
+
+	$ slctl plugin install github.com/softleader/slctl-whereis
+
+
+傳入 '--tag' 可以指定 release 版本
+
+	$ slctl plugin install github.com/softleader/slctl-whereis --tag v1.0
 `
 
 func newPluginInstallCmd(out io.Writer) *cobra.Command {
 	pcmd := &pluginInstallCmd{out: out}
 	cmd := &cobra.Command{
-		Use:   "install [options] <path|url>...",
+		Use:   "install [options] <SOURCE>...",
 		Short: "install one or more plugins",
 		Long:  pluginInstallDesc,
 		PreRunE: func(cmd *cobra.Command, args []string) error {
@@ -39,7 +56,7 @@ func newPluginInstallCmd(out io.Writer) *cobra.Command {
 			return pcmd.run()
 		},
 	}
-	cmd.Flags().StringVar(&pcmd.version, "tag", "", "specify a tag constraint. If this is not specified, the latest version is installed")
+	cmd.Flags().StringVar(&pcmd.version, "tag", "", "specify a tag constraint. If this is not specified, the latest release version is installed")
 	return cmd
 }
 
@@ -64,11 +81,7 @@ func (pcmd *pluginInstallCmd) run() error {
 	}
 
 	v.Printf("loading plugin from %s\n", p.Dir)
-
-	if err := runHook(p, plugin.Install); err != nil {
-		return err
-	}
-
+	
 	fmt.Fprintf(pcmd.out, "Installed plugin: %s\n", p.Metadata.Name)
 	return nil
 }

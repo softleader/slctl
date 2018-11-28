@@ -9,6 +9,13 @@ import (
 	"io"
 	"os"
 	"path/filepath"
+	"regexp"
+)
+
+var (
+	ErrMissingMetadata   = errors.New("plugin metadata (" + plugin.MetadataFileName + ") missing")
+	legalPluginName      = regexp.MustCompile(`^[\w\d_-]+$`)
+	ErrIllegalPluginName = errors.New("plugin name must match " + legalPluginName.String())
 )
 
 type localInstaller struct {
@@ -38,6 +45,10 @@ func (i *localInstaller) Install() (*plugin.Plugin, error) {
 		return nil, err
 	}
 
+	if !isPluginNameLegal(plug.Metadata.Name) {
+		return nil, ErrIllegalPluginName
+	}
+
 	link := filepath.Join(i.home.Plugins(), plug.Metadata.Name)
 	v.Printf("symlinking %s to %s\n", plug.Dir, link)
 
@@ -54,4 +65,8 @@ func (i *localInstaller) Install() (*plugin.Plugin, error) {
 func isPlugin(dirname string) bool {
 	_, err := os.Stat(filepath.Join(dirname, plugin.MetadataFileName))
 	return err == nil
+}
+
+func isPluginNameLegal(name string) bool {
+	return legalPluginName.MatchString(name)
 }

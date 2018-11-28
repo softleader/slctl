@@ -13,16 +13,6 @@ import (
 
 const MetadataFileName = "metadata.yaml"
 
-// Downloaders represents the plugins capability if it can retrieve
-// charts from special sources
-type Downloaders struct {
-	// Protocols are the list of schemes from the charts URL.
-	Protocols []string `json:"protocols"`
-	// Command is the executable path with which the plugin performs
-	// the actual download for the corresponding Protocols
-	Command string `json:"command"`
-}
-
 // Metadata describes a plugin.
 //
 // This is the plugin equivalent of a chart.Metadata.
@@ -54,27 +44,12 @@ type Metadata struct {
 	// For example, if the plugin is invoked as `helm --debug myplugin`, if this
 	// is false, `--debug` will be appended to `--command`. If this is true,
 	// the `--debug` flag will be discarded.
-	IgnoreFlags bool `json:"ignoreFlags"`
-
-	// UseTunnel indicates that this command needs a tunnel.
-	// Setting this will cause a number of side effects, such as the
-	// automatic setting of HELM_HOST.
-	UseTunnel bool `json:"useTunnel"`
-
-	// Hooks are commands that will run on events.
-	Hooks Hooks
-
-	// Downloaders field is used if the plugin supply downloader mechanism
-	// for special protocols.
-	Downloaders []Downloaders `json:"downloaders"`
+	IgnoreGlobalFlags bool `json:"ignoreGlobalFlags"`
 }
 
-// Plugin represents a plugin.
 type Plugin struct {
-	// Metadata is a parsed representation of a plugin.yaml
 	Metadata *Metadata
-	// Dir is the string path to the directory that holds the plugin.
-	Dir string
+	Dir      string
 }
 
 // PrepareCommand takes a Plugin.Command and prepares it for execution.
@@ -90,7 +65,7 @@ func (p *Plugin) PrepareCommand(extraArgs []string) (string, []string) {
 	if len(parts) > 1 {
 		baseArgs = parts[1:]
 	}
-	if !p.Metadata.IgnoreFlags {
+	if !p.Metadata.IgnoreGlobalFlags {
 		baseArgs = append(baseArgs, extraArgs...)
 	}
 	return main, baseArgs
@@ -138,18 +113,18 @@ func LoadAll(basedir string) ([]*Plugin, error) {
 }
 
 // FindPlugins returns a list of YAML files that describe plugins.
-func FindPlugins(plugdirs string) ([]*Plugin, error) {
-	found := []*Plugin{}
-	// Let's get all UNIXy and allow path separators
-	for _, p := range filepath.SplitList(plugdirs) {
-		matches, err := LoadAll(p)
-		if err != nil {
-			return matches, err
-		}
-		found = append(found, matches...)
-	}
-	return found, nil
-}
+//func FindPlugins(plugdirs string) ([]*Plugin, error) {
+//	found := []*Plugin{}
+//	// Let's get all UNIXy and allow path separators
+//	for _, p := range filepath.SplitList(plugdirs) {
+//		matches, err := LoadAll(p)
+//		if err != nil {
+//			return matches, err
+//		}
+//		found = append(found, matches...)
+//	}
+//	return found, nil
+//}
 
 // SetupPluginEnv prepares os.Env for plugins. It operates on os.Env because
 // the plugin subsystem itself needs access to the environment variables

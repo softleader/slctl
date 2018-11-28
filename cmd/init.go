@@ -25,11 +25,11 @@ const (
 	initDesc     = `
 This command grants Github access token and sets up local configuration in $SL_HOME (default ~/.sl/).
 
-請執行 '{{.}} init' 透過互動式的問答自動的產生 GitHub Personal Access Token (https://github.com/settings/tokens)
+執行 '{{.}} init' 透過互動式的問答產生並儲存 GitHub Personal Access Token (https://github.com/settings/tokens)
 也可以傳入 '--username' 或 '--password' 來整合非互動式的情境 (e.g. DevOps pipeline):
 
 	$ {{.}} init
-	$ {{.}} init -u <github-username> -p <github-password>
+	$ {{.}} init -u GITHUB_USERNAME -p GITHUB-PASSWORD
 
 執行 'scopes' 可以列出所有 {{.}} 需要的 Access Token 權限
 
@@ -39,7 +39,7 @@ This command grants Github access token and sets up local configuration in $SL_H
 若你想自己維護 Access Token (請務必確保有足夠的權限), 可以使用 '--token' 讓 {{.}} 驗證後直接儲存起來
 
 	$ {{.}} init --refresh
-	$ {{.}} init --token <github-token>
+	$ {{.}} init --token GITHUB_TOKEN
 
 使用 '--offline' 則 {{.}} 不會跟 GitHub API 有任何互動, 只會配置 $SL_HOME 環境目錄.
 同時使用 '--offline' 及 '--token' 可跳過 Token 驗證直接儲存起來 (e.g. 沒網路環境下)
