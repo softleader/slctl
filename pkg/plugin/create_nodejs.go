@@ -115,8 +115,16 @@ clean:
 
 type nodejs struct{}
 
-func (c nodejs) command(plugin *Metadata) string {
-	return "node $SL_PLUGIN_DIR/bin/run"
+func (c nodejs) command(plugin *Metadata) Commands {
+	return Commands{
+		Command: "node $SL_PLUGIN_DIR/bin/run",
+	}
+}
+
+func (c nodejs) hook(plugin *Metadata) Commands {
+	return Commands{
+		Command: "echo hello " + plugin.Name,
+	}
 }
 
 func (c nodejs) files(plugin *Metadata, pdir string) []file {

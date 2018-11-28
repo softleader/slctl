@@ -1,5 +1,5 @@
-hash: 70b83129f12224d6fbbeb7f33a41c8abdf7fb229310cfbcef82a8b8289e71158
-updated: 2018-11-23T15:42:30.066865+08:00
+hash: af6e26cc1b647f97774e5abee4069fe5f19c005314120eba04598593f3cdf2fe
+updated: 2018-11-28T09:39:34.89985+08:00
 imports:
 - name: github.com/cyphar/filepath-securejoin
   version: a261ee33d7a517f054effbf451841abaafe3e0fd
@@ -17,8 +17,6 @@ imports:
   version: 1643683e1b54a9e88ad26d98f81400c8c9d9f4f9
   subpackages:
   - proto
-  - ptypes/any
-  - ptypes/timestamp
 - name: github.com/golang/snappy
   version: 2e65f85255dbc3072edf28d6b5b8efc472979f5a
 - name: github.com/google/go-github
@@ -37,7 +35,7 @@ imports:
 - name: github.com/inconshreveable/mousetrap
   version: 76626ae9c91c4f2a10f34cad8ce83ea42c93bb75
 - name: github.com/Masterminds/semver
-  version: 517734cc7d6470c0d07130e40fd40bdeb9bcd3fd
+  version: c7af12943936e8c39859482e61f0574c2fd7fc75
 - name: github.com/mattn/go-runewidth
   version: c88d7e5f2e24de48a200a2655ac8a0910be9a0f7
 - name: github.com/mholt/archiver
@@ -92,11 +90,4 @@ imports:
   - urlfetch
 - name: gopkg.in/yaml.v2
   version: 5420a8b6744d3b0345ab293f6fcba19c978f1183
-- name: k8s.io/helm
-  version: 560b84d53c05885ba84384574520fdcf626937a3
-  subpackages:
-  - pkg/proto/hapi/version
-  - pkg/tlsutil
-  - pkg/urlutil
-  - pkg/version
 testImports: []

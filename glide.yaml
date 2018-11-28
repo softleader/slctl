@@ -19,3 +19,5 @@ import:
   version: ^3.1.0
   subpackages:
   - cmd/arc
+- package: github.com/Masterminds/semver
+  version: ^1.4.2

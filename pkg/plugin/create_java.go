@@ -131,8 +131,16 @@ clean:
 
 type java struct{}
 
-func (c java) command(plugin *Metadata) string {
-	return fmt.Sprintf("java -jar $SL_PLUGIN_DIR/%s.jar", plugin.Name)
+func (c java) command(plugin *Metadata) Commands {
+	return Commands{
+		Command: fmt.Sprintf("java -jar $SL_PLUGIN_DIR/%s.jar", plugin.Name),
+	}
+}
+
+func (c java) hook(plugin *Metadata) Commands {
+	return Commands{
+		Command: "echo hello " + plugin.Name,
+	}
 }
 
 func (c java) files(plugin *Metadata, pdir string) []file {

@@ -61,7 +61,10 @@ func loadPlugins(baseCmd *cobra.Command, out io.Writer) {
 				if err = plugin.SetupPluginEnv(md.Name, plug.Dir); err != nil {
 					return err
 				}
-				main, argv := plug.PrepareCommand(u)
+				main, argv, err := plug.PrepareCommand(u)
+				if err != nil {
+					return err
+				}
 
 				prog := exec.Command(main, argv...)
 				prog.Env = os.Environ()

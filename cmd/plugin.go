@@ -1,8 +1,13 @@
 package main
 
 import (
+	"fmt"
+	"github.com/softleader/slctl/pkg/plugin"
+	"github.com/softleader/slctl/pkg/v"
 	"github.com/spf13/cobra"
 	"io"
+	"os"
+	"os/exec"
 )
 
 const pluginHelp = `
@@ -27,30 +32,23 @@ func newPluginCmd(out io.Writer) *cobra.Command {
 	return cmd
 }
 
-//// runHook will execute a plugin hook.
-//func runHook(p *plugin.Plugin, event string) error {
-//	hook := p.Metadata.Hooks.Get(event)
-//	if hook == "" {
-//		return nil
-//	}
-//
-//	prog := exec.Command("sh", "-c", hook)
-//	// TODO make this work on windows
-//	// I think its ... ¯\_(ツ)_/¯
-//	// prog := exec.Command("cmd", "/C", p.Metadata.Hooks.Install())
-//
-//	v.Printf("running %s hook: %v\n", event, prog)
-//
-//	if err := plugin.SetupPluginEnv(p.Metadata.Name, p.Dir); err != nil {
-//		return err
-//	}
-//	prog.Stdout, prog.Stderr = os.Stdout, os.Stderr
-//	if err := prog.Run(); err != nil {
-//		if eerr, ok := err.(*exec.ExitError); ok {
-//			os.Stderr.Write(eerr.Stderr)
-//			return fmt.Errorf("plugin %s hook for %q exited with error", event, p.Metadata.Name)
-//		}
-//		return err
-//	}
-//	return nil
-//}
+func runHook(p *plugin.Plugin) error {
+	if err := plugin.SetupPluginEnv(p.Metadata.Name, p.Dir); err != nil {
+		return err
+	}
+	main, argv, err := p.PrepareCommand(nil)
+	if err != nil {
+		return err
+	}
+	prog := exec.Command(main, argv...)
+	v.Printf("running hook: %v\n", prog)
+	prog.Stdout, prog.Stderr = os.Stdout, os.Stderr
+	if err := prog.Run(); err != nil {
+		if e, ok := err.(*exec.ExitError); ok {
+			os.Stderr.Write(e.Stderr)
+			return fmt.Errorf("plugin hook for %q exited with error", p.Metadata.Name)
+		}
+		return err
+	}
+	return nil
+}

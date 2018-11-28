@@ -3,6 +3,7 @@ package installer
 import (
 	"errors"
 	"fmt"
+	"github.com/Masterminds/semver"
 	"github.com/softleader/slctl/pkg/plugin"
 	"github.com/softleader/slctl/pkg/slpath"
 	"github.com/softleader/slctl/pkg/v"
@@ -13,9 +14,10 @@ import (
 )
 
 var (
-	ErrMissingMetadata   = errors.New("plugin metadata (" + plugin.MetadataFileName + ") missing")
-	legalPluginName      = regexp.MustCompile(`^[\w\d_-]+$`)
-	ErrIllegalPluginName = errors.New("plugin name must match " + legalPluginName.String())
+	ErrMissingMetadata      = errors.New("plugin metadata (" + plugin.MetadataFileName + ") missing")
+	legalPluginName         = regexp.MustCompile(`^[\w\d_-]+$`)
+	ErrIllegalPluginName    = errors.New("plugin name must match " + legalPluginName.String())
+	ErrIllegalPluginVersion = errors.New("require a Semantic 2 version: https://semver.org/")
 )
 
 type localInstaller struct {
@@ -49,6 +51,10 @@ func (i *localInstaller) Install() (*plugin.Plugin, error) {
 		return nil, ErrIllegalPluginName
 	}
 
+	if !isVersionLegel(plug.Metadata.Version) {
+		return nil, ErrIllegalPluginVersion
+	}
+
 	link := filepath.Join(i.home.Plugins(), plug.Metadata.Name)
 	v.Printf("symlinking %s to %s\n", plug.Dir, link)
 
@@ -69,4 +75,11 @@ func isPlugin(dirname string) bool {
 
 func isPluginNameLegal(name string) bool {
 	return legalPluginName.MatchString(name)
+}
+
+func isVersionLegel(version string) bool {
+	if _, err := semver.NewVersion(version); err != nil {
+		return false
+	}
+	return true
 }

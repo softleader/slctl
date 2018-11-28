@@ -9,6 +9,7 @@ import (
 	"github.com/softleader/slctl/pkg/config"
 	"github.com/softleader/slctl/pkg/environment"
 	"github.com/softleader/slctl/pkg/slpath"
+	"github.com/softleader/slctl/pkg/token"
 	"github.com/softleader/slctl/pkg/v"
 	"github.com/spf13/cobra"
 	"golang.org/x/crypto/ssh/terminal"
@@ -166,7 +167,7 @@ func grantToken(username, password string, out io.Writer, refresh bool) (token s
 func authorizationRequest() *github.AuthorizationRequest {
 	n := note
 	return &github.AuthorizationRequest{
-		Scopes: tokenScopes,
+		Scopes: token.Scopes,
 		Note:   &n,
 	}
 }

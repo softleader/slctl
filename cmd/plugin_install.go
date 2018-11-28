@@ -40,7 +40,7 @@ Plugin 也可以是一個 GitHub repo, 傳入 'github.com/OWNER/REPO', {{.}} 會
 
 傳入 '--tag' 可以指定 release 版本
 
-	$ slctl plugin install github.com/softleader/slctl-whereis --tag v1.0
+	$ slctl plugin install github.com/softleader/slctl-whereis --tag v1.0.0
 `
 
 func newPluginInstallCmd(out io.Writer) *cobra.Command {
@@ -81,7 +81,11 @@ func (pcmd *pluginInstallCmd) run() error {
 	}
 
 	v.Printf("loading plugin from %s\n", p.Dir)
-	
+
+	if err := runHook(p); err != nil {
+		return err
+	}
+
 	fmt.Fprintf(pcmd.out, "Installed plugin: %s\n", p.Metadata.Name)
 	return nil
 }

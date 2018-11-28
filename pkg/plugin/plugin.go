@@ -1,6 +1,7 @@
 package plugin
 
 import (
+	"github.com/google/go-github/github"
 	"github.com/softleader/slctl/pkg/config"
 	"github.com/softleader/slctl/pkg/environment"
 	"gopkg.in/yaml.v2"
@@ -13,38 +14,15 @@ import (
 
 const MetadataFileName = "metadata.yaml"
 
-// Metadata describes a plugin.
-//
-// This is the plugin equivalent of a chart.Metadata.
 type Metadata struct {
-	// Name is the name of the plugin
-	Name string `json:"name"`
-
-	// Version is a SemVer 2 version of the plugin.
-	Version string `json:"version"`
-
-	// Usage is the single-line usage text shown in help
-	Usage string `json:"usage"`
-
-	// Description is a long description shown in places like `helm help`
-	Description string `json:"description"`
-
-	// Command is the command, as a single string.
-	//
-	// The command will be passed through environment expansion, so env vars can
-	// be present in this command. Unless IgnoreFlags is set, this will
-	// also merge the flags passed from Helm.
-	//
-	// Note that command is not executed in a shell. To do so, we suggest
-	// pointing the command to a shell script.
-	Command string `json:"command"`
-
-	// IgnoreFlags ignores any flags passed in from Helm
-	//
-	// For example, if the plugin is invoked as `helm --debug myplugin`, if this
-	// is false, `--debug` will be appended to `--command`. If this is true,
-	// the `--debug` flag will be discarded.
-	IgnoreGlobalFlags bool `json:"ignoreGlobalFlags"`
+	Name              string         `json:"name"`
+	Version           string         `json:"version"`
+	Usage             string         `json:"usage"`
+	Description       string         `json:"description"`
+	Command           Commands       `json:"command"`
+	Hook              Commands       `json:"hook"`
+	IgnoreGlobalFlags bool           `json:"ignoreGlobalFlags"`
+	Scopes            []github.Scope `json:"scopes"`
 }
 
 type Plugin struct {
@@ -58,17 +36,20 @@ type Plugin struct {
 // returns the name of the command and an args array.
 //
 // The result is suitable to pass to exec.Command.
-func (p *Plugin) PrepareCommand(extraArgs []string) (string, []string) {
-	parts := strings.Split(os.ExpandEnv(p.Metadata.Command), " ")
-	main := parts[0]
-	baseArgs := []string{}
+func (p *Plugin) PrepareCommand(extraArgs []string) (main string, argv []string, err error) {
+	command, err := p.Metadata.Command.GetCommand()
+	if err != nil {
+		return
+	}
+	parts := strings.Split(os.ExpandEnv(command), " ")
+	main = parts[0]
 	if len(parts) > 1 {
-		baseArgs = parts[1:]
+		argv = parts[1:]
 	}
-	if !p.Metadata.IgnoreGlobalFlags {
-		baseArgs = append(baseArgs, extraArgs...)
+	if !p.Metadata.IgnoreGlobalFlags && extraArgs != nil {
+		argv = append(argv, extraArgs...)
 	}
-	return main, baseArgs
+	return
 }
 
 // LoadDir loads a plugin from the given directory.
@@ -89,7 +70,7 @@ func LoadDir(dirname string) (*Plugin, error) {
 //
 // This scans only one directory level.
 func LoadAll(basedir string) ([]*Plugin, error) {
-	plugins := []*Plugin{}
+	var plugins []*Plugin
 	// We want basedir/*/plugin.yaml
 	scanpath := filepath.Join(basedir, "*", MetadataFileName)
 	matches, err := filepath.Glob(scanpath)
@@ -111,20 +92,6 @@ func LoadAll(basedir string) ([]*Plugin, error) {
 	}
 	return plugins, nil
 }
-
-// FindPlugins returns a list of YAML files that describe plugins.
-//func FindPlugins(plugdirs string) ([]*Plugin, error) {
-//	found := []*Plugin{}
-//	// Let's get all UNIXy and allow path separators
-//	for _, p := range filepath.SplitList(plugdirs) {
-//		matches, err := LoadAll(p)
-//		if err != nil {
-//			return matches, err
-//		}
-//		found = append(found, matches...)
-//	}
-//	return found, nil
-//}
 
 // SetupPluginEnv prepares os.Env for plugins. It operates on os.Env because
 // the plugin subsystem itself needs access to the environment variables

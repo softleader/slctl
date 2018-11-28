@@ -3,7 +3,7 @@ package main
 import (
 	"errors"
 	"fmt"
-	"github.com/google/go-github/github"
+	"github.com/softleader/slctl/pkg/token"
 	"github.com/spf13/cobra"
 	"io"
 )
@@ -16,8 +16,6 @@ const (
 `
 )
 
-var tokenScopes = []github.Scope{github.ScopeReadOrg, github.ScopeUser}
-
 func newInitScopesCmd(out io.Writer) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "scopes",
@@ -27,7 +25,7 @@ func newInitScopesCmd(out io.Writer) *cobra.Command {
 			if len(args) != 0 {
 				return errors.New("this command does not accept arguments")
 			}
-			for _, scope := range tokenScopes {
+			for _, scope := range token.Scopes {
 				fmt.Fprintln(out, scope)
 			}
 			return nil

@@ -89,8 +89,16 @@ clean:
 
 type golang struct{}
 
-func (c golang) command(plugin *Metadata) string {
-	return "$SL_PLUGIN_DIR/" + plugin.Name
+func (c golang) command(plugin *Metadata) Commands {
+	return Commands{
+		Command: "$SL_BIN",
+	}
+}
+
+func (c golang) hook(plugin *Metadata) Commands {
+	return Commands{
+		Command: "echo hello " + plugin.Name,
+	}
 }
 
 func (c golang) files(plugin *Metadata, pdir string) []file {
