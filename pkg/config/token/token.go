@@ -31,7 +31,7 @@ Use 'init --help' for more information about the command.`)
 
 func EnsureScopes(out io.Writer, scopes []github.Scope) (err error) {
 	if environment.Settings.Offline {
-		return nil
+		return
 	}
 	var addScopes []github.Scope
 	for _, scope := range scopes {
@@ -41,7 +41,7 @@ func EnsureScopes(out io.Writer, scopes []github.Scope) (err error) {
 	}
 	if len(addScopes) == 0 {
 		// if goes here, plugin's scopes are the same as 'slctl init scopes', so we don't have to against GitHub api
-		return nil
+		return
 	}
 
 	fmt.Fprintf(out, "Checking authorization scopes %q for the GitHub access token\n", scopes)
@@ -68,9 +68,8 @@ func EnsureScopes(out io.Writer, scopes []github.Scope) (err error) {
 		fmt.Fprint(out, "\nGitHub OTP: ")
 		otp, _ := r.ReadString('\n')
 		tp.OTP = strings.TrimSpace(otp)
-		auths, _, err = client.Authorizations.List(ctx, &github.ListOptions{})
-		if err != nil {
-			return err
+		if auths, _, err = client.Authorizations.List(ctx, &github.ListOptions{}); err != nil {
+			return
 		}
 	}
 	auth := findAuth(auths, note)
@@ -84,13 +83,12 @@ func EnsureScopes(out io.Writer, scopes []github.Scope) (err error) {
 	}
 	if len(addScopes) == 0 {
 		// if goes here, plugin's scopes are already granted for the token
-		return nil
+		return
 	}
 
 	fmt.Fprintf(out, "granting scopes: %q\n", addScopes)
 
-	req := newAuthorizationUpdateRequest(addScopes)
-	_, _, err = client.Authorizations.Edit(ctx, auth.GetID(), req)
+	_, _, err = client.Authorizations.Edit(ctx, auth.GetID(), newAuthorizationUpdateRequest(addScopes))
 	return
 }
 
