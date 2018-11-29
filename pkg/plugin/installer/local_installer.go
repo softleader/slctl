@@ -59,7 +59,7 @@ func (i *localInstaller) Install() (*plugin.Plugin, error) {
 	v.Printf("symlinking %s to %s\n", plug.Dir, link)
 
 	if _, err := os.Stat(link); !os.IsNotExist(err) {
-		return nil, errors.New(`plugin '` + plug.Metadata.Name + `' already exists.`)
+		return nil, fmt.Errorf("plugin %q already exists", plug.Metadata.Name)
 	}
 	if err := os.Symlink(plug.Dir, link); err != nil {
 		return nil, err

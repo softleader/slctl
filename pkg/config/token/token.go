@@ -75,7 +75,7 @@ func EnsureScopes(out io.Writer, scopes []github.Scope) (err error) {
 	auth := findAuth(auths, note)
 	if auth == nil {
 		return fmt.Errorf(
-			"Couldn't find access token with note: '%s'.\n"+
+			"Couldn't find access token with note: %q.\n"+
 				"You might need to run `slctl init`", note)
 	}
 	for _, scope := range auth.Scopes {
