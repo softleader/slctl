@@ -39,11 +39,11 @@ Plugin 也可以是一個 GitHub repo, 傳入 'github.com/OWNER/REPO', {{.}} 會
 
 傳入 '--tag' 可以指定 release 版本
 
-	$ slctl plugin install github.com/softleader/slctl-whereis --tag v1.0.0
+	$ slctl plugin install github.com/softleader/slctl-whereis --tag 1.0.0
 
 傳入 '--tag' 及 '--asset' 可以指定 release 版本以及要下載第幾個 asset 檔案 (從 0 開始) 來安裝
 
-	$ slctl plugin install github.com/softleader/slctl-whereis --tag v1.0.0 --asset 2
+	$ slctl plugin install github.com/softleader/slctl-whereis --tag 1.0.0 --asset 2
 `
 
 func newPluginInstallCmd(out io.Writer) *cobra.Command {
