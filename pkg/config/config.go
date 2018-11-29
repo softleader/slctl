@@ -62,5 +62,6 @@ func Refresh(home slpath.Home, token string, _ io.Writer) (err error) {
 		return fmt.Errorf("failed to load file (%v)", err)
 	}
 	conf.Token = token
+
 	return conf.WriteFile(home.ConfigFile(), ReadWrite)
 }

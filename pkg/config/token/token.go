@@ -33,17 +33,18 @@ func EnsureScopes(out io.Writer, scopes []github.Scope) (err error) {
 	if environment.Settings.Offline {
 		return nil
 	}
-	var addScopes []string
+	var addScopes []github.Scope
 	for _, scope := range scopes {
 		if !contains(Scopes, scope) {
-			addScopes = append(addScopes, string(scope))
+			addScopes = append(addScopes, scope)
 		}
 	}
-	if len(addScopes) <= 0 {
+	if len(addScopes) == 0 {
+		// if goes here, plugin's scopes are the same as 'slctl init scopes', so we don't have to against GitHub api
 		return nil
 	}
 
-	fmt.Fprintf(out, "granting scopes: %q\n", addScopes)
+	fmt.Fprintf(out, "Checking authorization scopes %q for the GitHub access token\n", scopes)
 
 	r := bufio.NewReader(os.Stdin)
 
@@ -67,21 +68,63 @@ func EnsureScopes(out io.Writer, scopes []github.Scope) (err error) {
 		fmt.Fprint(out, "\nGitHub OTP: ")
 		otp, _ := r.ReadString('\n')
 		tp.OTP = strings.TrimSpace(otp)
-		if auths, _, err = client.Authorizations.List(ctx, &github.ListOptions{}); err != nil {
-			return
+		auths, _, err = client.Authorizations.List(ctx, &github.ListOptions{})
+		if err != nil {
+			return err
 		}
 	}
+	auth := findAuth(auths, note)
+	if auth == nil {
+		return fmt.Errorf(
+			"Couldn't find access token with note: '%s'.\n"+
+				"You might need to run `slctl init`", note)
+	}
+	for _, scope := range auth.Scopes {
+		addScopes = remove(addScopes, scope)
+	}
+	if len(addScopes) == 0 {
+		// if goes here, plugin's scopes are already granted for the token
+		return nil
+	}
+
+	fmt.Fprintf(out, "granting scopes: %q\n", addScopes)
+
+	req := newAuthorizationUpdateRequest(addScopes)
+	_, _, err = client.Authorizations.Edit(ctx, auth.GetID(), req)
+	return
+}
+
+func newAuthorizationUpdateRequest(scopes []github.Scope) (r *github.AuthorizationUpdateRequest) {
+	r = &github.AuthorizationUpdateRequest{
+		AddScopes: make([]string, len(scopes)),
+	}
+	for i, s := range scopes {
+		r.AddScopes[i] = string(s)
+	}
+	return
+}
+
+func findAuth(auths []*github.Authorization, note string) *github.Authorization {
 	for _, auth := range auths {
 		if auth.GetNote() == note {
-			_, _, err = client.Authorizations.Edit(ctx, auth.GetID(), &github.AuthorizationUpdateRequest{
-				AddScopes: addScopes,
-			})
-			return
+			return auth
 		}
 	}
-	return fmt.Errorf(
-		"Couldn't find access token with note: '%s'.\n"+
-			"You might need to run `slctl init`", note)
+	return nil
+}
+
+func remove(a []github.Scope, s github.Scope) []github.Scope {
+	var i *int
+	for idx, v := range a {
+		if v == s {
+			i = &idx
+			break
+		}
+	}
+	if i == nil {
+		return a
+	}
+	return append(a[:*i], a[*i+1:]...)
 }
 
 func contains(base []github.Scope, target github.Scope) bool {
