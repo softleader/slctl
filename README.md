@@ -1,6 +1,3 @@
-[![Build Status](https://github-basic-badges.herokuapp.com/release/softleader/slctl.svg)](https://github.com/softleader/slctl/releases)
-[![License](https://github-basic-badges.herokuapp.com/license/softleader/slctl.svg)](https://github.com/softleader/slctl/blob/master/LICENSE)
-
 # slctl
 
 Slctl is a command line interface for running commands against SoftLeader services.
