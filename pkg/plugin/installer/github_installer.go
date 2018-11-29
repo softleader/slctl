@@ -46,7 +46,7 @@ func newGitHubInstaller(out io.Writer, source, tag string, asset int, home slpat
 			return nil, err
 		}
 	} else {
-		v.Fprintf(out, "fetching the release from github.com/%s/%s with tag '%s'\n", owner, repo, tag)
+		v.Fprintf(out, "fetching the release from github.com/%s/%s with tag %q\n", owner, repo, tag)
 		if release, _, err = client.Repositories.GetReleaseByTag(ctx, owner, repo, tag); err != nil {
 			return nil, err
 		}
@@ -88,17 +88,17 @@ func dismantle(url string) (owner, repo string) {
 
 func pickAsset(out io.Writer, release *github.RepositoryRelease, asset int) (ra *github.ReleaseAsset, err error) {
 	if len(release.Assets) < 1 {
-		err = fmt.Errorf("no assets found on release '%s'", release.GetName())
+		err = fmt.Errorf("no assets found on release %q", release.GetName())
 		return
 	}
 	if asset > 0 {
 		if len := len(release.Assets); asset >= len {
-			return nil, fmt.Errorf("only %v assets found but you're asking %v (start from zero)", len, asset)
+			return nil, fmt.Errorf("only %v assets found on release %q but you're asking %v (start from zero)", len, release.GetName(), asset)
 		}
 		ra = &release.Assets[asset]
 		return
 	}
-	v.Fprintf(out, "trying to find asset name contains '%s' from release '%s'\n", runtime.GOOS, release.GetName())
+	v.Fprintf(out, "trying to find asset name contains %q from release %q\n", runtime.GOOS, release.GetName())
 	if ra = findRuntimeOsAsset(out, release.Assets); ra == nil {
 		v.Fprintf(out, "%s asset not found, using first asset\n", runtime.GOOS)
 		ra = &release.Assets[0]
