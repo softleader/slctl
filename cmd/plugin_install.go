@@ -13,10 +13,11 @@ import (
 )
 
 type pluginInstallCmd struct {
-	source  string
-	version string
-	home    slpath.Home
-	out     io.Writer
+	source string
+	tag    string
+	asset  int8
+	home   slpath.Home
+	out    io.Writer
 }
 
 const pluginInstallDesc = `
@@ -39,6 +40,10 @@ Plugin 也可以是一個 GitHub repo, 傳入 'github.com/OWNER/REPO', {{.}} 會
 傳入 '--tag' 可以指定 release 版本
 
 	$ slctl plugin install github.com/softleader/slctl-whereis --tag v1.0.0
+
+傳入 '--tag' 及 '--asset' 可以指定 release 版本以及要下載第幾個 asset 檔案 (從 0 開始) 來安裝
+
+	$ slctl plugin install github.com/softleader/slctl-whereis --tag v1.0.0 --asset 2
 `
 
 func newPluginInstallCmd(out io.Writer) *cobra.Command {
@@ -54,7 +59,8 @@ func newPluginInstallCmd(out io.Writer) *cobra.Command {
 			return pcmd.run()
 		},
 	}
-	cmd.Flags().StringVar(&pcmd.version, "tag", "", "specify a tag constraint. If this is not specified, the latest release version is installed")
+	cmd.Flags().StringVar(&pcmd.tag, "tag", "", "specify a tag constraint. If this is not specified, the latest release tag is installed")
+	cmd.Flags().Int8Var(&pcmd.asset, "asset", -1, "specify a asset number, start from zero, to download")
 	return cmd
 }
 
@@ -68,7 +74,7 @@ func (pcmd *pluginInstallCmd) complete(args []string) error {
 }
 
 func (pcmd *pluginInstallCmd) run() error {
-	i, err := installer.NewInstaller(pcmd.out, pcmd.source, pcmd.version, pcmd.home)
+	i, err := installer.NewInstaller(pcmd.out, pcmd.source, pcmd.tag, pcmd.asset, pcmd.home)
 	if err != nil {
 		return err
 	}

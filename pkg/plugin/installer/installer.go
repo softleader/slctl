@@ -15,7 +15,7 @@ type Installer interface {
 	Install() (*plugin.Plugin, error)
 }
 
-func NewInstaller(out io.Writer, source string, version string, home slpath.Home) (Installer, error) {
+func NewInstaller(out io.Writer, source string, tag string, asset int8, home slpath.Home) (Installer, error) {
 	if isLocalDirReference(source) {
 		return newLocalInstaller(out, source, home)
 	}
@@ -23,7 +23,7 @@ func NewInstaller(out io.Writer, source string, version string, home slpath.Home
 		return newArchiveInstaller(out, source, home)
 	}
 	if isGitHubRepo(source) {
-		return newGitHubInstaller(out, source, version, home)
+		return newGitHubInstaller(out, source, tag, asset, home)
 	}
 
 	return nil, fmt.Errorf("unsupported plugin source: %s", source)
