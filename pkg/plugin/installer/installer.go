@@ -15,7 +15,7 @@ type Installer interface {
 	Install() (*plugin.Plugin, error)
 }
 
-func NewInstaller(out io.Writer, source string, tag string, asset int8, home slpath.Home) (Installer, error) {
+func NewInstaller(out io.Writer, source string, tag string, asset int, home slpath.Home) (Installer, error) {
 	if isLocalDirReference(source) {
 		return newLocalInstaller(out, source, home)
 	}

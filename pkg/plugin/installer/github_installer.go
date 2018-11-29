@@ -22,7 +22,7 @@ type gitHubInstaller struct {
 	archiveInstaller
 }
 
-func newGitHubInstaller(out io.Writer, source, tag string, asset int8, home slpath.Home) (*gitHubInstaller, error) {
+func newGitHubInstaller(out io.Writer, source, tag string, asset int, home slpath.Home) (*gitHubInstaller, error) {
 	if environment.Settings.Offline {
 		return nil, ErrNonResolvableInOfflineMode
 	}
@@ -52,12 +52,12 @@ func newGitHubInstaller(out io.Writer, source, tag string, asset int8, home slpa
 		}
 	}
 
-	v.Fprintf(out, "trying to find any asset name contains '%s' from release '%s'\n", runtime.GOOS, release.GetName())
-	a, err := findAsset(out, release.Assets, asset)
+	ra, err := pickAsset(out, release, asset)
 	if err != nil {
 		return nil, err
 	}
-	rc, url, err := client.Repositories.DownloadReleaseAsset(ctx, owner, repo, a.GetID())
+
+	rc, url, err := client.Repositories.DownloadReleaseAsset(ctx, owner, repo, ra.GetID())
 	if err != nil {
 		return nil, err
 	}
@@ -67,7 +67,7 @@ func newGitHubInstaller(out io.Writer, source, tag string, asset int8, home slpa
 	ghi.home = home
 	ghi.out = out
 
-	binary := a.GetBrowserDownloadURL()
+	binary := ra.GetBrowserDownloadURL()
 	v.Fprintf(out, "downloading the binary content: %s\n", binary)
 
 	if url != "" {
@@ -86,19 +86,31 @@ func dismantle(url string) (owner, repo string) {
 	return
 }
 
-func findAsset(out io.Writer, assets []github.ReleaseAsset, idx int8) (*github.ReleaseAsset, error) {
-	if len(assets) < 1 {
-		return nil, fmt.Errorf("no assets found")
+func pickAsset(out io.Writer, release *github.RepositoryRelease, asset int) (ra *github.ReleaseAsset, err error) {
+	if len(release.Assets) < 1 {
+		err = fmt.Errorf("no assets found on release '%s'", release.GetName())
+		return
 	}
-	if idx < 0 {
-		for _, asset := range assets {
-			if strings.Contains(asset.GetName(), runtime.GOOS) {
-				return &asset, nil
-			}
+	if asset > 0 {
+		if len := len(release.Assets); asset >= len {
+			return nil, fmt.Errorf("only %v assets found but you're asking %v (start from zero)", len, asset)
 		}
-		v.Fprintf(out, "%s asset not found\n", runtime.GOOS)
-		idx = 0
+		ra = &release.Assets[asset]
+		return
 	}
-	v.Fprintf(out, "using no. %v asset\n", idx)
-	return &assets[idx], nil
+	v.Fprintf(out, "trying to find asset name contains '%s' from release '%s'\n", runtime.GOOS, release.GetName())
+	if ra = findRuntimeOsAsset(out, release.Assets); ra == nil {
+		v.Fprintf(out, "%s asset not found, using first asset\n", runtime.GOOS)
+		ra = &release.Assets[0]
+	}
+	return
+}
+
+func findRuntimeOsAsset(_ io.Writer, assets []github.ReleaseAsset) *github.ReleaseAsset {
+	for _, asset := range assets {
+		if strings.Contains(asset.GetName(), runtime.GOOS) {
+			return &asset
+		}
+	}
+	return nil
 }

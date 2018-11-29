@@ -15,7 +15,7 @@ import (
 type pluginInstallCmd struct {
 	source string
 	tag    string
-	asset  int8
+	asset  int
 	home   slpath.Home
 	out    io.Writer
 }
@@ -60,7 +60,7 @@ func newPluginInstallCmd(out io.Writer) *cobra.Command {
 		},
 	}
 	cmd.Flags().StringVar(&pcmd.tag, "tag", "", "specify a tag constraint. If this is not specified, the latest release tag is installed")
-	cmd.Flags().Int8Var(&pcmd.asset, "asset", -1, "specify a asset number, start from zero, to download")
+	cmd.Flags().IntVar(&pcmd.asset, "asset", -1, "specify a asset number, start from zero, to download")
 	return cmd
 }
 
