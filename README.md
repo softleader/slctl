@@ -1,5 +1,5 @@
-[![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://github.com/softleader/slctl/blob/master/LICENSE)
 [![Build Status](https://github-basic-badges.herokuapp.com/release/softleader/slctl.svg)](https://github.com/softleader/slctl/releases)
+[![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://github.com/softleader/slctl/blob/master/LICENSE)
 
 # slctl
 
