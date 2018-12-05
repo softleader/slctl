@@ -90,7 +90,7 @@ clean:
 type golang struct{}
 
 func (c golang) exec(plugin *Metadata) Commands {
-	command := "$SL_BIN"
+	command := "$SL_PLUGIN_DIR/" + plugin.Name
 	return Commands{
 		Command: command,
 		Platform: []Platform{
