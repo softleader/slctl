@@ -5,6 +5,14 @@ import (
 	"runtime"
 )
 
+type ErrNoCommandFound struct {
+	s string
+}
+
+func (e *ErrNoCommandFound) Error() string {
+	return e.s
+}
+
 type Commands struct {
 	Command  string     `json:"command"`
 	Platform []Platform `json:"platform"`
@@ -28,7 +36,9 @@ func (c *Commands) GetCommand() (command string, err error) {
 		}
 	}
 	if command == "" {
-		err = fmt.Errorf("no suitable command found for %s/%s", runtime.GOOS, runtime.GOARCH)
+		err = &ErrNoCommandFound{
+			s: fmt.Sprintf("no suitable command found for %s/%s", runtime.GOOS, runtime.GOARCH),
+		}
 	}
 	return
 }

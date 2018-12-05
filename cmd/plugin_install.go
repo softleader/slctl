@@ -89,7 +89,9 @@ func (pcmd *pluginInstallCmd) run() error {
 	}
 
 	if err := runHook(p); err != nil {
-		return err
+		if err, ok := err.(*plugin.ErrNoCommandFound); !ok {
+			return err
+		}
 	}
 
 	fmt.Fprintf(pcmd.out, "Installed plugin: %s\n", p.Metadata.Name)
