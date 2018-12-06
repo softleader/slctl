@@ -13,6 +13,10 @@ import (
 
 const MetadataFileName = "metadata.yaml"
 
+var (
+	Envs = envs()
+)
+
 type Metadata struct {
 	Name              string   `json:"name"`
 	Version           string   `json:"version"`
@@ -98,21 +102,30 @@ func SetupPluginEnv(
 		return err
 	}
 
-	for key, val := range map[string]string{
-		"SL_PLUGIN_NAME": shortName,
-		"SL_PLUGIN_DIR":  base,
-		"SL_BIN":         os.Args[0],
-
-		// Set vars that may not have been set, and save client the
-		// trouble of re-parsing.
-		"SL_PLUGIN":  environment.Settings.PluginDirs(),
-		"SL_HOME":    environment.Settings.Home.String(),
-		"SL_VERBOSE": strconv.FormatBool(environment.Settings.Verbose),
-		"SL_OFFLINE": strconv.FormatBool(environment.Settings.Offline),
-		"SL_TOKEN":   conf.Token,
-	} {
+	for key, val := range pluginEnv(shortName, base, conf.Token) {
 		os.Setenv(key, val)
 	}
 
 	return nil
+}
+
+func pluginEnv(shortName, base, token string) map[string]string {
+	return map[string]string{
+		"SL_PLUGIN_NAME": shortName,
+		"SL_PLUGIN_DIR":  base,
+		"SL_BIN":         os.Args[0],
+		"SL_PLUGIN":      environment.Settings.PluginDirs(),
+		"SL_HOME":        environment.Settings.Home.String(),
+		"SL_VERBOSE":     strconv.FormatBool(environment.Settings.Verbose),
+		"SL_OFFLINE":     strconv.FormatBool(environment.Settings.Offline),
+		"SL_TOKEN":       token,
+	}
+}
+
+func envs() (envs []string) {
+	m := pluginEnv("", "", "")
+	for env := range m {
+		envs = append(envs, env)
+	}
+	return
 }

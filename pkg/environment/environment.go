@@ -6,11 +6,19 @@ import (
 	"github.com/spf13/pflag"
 	"os"
 	"path/filepath"
+	"regexp"
 )
 
 var (
 	DefaultHome = filepath.Join(homedir.HomeDir(), ".sl")
 	Settings    = new(EnvSettings)
+	envMap      = map[string]string{
+		"home":    "SL_HOME",
+		"offline": "SL_OFFLINE",
+		"verbose": "SL_VERBOSE",
+	}
+	Flags        = flags()
+	leadingDash = regexp.MustCompile(`^[-]{1,2}(.+)`)
 )
 
 type EnvSettings struct {
@@ -31,19 +39,21 @@ func (s *EnvSettings) Init(fs *pflag.FlagSet) {
 	}
 }
 
-var envMap = map[string]string{
-	"home":    "SL_HOME",
-	"verbose": "SL_VERBOSE",
-	"offline": "SL_OFFLINE",
+func flags() (flags []string) {
+	for env := range envMap {
+		flags = append(flags, "--"+env)
+	}
+	flags = append(flags, "-v")
+	return
 }
 
 func IsGlobalFlag(flag string) (global bool) {
-	if flag == "-v" {
-		global = true
-		return
+	for _, f := range Flags {
+		if f == flag {
+			return true
+		}
 	}
-	_, global = envMap["--"+flag]
-	return
+	return false
 }
 
 func (s EnvSettings) PluginDirs() string {

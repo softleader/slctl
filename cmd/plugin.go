@@ -28,6 +28,8 @@ func newPluginCmd(out io.Writer) *cobra.Command {
 		newPluginInstallCmd(out),
 		newPluginRemoveCmd(out),
 		newPluginCreateCmd(out),
+		newPluginEnvsCmd(out),
+		newPluginFlagsCmd(out),
 	)
 	return cmd
 }
