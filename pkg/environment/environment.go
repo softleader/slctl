@@ -38,11 +38,11 @@ var envMap = map[string]string{
 }
 
 func IsGlobalFlag(flag string) (global bool) {
-	if flag == "v" {
+	if flag == "-v" {
 		global = true
 		return
 	}
-	_, global = envMap[flag]
+	_, global = envMap["--"+flag]
 	return
 }
 
