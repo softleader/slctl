@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"fmt"
 	"github.com/softleader/slctl/pkg/config/token"
+	"github.com/softleader/slctl/pkg/strcase"
 	"gopkg.in/yaml.v2"
 	"io/ioutil"
 	"os"
@@ -112,7 +113,9 @@ func (u tpl) filepath() string {
 
 func (u tpl) content() ([]byte, error) {
 	funcMap := template.FuncMap{
-		"title": strings.Title,
+		"title":      strings.Title,
+		"camel":      strcase.ToCamel,
+		"lowerCamel": strcase.ToLowerCamel,
 	}
 	var buf bytes.Buffer
 	parsed := template.Must(template.New("").Funcs(funcMap).Parse(u.template))

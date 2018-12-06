@@ -102,12 +102,9 @@ func loadPlugins(baseCmd *cobra.Command, out io.Writer) {
 // Returns two sets of args: known and unknown (in that order)
 func manuallyProcessArgs(args []string) (known []string, unknown []string) {
 	for i := 0; i < len(args); i++ {
-		switch a := args[i]; a {
-		case "--verbose":
+		if a := args[i]; environment.IsGlobalFlag(a) {
 			known = append(known, a)
-		case "-v":
-			known = append(known, a)
-		default:
+		} else {
 			unknown = append(unknown, a)
 		}
 	}

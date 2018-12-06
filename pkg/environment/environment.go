@@ -37,6 +37,15 @@ var envMap = map[string]string{
 	"offline": "SL_OFFLINE",
 }
 
+func IsGlobalFlag(flag string) (global bool) {
+	if flag == "v" {
+		global = true
+		return
+	}
+	_, global = envMap[flag]
+	return
+}
+
 func (s EnvSettings) PluginDirs() string {
 	if d, ok := os.LookupEnv("SL_PLUGIN"); ok {
 		return d
