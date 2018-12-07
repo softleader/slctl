@@ -24,10 +24,10 @@ type localInstaller struct {
 	out    io.Writer
 	home   slpath.Home
 	source string
-	rm     bool
+	force  bool
 }
 
-func newLocalInstaller(out io.Writer, source string, home slpath.Home, rm bool) (*localInstaller, error) {
+func newLocalInstaller(out io.Writer, source string, home slpath.Home, force bool) (*localInstaller, error) {
 	src, err := filepath.Abs(source)
 	if err != nil {
 		return nil, fmt.Errorf("unable to get absolute path to plugin: %v", err)
@@ -36,7 +36,7 @@ func newLocalInstaller(out io.Writer, source string, home slpath.Home, rm bool) 
 		out:    out,
 		source: src,
 		home:   home,
-		rm:     rm,
+		force:  force,
 	}, nil
 }
 
@@ -61,7 +61,7 @@ func (i *localInstaller) Install() (*plugin.Plugin, error) {
 	v.Printf("symlinking %s to %s\n", plug.Dir, link)
 
 	if _, err := os.Stat(link); !os.IsNotExist(err) {
-		if !i.rm {
+		if !i.force {
 			return nil, fmt.Errorf("plugin %q already exists", plug.Metadata.Name)
 		}
 		v.Fprintf(i.out, "plugin %q already exists, automatically remove it\n", plug.Metadata.Name)
