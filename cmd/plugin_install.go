@@ -66,7 +66,7 @@ func newPluginInstallCmd(out io.Writer) *cobra.Command {
 	}
 	cmd.Flags().StringVar(&pcmd.tag, "tag", "", "specify a tag constraint. If this is not specified, the latest release tag is installed")
 	cmd.Flags().IntVar(&pcmd.asset, "asset", -1, "specify a asset number, start from zero, to download")
-	cmd.Flags().BoolVarP(&pcmd.force, "force", "f", false, "If the plugin already exists, force to remove it so that the new one may install.")
+	cmd.Flags().BoolVarP(&pcmd.force, "force", "f", false, "if the plugin already exists, force to remove it so that the new one may install.")
 	return cmd
 }
 
