@@ -10,14 +10,13 @@ import (
 )
 
 var (
-	DefaultHome = filepath.Join(homedir.HomeDir(), ".sl")
-	Settings    = new(EnvSettings)
-	envMap      = map[string]string{
+	Settings = new(EnvSettings)
+	envMap   = map[string]string{
 		"home":    "SL_HOME",
 		"offline": "SL_OFFLINE",
 		"verbose": "SL_VERBOSE",
 	}
-	Flags        = flags()
+	Flags       = flags()
 	leadingDash = regexp.MustCompile(`^[-]{1,2}(.+)`)
 )
 
@@ -28,7 +27,11 @@ type EnvSettings struct {
 }
 
 func (s *EnvSettings) AddFlags(fs *pflag.FlagSet) {
-	fs.StringVar((*string)(&s.Home), "home", DefaultHome, "location of your config. Overrides $SL_HOME")
+	defaultHome := filepath.Join(homedir.HomeDir(), ".sl")
+	if v, found := os.LookupEnv("SL_HOME"); found {
+		defaultHome = v
+	}
+	fs.StringVar((*string)(&s.Home), "home", defaultHome, "location of your config. Overrides $SL_HOME")
 	fs.BoolVarP(&s.Verbose, "verbose", "v", false, "enable verbose output")
 	fs.BoolVar(&s.Offline, "offline", false, "work offline")
 }
