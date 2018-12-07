@@ -64,7 +64,7 @@ func (i *localInstaller) Install() (*plugin.Plugin, error) {
 		if !i.force {
 			return nil, fmt.Errorf("plugin %q already exists", plug.Metadata.Name)
 		}
-		v.Fprintf(i.out, "plugin %q already exists, automatically remove it\n", plug.Metadata.Name)
+		v.Fprintf(i.out, "plugin %q already exists, force to remove it\n", plug.Metadata.Name)
 		os.RemoveAll(link)
 	}
 	if err := os.Symlink(plug.Dir, link); err != nil {
