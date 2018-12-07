@@ -56,7 +56,7 @@ func newPluginInstallCmd(out io.Writer) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "install [options] <SOURCE>...",
 		Short: "install one or more plugins",
-		Long:  pluginInstallDesc,
+		Long:  usage(pluginInstallDesc),
 		PreRunE: func(cmd *cobra.Command, args []string) error {
 			return pcmd.complete(args)
 		},
