@@ -2,11 +2,12 @@ package plugin
 
 import (
 	"fmt"
+	"github.com/softleader/slctl/pkg/strcase"
 	"path/filepath"
 	"strings"
 )
 
-const javaMain = `package tw.com.softleader.{{.Name}};
+const javaMain = `package tw.com.softleader.slctl.plugin;
 
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
@@ -15,10 +16,10 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import java.util.stream.Stream;
 
 @SpringBootApplication
-public class {{.Name|title}}Application implements CommandLineRunner {
+public class {{.Name|title|camel}}Application implements CommandLineRunner {
 
   public static void main(String[] args) {
-    SpringApplication.run({{.Name|title}}Application.class, args);
+    SpringApplication.run({{.Name|title|camel}}Application.class, args);
   }
 
   @Override
@@ -152,7 +153,7 @@ func (c java) files(plugin *Metadata, pdir string) []file {
 	main := filepath.Join(pdir, "src", "main")
 	return []file{
 		tpl{
-			path:     filepath.Join(main, "java", "tw", "com", "softleader", strings.Title(plugin.Name)+"Application.java"),
+			path:     filepath.Join(main, "java", "tw", "com", "softleader", "slctl", "plugin", strcase.ToCamel(strings.Title(plugin.Name))+"Application.java"),
 			in:       plugin,
 			template: javaMain,
 		},
