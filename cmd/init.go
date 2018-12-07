@@ -75,7 +75,7 @@ func (c *initCmd) run() (err error) {
 	if c.home.ContainsAnySpace() {
 		return fmt.Errorf(`default home path contains space which is not allowed (%s).
 You might need to specify another SL_HOME without space and set to system variable.
-more details: https://github.com/softleader/slctl/wiki/Home-Path
+for more details: https://github.com/softleader/slctl/wiki/Home-Path
 `, c.home.String())
 	}
 
