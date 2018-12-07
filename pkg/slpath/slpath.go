@@ -3,6 +3,7 @@ package slpath
 import (
 	"os"
 	"path/filepath"
+	"strings"
 )
 
 type Home string
@@ -39,4 +40,8 @@ func (h Home) CachePlugins() string {
 
 func (h Home) CacheArchives() string {
 	return h.Path("cache", "archives")
+}
+
+func (h Home) ContainsAnySpace() bool {
+	return strings.ContainsAny(h.String(), " ")
 }
