@@ -95,7 +95,7 @@ func (pcmd *pluginInstallCmd) run() error {
 	}
 
 	if err := runHook(p); err != nil {
-		if err, ok := err.(*plugin.ErrNoCommandFound); !ok {
+		if _, ok := err.(*plugin.ErrNoCommandFound); !ok {
 			return err
 		}
 	}
