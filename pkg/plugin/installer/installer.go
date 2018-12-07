@@ -15,15 +15,15 @@ type Installer interface {
 	Install() (*plugin.Plugin, error)
 }
 
-func NewInstaller(out io.Writer, source string, tag string, asset int, home slpath.Home) (Installer, error) {
+func NewInstaller(out io.Writer, source string, tag string, asset int, home slpath.Home, rm bool) (Installer, error) {
 	if isLocalDirReference(source) {
-		return newLocalInstaller(out, source, home)
+		return newLocalInstaller(out, source, home, rm)
 	}
 	if isArchive(source) {
-		return newArchiveInstaller(out, source, home)
+		return newArchiveInstaller(out, source, home, rm)
 	}
 	if isGitHubRepo(source) {
-		return newGitHubInstaller(out, source, tag, asset, home)
+		return newGitHubInstaller(out, source, tag, asset, home, rm)
 	}
 
 	return nil, fmt.Errorf("unsupported plugin source: %s", source)
