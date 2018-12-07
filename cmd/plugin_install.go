@@ -48,7 +48,7 @@ Plugin 也可以是一個 GitHub repo, 傳入 'github.com/OWNER/REPO', {{.}} 會
 
 傳入 '--rm' 在 install 時自動刪除已存在的 plugin
 
-	$ slctl plugin install --rm github.com/softleader/slctl-whereis 
+	$ slctl plugin install --rm github.com/softleader/slctl-whereis
 `
 
 func newPluginInstallCmd(out io.Writer) *cobra.Command {

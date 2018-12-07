@@ -39,7 +39,7 @@ func TestArchiveInstaller_Install(t *testing.T) {
 		return
 	}
 
-	i, err := newArchiveInstaller(b, arcPath, hh)
+	i, err := newArchiveInstaller(b, arcPath, hh, true)
 	if err != nil {
 		t.Error(err)
 		return
