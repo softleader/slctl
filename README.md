@@ -33,10 +33,10 @@ $ slctl init -u GITHUB_USERNAME -p GITHUB_PASSWORD
 $ slctl init scopes
 ```
 
-使用 `--refresh` 讓 slctl 發現有重複的 Token 時, 自動的刪除既有的並產生一個全新的 Access Token, 若你想自己維護 Access Token (請務必確保有足夠的權限), 可以使用 `--token` 讓 slctl 驗證後直接儲存起來
+使用 `--force` 讓 slctl 發現有重複的 Token 時, 強制刪除既有的並產生一個全新的 Access Token, 若你想自己維護 Access Token (請務必確保有足夠的權限), 可以使用 `--token` 讓 slctl 驗證後直接儲存起來
 
 ```sh
-$ slctl init --refresh
+$ slctl init -f
 $ slctl init --token GITHUB_TOKEN
 ```
 

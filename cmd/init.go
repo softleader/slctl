@@ -25,10 +25,10 @@ This command grants Github access token and sets up local configuration in $SL_H
 
 	$ {{.}} init scopes
 
-使用 '--refresh' 讓 {{.}} 發現有重複的 Token 時, 自動的刪除既有的並產生一個全新的 Access Token
+使用 '--force' 讓 {{.}} 發現有重複的 Token 時, 強制刪除既有的並產生一個全新的 Access Token
 若你想自己維護 Access Token (請務必確保有足夠的權限), 可以使用 '--token' 讓 {{.}} 驗證後直接儲存起來
 
-	$ {{.}} init --refresh
+	$ {{.}} init -f
 	$ {{.}} init --token GITHUB_TOKEN
 
 使用 '--offline' 則 {{.}} 不會跟 GitHub API 有任何互動, 只會配置 $SL_HOME 環境目錄.
@@ -42,7 +42,7 @@ type initCmd struct {
 	username string
 	password string
 	token    string
-	refresh  bool
+	force    bool
 }
 
 func newInitCmd(out io.Writer) *cobra.Command {
@@ -59,7 +59,7 @@ func newInitCmd(out io.Writer) *cobra.Command {
 	}
 
 	f := cmd.Flags()
-	f.BoolVar(&i.refresh, "refresh", false, "automatically re-generate a new one if token already exists")
+	f.BoolVarP(&i.force, "force", "f", false, "force to re-generate a new one if token already exists")
 	f.StringVar(&i.token, "token", "", "github access token")
 	f.StringVarP(&i.username, "username", "u", "", "github username")
 	f.StringVarP(&i.password, "password", "p", "", "github password")
@@ -90,7 +90,7 @@ for more details: https://github.com/softleader/slctl/wiki/Home-Path
 	var username string
 	if !environment.Settings.Offline {
 		if c.token == "" {
-			if c.token, err = token.Grant(c.username, c.password, c.out, c.refresh); err != nil {
+			if c.token, err = token.Grant(c.username, c.password, c.out, c.force); err != nil {
 				return err
 			}
 		}

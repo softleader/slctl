@@ -46,7 +46,7 @@ Plugin 也可以是一個 GitHub repo, 傳入 'github.com/OWNER/REPO', {{.}} 會
 
 	$ slctl plugin install github.com/softleader/slctl-whereis --tag 1.0.0 --asset 2
 
-傳入 '--force' 在 install 時自動刪除已存在的 plugin
+傳入 '--force' 在 install 時強制刪除已存在的 plugin
 
 	$ slctl plugin install github.com/softleader/slctl-whereis -f
 `
@@ -66,7 +66,7 @@ func newPluginInstallCmd(out io.Writer) *cobra.Command {
 	}
 	cmd.Flags().StringVar(&pcmd.tag, "tag", "", "specify a tag constraint. If this is not specified, the latest release tag is installed")
 	cmd.Flags().IntVar(&pcmd.asset, "asset", -1, "specify a asset number, start from zero, to download")
-	cmd.Flags().BoolVarP(&pcmd.force, "force", "f", false, "if the plugin already exists, force to remove it so that the new one may install.")
+	cmd.Flags().BoolVarP(&pcmd.force, "force", "f", false, "force to re-install if plugin already exists")
 	return cmd
 }
 

@@ -134,7 +134,7 @@ func contains(base []github.Scope, target github.Scope) bool {
 	return false
 }
 
-func Grant(username, password string, out io.Writer, refresh bool) (token string, err error) {
+func Grant(username, password string, out io.Writer, force bool) (token string, err error) {
 	r := bufio.NewReader(os.Stdin)
 	if username == "" {
 		fmt.Fprint(out, "GitHub Username: ")
@@ -166,7 +166,7 @@ func Grant(username, password string, out io.Writer, refresh bool) (token string
 
 	for _, auth := range auths {
 		if auth.GetNote() == note {
-			if !refresh {
+			if !force {
 				return "", ErrOauthAccessAlreadyExists
 			}
 			v.Fprintln(out, "\nRemoving exist token")
