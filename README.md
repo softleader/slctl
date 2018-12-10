@@ -2,6 +2,8 @@
 
 Slctl is a command line interface for running commands against SoftLeader services.
 
+[Latest release build](https://github.com/softleader/slctl/releases/latest) | [Slack Channel](https://softleader.slack.com/messages/CEQRAB71U/) | 
+
 ## Install
 
 MacOS 使用者可以透過 [Homebrew](https://brew.sh/index_zh-tw) 來安裝:
