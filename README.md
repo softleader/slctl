@@ -40,7 +40,7 @@ $ slctl init -f
 $ slctl init --token GITHUB_TOKEN
 ```
 
-使用 `--offline` 則 slctl 不會跟 GitHub API 有任何互動, 只會配置 *$SL_HOME* 環境目錄. 同時使用 `--offline` 及 `--token` 可跳過 Token 驗證直接儲存起來 (e.g. 沒網路環境下)
+使用 `--offline` 則 slctl 不會跟 GitHub API 有任何互動, 只會配置 [$SL_HOME](https://github.com/softleader/slctl/wiki/Home-Path) 環境目錄. 同時使用 `--offline` 及 `--token` 可跳過 Token 驗證直接儲存起來 (e.g. 沒網路環境下)
 
 ## Plugins
 
