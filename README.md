@@ -2,7 +2,7 @@
 
 Slctl is a command line interface for running commands against SoftLeader services.
 
-| [Latest release build](https://github.com/softleader/slctl/releases/latest) | [Slack Channel](https://softleader.slack.com/messages/CEQRAB71U/) | 
+| [Download Latest Release Build](https://github.com/softleader/slctl/releases/latest) | [Slack Channel](https://softleader.slack.com/messages/CEQRAB71U/) | [Wiki](https://github.com/softleader/slctl/wiki)
 
 ## Install
 
