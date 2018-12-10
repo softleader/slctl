@@ -4,19 +4,19 @@ Slctl is a command line interface for running commands against SoftLeader servic
 
 ## Install
 
-You can also use [Homebrew](https://brew.sh/index_zh-tw) (on macOS):
+MacOS 使用者可以透過 [Homebrew](https://brew.sh/index_zh-tw) 來安裝:
 
 ```sh
 brew install softleader/tap/slctl
 ```
 
-Or install using [Chocolatey](https://chocolatey.org/) (on Windows):
+Windows 使用者可以透過 [Chocolatey](https://chocolatey.org/) 來安裝:
 
 ```sh
 TODO
 ```
 
-Or manually downlaod from [releases page](https://github.com/softleader/slctl/releases).
+你也可以參考 [Builing Soruce](https://github.com/softleader/slctl/wiki/Building-Source) 從 source code 來包版, 或是簡單一點從 [releases page](https://github.com/softleader/slctl/releases) 直接下載執行檔.
 
 ## Getting Started 
 
