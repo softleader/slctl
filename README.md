@@ -16,7 +16,7 @@ Windows 使用者可以透過 [Chocolatey](https://chocolatey.org/) 來安裝:
 TODO
 ```
 
-你也可以參考 [Builing Soruce](https://github.com/softleader/slctl/wiki/Building-Source) 來 hacking slctl (X) 或是手動從 [releases page](https://github.com/softleader/slctl/releases) 直接下載執行檔.
+你也可以參考 [Builing Soruce](https://github.com/softleader/slctl/wiki/Building-Source) 來 hacking slctl (🐱‍💻) 或是手動從 [releases page](https://github.com/softleader/slctl/releases) 直接下載執行檔.
 
 ## Getting Started 
 
