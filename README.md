@@ -47,6 +47,7 @@ $ slctl init --token GITHUB_TOKEN
 執行 `$ slctl plugin install SOURCE` 即可安裝, 點擊 [Installing a Plugin](https://github.com/softleader/slctl/wiki/Plugins-Guide#installing-a-plugin) 查看多種 *SOURCE* 的安裝方式
 
 - [github.com/softleader/slctl-whereis](https://github.com/softleader/slctl-whereis) - 快速查看同事現在在哪兒
+- [github.com/softleader/slctl-make](https://github.com/softleader/slctl-make) - 在不同作業系統間都可以使用 GUN Make
 
 ### Writing Custom Plugins
 
