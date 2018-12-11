@@ -24,8 +24,8 @@ const (
 var (
 	Scopes                      = []github.Scope{github.ScopeReadOrg, github.ScopeUser}
 	ErrOauthAccessAlreadyExists = errors.New(`access token already exists.
-To store a token already on https://github.com/settings/tokens, use '--token' flag.  
-To automatically re-generate a new one, use '--refresh' flag.
+To store a token on https://github.com/settings/tokens, use '--token' flag.  
+To re-generate a new token, use '--force' flag.
 Use 'init --help' for more information about the command.`)
 )
 
@@ -48,12 +48,13 @@ func EnsureScopes(out io.Writer, scopes []github.Scope) (err error) {
 
 	r := bufio.NewReader(os.Stdin)
 
-	fmt.Fprint(out, "GitHub Username: ")
+	fmt.Fprint(out, "GitHub username: ")
 	username, _ := r.ReadString('\n')
 
-	fmt.Fprint(out, "GitHub Password: ")
+	fmt.Fprint(out, "GitHub password: ")
 	bytePassword, _ := terminal.ReadPassword(int(syscall.Stdin))
 	password := string(bytePassword)
+	fmt.Fprintln(out, "")
 
 	tp := github.BasicAuthTransport{
 		Username: strings.TrimSpace(username),
@@ -65,7 +66,7 @@ func EnsureScopes(out io.Writer, scopes []github.Scope) (err error) {
 
 	auths, _, err := client.Authorizations.List(ctx, &github.ListOptions{})
 	if _, ok := err.(*github.TwoFactorAuthError); ok {
-		fmt.Fprint(out, "\nGitHub OTP: ")
+		fmt.Fprint(out, "GitHub two-factor authentication code: ")
 		otp, _ := r.ReadString('\n')
 		tp.OTP = strings.TrimSpace(otp)
 		if auths, _, err = client.Authorizations.List(ctx, &github.ListOptions{}); err != nil {
@@ -137,13 +138,14 @@ func contains(base []github.Scope, target github.Scope) bool {
 func Grant(username, password string, out io.Writer, force bool) (token string, err error) {
 	r := bufio.NewReader(os.Stdin)
 	if username == "" {
-		fmt.Fprint(out, "GitHub Username: ")
+		fmt.Fprint(out, "GitHub username: ")
 		username, _ = r.ReadString('\n')
 	}
 	if password == "" {
-		fmt.Fprint(out, "GitHub Password: ")
+		fmt.Fprint(out, "GitHub password: ")
 		bytePassword, _ := terminal.ReadPassword(int(syscall.Stdin))
 		password = string(bytePassword)
+		fmt.Fprintln(out, "")
 	}
 
 	tp := github.BasicAuthTransport{
@@ -156,7 +158,7 @@ func Grant(username, password string, out io.Writer, force bool) (token string, 
 
 	auths, _, err := client.Authorizations.List(ctx, &github.ListOptions{})
 	if _, ok := err.(*github.TwoFactorAuthError); ok {
-		fmt.Fprint(out, "\nGitHub OTP: ")
+		fmt.Fprint(out, "GitHub two-factor authentication code: ")
 		otp, _ := r.ReadString('\n')
 		tp.OTP = strings.TrimSpace(otp)
 		if auths, _, err = client.Authorizations.List(ctx, &github.ListOptions{}); err != nil {
@@ -169,7 +171,7 @@ func Grant(username, password string, out io.Writer, force bool) (token string, 
 			if !force {
 				return "", ErrOauthAccessAlreadyExists
 			}
-			v.Fprintln(out, "\nRemoving exist token")
+			v.Fprintf(out, "Removing exist token\n")
 			if _, err = client.Authorizations.Delete(ctx, auth.GetID()); err != nil {
 				return "", err
 			}

@@ -82,7 +82,7 @@ for more details: https://github.com/softleader/slctl/wiki/Home-Path
 	if err = ensureDirectories(c.home, c.out); err != nil {
 		return err
 	}
-	fmt.Fprintf(c.out, "$SL_HOME has been configured at %s.\n", environment.Settings.Home)
+	fmt.Fprintf(c.out, "Slctl home has been configured at %s.\n", environment.Settings.Home)
 
 	if err = ensureConfigFile(c.home, c.out); err != nil {
 		return err
