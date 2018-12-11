@@ -1,6 +1,5 @@
 ![beta](https://img.shields.io/badge/stability-beta-darkorange.svg)
 [![Build Status](https://travis-ci.com/softleader/slctl.svg?token=4jYjzyvNx4sjHcYtGC5V&branch=master)](https://travis-ci.com/softleader/slctl)
-[![Slack Status](https://slackin-slctl.herokuapp.com/badge.svg)](https://slackin-slctl.herokuapp.com/)
 
 # slctl
 
