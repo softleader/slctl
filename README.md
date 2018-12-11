@@ -1,3 +1,6 @@
+![beta](https://img.shields.io/badge/stability-beta-darkorange.svg)
+[![Build Status](https://travis-ci.com/softleader/slctl.svg?token=4jYjzyvNx4sjHcYtGC5V&branch=master)](https://travis-ci.com/softleader/slctl)
+
 # slctl
 
 Slctl is a command line interface for running commands against SoftLeader services.
