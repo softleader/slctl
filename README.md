@@ -1,11 +1,10 @@
 ![beta](https://img.shields.io/badge/stability-beta-darkorange.svg)
 [![Build Status](https://travis-ci.com/softleader/slctl.svg?token=4jYjzyvNx4sjHcYtGC5V&branch=master)](https://travis-ci.com/softleader/slctl)
+[![Slack Status](https://slackin-slctl.herokuapp.com/badge.svg)](https://slackin-slctl.herokuapp.com/)
 
 # slctl
 
 Slctl is a command line interface for running commands against SoftLeader services.
-
-[Latest Release Build](https://github.com/softleader/slctl/releases/latest) | [Slack Channel](https://softleader.slack.com/messages/CEQRAB71U/) | [Wiki](https://github.com/softleader/slctl/wiki)
 
 ## Install
 
