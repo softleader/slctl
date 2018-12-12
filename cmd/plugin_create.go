@@ -9,6 +9,7 @@ import (
 	"github.com/spf13/cobra"
 	"io"
 	"path/filepath"
+	"strings"
 )
 
 const pluginCreateDesc = `
@@ -28,16 +29,22 @@ Plugin 本身沒有撰寫的語言限制, {{.}} 推薦並預設產生 golang 的
 	
 	$ {{.}} plugin create foo --lang java
 
-使用 'plugin create langs' 列出所有內含的範本語言
+使用 'plugin create langs' 來列出所有內含的範本語言
 
 	$ {{.}} plugin create langs
+
+{{.|title}} 預設會在當前目錄下, 建立一個名為 Plugin 名稱的目錄, 並將範本產生在該目錄中
+可以傳入 '--output' 來指定 Plugin 的產生目錄
+
+	$ {{.}} plugin create foo -o /path/to/plugin-dir
 `
 
 type pluginCreateCmd struct {
-	home slpath.Home
-	name string
-	out  io.Writer
-	lang string
+	home   slpath.Home
+	name   string
+	out    io.Writer
+	lang   string
+	output string
 }
 
 func newPluginCreateCmd(out io.Writer) *cobra.Command {
@@ -51,13 +58,16 @@ func newPluginCreateCmd(out io.Writer) *cobra.Command {
 			if len(args) == 0 {
 				return errors.New("the name of the new plugin is required")
 			}
-			pcc.name = args[0]
+			if pcc.name = strings.TrimSpace(args[0]); pcc.name == "" {
+				return errors.New("the name of the new plugin is required")
+			}
 			return pcc.run()
 		},
 	}
 
 	f := cmd.Flags()
 	f.StringVarP(&pcc.lang, "lang", "", "golang", "language of template to create")
+	f.StringVarP(&pcc.output, "output", "o", "", "output directory name, uses plugin name if leave blank")
 
 	cmd.AddCommand(
 		newPluginCreateLangsCmd(out),
@@ -68,13 +78,14 @@ func newPluginCreateCmd(out io.Writer) *cobra.Command {
 
 func (c *pluginCreateCmd) run() (err error) {
 	pname := filepath.Base(c.name)
-	fmt.Fprintf(c.out, "Creating %s\n", c.name)
+	fmt.Fprintf(c.out, "Creating %s plugin %q\n", c.lang, c.name)
 	pfile := &plugin.Metadata{
 		Name:        pname,
 		Usage:       pname,
 		Description: fmt.Sprintf("The %s plugin", pname),
 		Version:     "0.1.0",
 	}
-	_, err = plugin.Create(c.lang, pfile, filepath.Dir(c.name))
+	path, err := plugin.Create(c.lang, pfile, c.output)
+	fmt.Fprintf(c.out, "Successfully created plugin and saved it to: %s\n", path)
 	return
 }

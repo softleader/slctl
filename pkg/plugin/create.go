@@ -34,47 +34,50 @@ type creator interface {
 }
 
 func Create(lang string, plugin *Metadata, dir string) (string, error) {
+	if dir = strings.TrimSpace(dir); dir == "" {
+		if wd, err := os.Getwd(); err != nil {
+			return "", err
+		} else {
+			dir = filepath.Join(wd, plugin.Name)
+		}
+	}
+
 	path, err := filepath.Abs(dir)
 	if err != nil {
 		return path, err
 	}
 
-	if fi, err := os.Stat(path); err != nil {
+	if err := mkdir(path); err != nil {
 		return path, err
-	} else if !fi.IsDir() {
-		return path, fmt.Errorf("no such directory %s", path)
-	}
-
-	pdir := filepath.Join(path, plugin.Name)
-	if err := mkdir(pdir); err != nil {
-		return pdir, err
 	}
 
 	creator, found := Creators[lang]
 	if !found {
-		return pdir, fmt.Errorf(`unsupported creating %s template.
+		return dir, fmt.Errorf(`unsupported creating %s template.
 You might need to run 'slctl plugin create langs'`, lang)
 	}
 	plugin.Exec = creator.exec(plugin)
 	plugin.Hook = creator.hook(plugin)
 	plugin.GitHub.Scopes = token.Scopes
 	plugin.IgnoreGlobalFlags = false
-	files := creator.files(plugin, pdir)
+	files := creator.files(plugin, dir)
 	files = append(files, marshal{
-		path: filepath.Join(pdir, MetadataFileName),
+		path: filepath.Join(dir, MetadataFileName),
 		in:   plugin,
 	})
 
 	for _, file := range files {
 		if err := save(file); err != nil {
-			return pdir, err
+			return dir, err
 		}
 	}
-	return pdir, nil
+	return dir, nil
 }
 
 func mkdir(path string) error {
-	if fi, err := os.Stat(path); err == nil && !fi.IsDir() {
+	if fi, err := os.Stat(path); !os.IsNotExist(err) {
+		return err
+	} else if err == nil && !fi.IsDir() {
 		return fmt.Errorf("file %s already exists and is not a directory", path)
 	}
 	if err := os.MkdirAll(path, 0755); err != nil {
