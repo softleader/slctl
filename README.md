@@ -51,6 +51,7 @@ $ slctl init --token GITHUB_TOKEN
 
 - [github.com/softleader/slctl-whereis](https://github.com/softleader/slctl-whereis) - 快速查看同事現在在哪兒
 - [github.com/softleader/slctl-make](https://github.com/softleader/slctl-make) - 在不同作業系統間都可以使用 GUN Make
+- [github.com/softleader/slctl-contacts](https://github.com/softleader/slctl-contacts) - 查看公司通訊錄
 
 ### Writing Custom Plugins
 
