@@ -42,13 +42,13 @@ func Create(lang string, plugin *Metadata, dir string) (string, error) {
 		}
 	}
 
-	path, err := filepath.Abs(dir)
+	dir, err := filepath.Abs(dir)
 	if err != nil {
-		return path, err
+		return dir, err
 	}
 
-	if err := mkdir(path); err != nil {
-		return path, err
+	if err := mkdir(dir); err != nil {
+		return dir, err
 	}
 
 	creator, found := Creators[lang]
