@@ -12,12 +12,14 @@ import (
 	"os"
 	"strconv"
 	"strings"
+	"io"
 )
 
 type {{.Name|lowerCamel}}Cmd struct {
 	offline bool
 	verbose bool
 	token   string
+	out     io.Writer
 }
 
 func main() {
@@ -31,6 +33,7 @@ func main() {
 		Long:  "{{.Description}}",
 		RunE: func(cmd *cobra.Command, args []string) error {
 			c.token = os.ExpandEnv(c.token)
+			c.out = cmd.OutOrStdout()
 			return c.run()
 		},
 	}
