@@ -22,19 +22,22 @@ type {{.Name|lowerCamel}}Cmd struct {
 
 func main() {
 	c := {{.Name|lowerCamel}}Cmd{}
+	c.offline, _ = strconv.ParseBool(os.Getenv("SL_OFFLINE"))
+	c.verbose, _ = strconv.ParseBool(os.Getenv("SL_VERBOSE"))
+
 	cmd := &cobra.Command{
 		Use:   "{{.Name}}",
 		Short: "{{.Usage}}",
 		Long:  "{{.Description}}",
 		RunE: func(cmd *cobra.Command, args []string) error {
-			c.offline, _ = strconv.ParseBool(os.Getenv("SL_OFFLINE"))
-			c.verbose, _ = strconv.ParseBool(os.Getenv("SL_VERBOSE"))
 			c.token = os.ExpandEnv(c.token)
 			return c.run()
 		},
 	}
 
 	f := cmd.Flags()
+	f.BoolVarP(&c.offline, "offline", "o", c.offline, "work offline, Overrides $SL_OFFLINE")
+	f.BoolVarP(&c.verbose, "verbose", "v", c.verbose, "enable verbose output, Overrides $SL_VERBOSE")
 	f.StringVar(&c.token, "token", "$SL_TOKEN", "github access token. Overrides $SL_TOKEN")
 
 	if err := cmd.Execute(); err != nil {
