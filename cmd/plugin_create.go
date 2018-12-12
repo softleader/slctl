@@ -81,7 +81,7 @@ func (c *pluginCreateCmd) run() (err error) {
 	fmt.Fprintf(c.out, "Creating %s plugin %q\n", c.lang, c.name)
 	pfile := &plugin.Metadata{
 		Name:        pname,
-		Usage:       pname,
+		Usage:       fmt.Sprintf("the %s plugin", pname),
 		Description: fmt.Sprintf("The %s plugin", pname),
 		Version:     "0.1.0",
 	}
