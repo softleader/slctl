@@ -70,7 +70,7 @@ $ slctl plugin search whereis
 
 ### Upgrading Plugins
 
-*Slctl* 支援 GitHub Plugin 自動更新, 請參考 [Upgrading Plugins](https://github.com/softleader/slctl/wiki/Plugins-Guide#upgrading-plugins)
+*Slctl* 支援 GitHub Repo 的 Plugin 自動更新, 請參考 [Upgrading Plugins](https://github.com/softleader/slctl/wiki/Plugins-Guide#upgrading-plugins)
 
 ### Writing Custom Plugins
 
