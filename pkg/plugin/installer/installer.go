@@ -10,7 +10,7 @@ import (
 )
 
 var ErrNonResolvableInOfflineMode = fmt.Errorf("non-resolvable plugin source in offline mode")
-var ErrAlreadyUpToDate = fmt.Errorf("already installed")
+var ErrAlreadyUpToDate = fmt.Errorf("already up-to-date")
 
 type Installer interface {
 	Install() (*plugin.Plugin, error)
