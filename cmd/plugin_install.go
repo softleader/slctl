@@ -19,6 +19,7 @@ type pluginInstallCmd struct {
 	home   slpath.Home
 	out    io.Writer
 	force  bool
+	soft   bool
 }
 
 const pluginInstallDesc = `
@@ -52,45 +53,57 @@ Plugin 也可以是一個 GitHub repo, 傳入 'github.com/OWNER/REPO', {{.}} 會
 `
 
 func newPluginInstallCmd(out io.Writer) *cobra.Command {
-	pcmd := &pluginInstallCmd{out: out}
+	c := &pluginInstallCmd{out: out}
 	cmd := &cobra.Command{
 		Use:   "install [options] <SOURCE>...",
 		Short: "install one or more plugins",
 		Long:  usage(pluginInstallDesc),
 		PreRunE: func(cmd *cobra.Command, args []string) error {
-			return pcmd.complete(args)
+			return c.complete(args)
 		},
 		RunE: func(cmd *cobra.Command, args []string) error {
-			return pcmd.run()
+			return c.run()
 		},
 	}
-	cmd.Flags().StringVar(&pcmd.tag, "tag", "", "specify a tag constraint. If this is not specified, the latest release tag is installed")
-	cmd.Flags().IntVar(&pcmd.asset, "asset", -1, "specify a asset number, start from zero, to download")
-	cmd.Flags().BoolVarP(&pcmd.force, "force", "f", false, "force to re-install if plugin already exists")
+
+	f := cmd.Flags()
+	f.StringVar(&c.tag, "tag", "", "specify a tag constraint. If this is not specified, the latest release tag is installed")
+	f.IntVar(&c.asset, "asset", -1, "specify a asset number, start from zero, to download")
+	f.BoolVarP(&c.force, "force", "f", false, "force to re-install if plugin already exists")
+	f.BoolVarP(&c.soft, "soft", "s", false, "force to remove exist plugin only if version is different")
+
 	return cmd
 }
 
-func (pcmd *pluginInstallCmd) complete(args []string) error {
+func (c *pluginInstallCmd) complete(args []string) error {
 	if err := checkArgsLength(len(args), "plugin"); err != nil {
 		return err
 	}
-	pcmd.source = args[0]
-	pcmd.home = environment.Settings.Home
+	c.source = args[0]
+	c.home = environment.Settings.Home
 	return nil
 }
 
-func (pcmd *pluginInstallCmd) run() error {
-	i, err := installer.NewInstaller(pcmd.out, pcmd.source, pcmd.tag, pcmd.asset, pcmd.home, pcmd.force)
+func (c *pluginInstallCmd) run() error {
+	return install(c.out, c.source, c.tag, c.asset, c.home, c.force, c.soft)
+}
+
+func install(out io.Writer, source string, tag string, asset int, home slpath.Home, force, soft bool) error {
+	i, err := installer.NewInstaller(out, source, tag, asset, home, force, soft)
 	if err != nil {
 		return err
 	}
 	var p *plugin.Plugin
 
 	if p, err = i.Install(); err != nil {
+		if err == installer.ErrAlreadyUpToDate {
+			fmt.Fprintf(out, "Plugin \"%s@%s\" already up-to-date\n", p.Metadata.Name, p.Metadata.Version)
+			return nil
+		}
 		return err
 	}
 
-	if err = token.EnsureScopes(pcmd.out, p.Metadata.GitHub.Scopes); err != nil {
+	if err = token.EnsureScopes(out, p.Metadata.GitHub.Scopes); err != nil {
 		return err
 	}
 
@@ -100,6 +113,6 @@ func (pcmd *pluginInstallCmd) run() error {
 		}
 	}
 
-	fmt.Fprintf(pcmd.out, "Installed plugin: %s\n", p.Metadata.Name)
+	fmt.Fprintf(out, "Installed plugin: %s@%s\n", p.Metadata.Name, p.Metadata.Version)
 	return nil
 }

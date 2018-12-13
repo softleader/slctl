@@ -39,13 +39,14 @@ type archiveInstaller struct {
 	downloader downloader
 }
 
-func newArchiveInstaller(out io.Writer, source string, home slpath.Home, force bool) (ai *archiveInstaller, err error) {
+func newArchiveInstaller(out io.Writer, source string, home slpath.Home, force, soft bool) (ai *archiveInstaller, err error) {
 	v.Fprintf(out, "downloading the archive: %s\n", source)
 	ai = &archiveInstaller{}
 	ai.out = out
 	ai.source = source
 	ai.home = home
 	ai.force = force
+	ai.soft = soft
 	if isLocalReference(source) {
 		var r io.Reader
 		if r, err = os.Open(source); err != nil {

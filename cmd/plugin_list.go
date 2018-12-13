@@ -37,9 +37,9 @@ func (c *pluginListCmd) run() error {
 	}
 
 	table := uitable.New()
-	table.AddRow("NAME", "VERSION", "DESCRIPTION")
+	table.AddRow("NAME", "VERSION", "DESCRIPTION", "SOURCE")
 	for _, p := range plugins {
-		table.AddRow(p.Metadata.Name, p.Metadata.Version, p.Metadata.Description)
+		table.AddRow(p.Metadata.Name, p.Metadata.Version, p.Metadata.Description, p.Source)
 	}
 	fmt.Fprintln(c.out, table)
 	return nil

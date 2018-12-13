@@ -25,9 +25,10 @@ type localInstaller struct {
 	home   slpath.Home
 	source string
 	force  bool
+	soft   bool // soft means remove exist plugin only if version is different
 }
 
-func newLocalInstaller(out io.Writer, source string, home slpath.Home, force bool) (*localInstaller, error) {
+func newLocalInstaller(out io.Writer, source string, home slpath.Home, force, soft bool) (*localInstaller, error) {
 	src, err := filepath.Abs(source)
 	if err != nil {
 		return nil, fmt.Errorf("unable to get absolute path to plugin: %v", err)
@@ -37,6 +38,7 @@ func newLocalInstaller(out io.Writer, source string, home slpath.Home, force boo
 		source: src,
 		home:   home,
 		force:  force,
+		soft:   soft,
 	}, nil
 }
 
@@ -58,15 +60,25 @@ func (i *localInstaller) Install() (*plugin.Plugin, error) {
 	}
 
 	link := filepath.Join(i.home.Plugins(), plug.Metadata.Name)
-	v.Printf("symlinking %s to %s\n", plug.Dir, link)
 
 	if _, err := os.Stat(link); !os.IsNotExist(err) {
 		if !i.force {
 			return nil, fmt.Errorf("plugin %q already exists", plug.Metadata.Name)
 		}
+		if i.soft {
+			exist, err := plugin.LoadDir(link)
+			if err != nil {
+				return nil, err
+			}
+			if exist.Metadata.Version == plug.Metadata.Version {
+				return exist, ErrAlreadyUpToDate
+			}
+		}
 		v.Fprintf(i.out, "plugin %q already exists, force to remove it\n", plug.Metadata.Name)
 		os.RemoveAll(link)
 	}
+
+	v.Printf("symlinking %s to %s\n", plug.Dir, link)
 	if err := os.Symlink(plug.Dir, link); err != nil {
 		return nil, err
 	}

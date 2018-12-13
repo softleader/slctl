@@ -22,7 +22,7 @@ type gitHubInstaller struct {
 	archiveInstaller
 }
 
-func newGitHubInstaller(out io.Writer, source, tag string, asset int, home slpath.Home, force bool) (*gitHubInstaller, error) {
+func newGitHubInstaller(out io.Writer, source, tag string, asset int, home slpath.Home, force, soft bool) (*gitHubInstaller, error) {
 	if environment.Settings.Offline {
 		return nil, ErrNonResolvableInOfflineMode
 	}
@@ -67,6 +67,7 @@ func newGitHubInstaller(out io.Writer, source, tag string, asset int, home slpat
 	ghi.home = home
 	ghi.out = out
 	ghi.force = force
+	ghi.soft = soft
 
 	binary := ra.GetBrowserDownloadURL()
 	v.Fprintf(out, "downloading the binary content: %s\n", binary)

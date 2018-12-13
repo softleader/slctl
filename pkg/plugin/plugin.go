@@ -35,6 +35,10 @@ type Plugin struct {
 	Source   string // 在安裝 plugin 時的 source, 只有非本機的 source 才會紀錄, 為了方便之後做 github plugin 的 upgrade
 }
 
+func (p *Plugin) FromGitHub() bool {
+	return strings.HasPrefix(p.Source, "github.com/")
+}
+
 // PrepareCommand takes a Plugin.Command and prepares it for execution.
 //
 // It merges extraArgs into any arguments supplied in the plugin. It
