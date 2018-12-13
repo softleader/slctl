@@ -94,7 +94,7 @@ for more details: https://github.com/softleader/slctl/wiki/Home-Path
 				return err
 			}
 		}
-		if username, err = token.Confirm(c.token, c.out); err != nil {
+		if username, err = token.Confirm(organization, c.token, c.out); err != nil {
 			return err
 		}
 	}

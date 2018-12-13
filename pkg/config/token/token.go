@@ -17,8 +17,7 @@ import (
 )
 
 const (
-	note         = "slctl token (https://github.com/softleader/slctl)"
-	organization = "softleader"
+	note = "slctl token (https://github.com/softleader/slctl)"
 )
 
 var (
@@ -191,7 +190,7 @@ func Grant(username, password string, out io.Writer, force bool) (token string, 
 	return auth.GetToken(), nil
 }
 
-func Confirm(token string, out io.Writer) (name string, err error) {
+func Confirm(org, token string, out io.Writer) (name string, err error) {
 	if token == "" {
 		return "", fmt.Errorf("required flag(s) \"token\" not set")
 	}
@@ -203,12 +202,12 @@ func Confirm(token string, out io.Writer) (name string, err error) {
 	client := github.NewClient(tc)
 
 	var mem *github.Membership
-	if mem, _, err = client.Organizations.GetOrgMembership(ctx, "", organization); err != nil {
+	if mem, _, err = client.Organizations.GetOrgMembership(ctx, "", org); err != nil {
 		return "", err
 	}
 	// v.Fprintf(out, "%s\n", github.Stringify(mem))
 	if mem.GetState() != "active" {
-		return "", fmt.Errorf("you are not a active member of %s", organization)
+		return "", fmt.Errorf("you are not a active member of %s", org)
 	}
 	var user *github.User
 	if user, _, err = client.Users.Get(ctx, ""); err != nil {

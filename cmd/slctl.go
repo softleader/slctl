@@ -29,6 +29,8 @@ Environment:
 `
 )
 
+var organization = "softleader"
+
 func main() {
 	command := newRootCmd(os.Args[1:])
 	if err := command.Execute(); err != nil {
