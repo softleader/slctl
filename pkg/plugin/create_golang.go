@@ -16,32 +16,36 @@ import (
 )
 
 type {{.Name|lowerCamel}}Cmd struct {
+	out     io.Writer	
 	offline bool
 	verbose bool
 	token   string
-	out     io.Writer
 }
 
 func main() {
 	c := {{.Name|lowerCamel}}Cmd{}
-	c.offline, _ = strconv.ParseBool(os.Getenv("SL_OFFLINE"))
-	c.verbose, _ = strconv.ParseBool(os.Getenv("SL_VERBOSE"))
-
 	cmd := &cobra.Command{
 		Use:   "{{.Name}}",
 		Short: "{{.Usage}}",
 		Long:  "{{.Description}}",
 		RunE: func(cmd *cobra.Command, args []string) error {
 			c.token = os.ExpandEnv(c.token)
-			c.out = cmd.OutOrStdout()
 			return c.run()
 		},
 	}
+	
+	c.out = cmd.OutOrStdout()
+	c.offline, _ = strconv.ParseBool(os.Getenv("SL_OFFLINE"))
+	c.verbose, _ = strconv.ParseBool(os.Getenv("SL_VERBOSE"))
 
 	f := cmd.Flags()
 	f.BoolVarP(&c.offline, "offline", "o", c.offline, "work offline, Overrides $SL_OFFLINE")
 	f.BoolVarP(&c.verbose, "verbose", "v", c.verbose, "enable verbose output, Overrides $SL_VERBOSE")
 	f.StringVar(&c.token, "token", "$SL_TOKEN", "github access token. Overrides $SL_TOKEN")
+
+	cmd.AddCommand(
+		newVersionCmd(c.out),
+	)
 
 	if err := cmd.Execute(); err != nil {
 		os.Exit(1)
@@ -57,6 +61,43 @@ func (c *{{.Name|lowerCamel}}Cmd) run() error {
 	}
 	fmt.Printf("%+v\n", c)
 	return nil
+}
+`
+
+const golangVersion = `package main
+
+import (
+	"fmt"
+	"github.com/spf13/cobra"
+	"io"
+	"strings"
+)
+
+const (
+	versionHelp = "print {{.Name}} version."
+	unreleased  = "unreleased"
+)
+
+var version string
+
+func newVersionCmd(out io.Writer) *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "version",
+		Short: versionHelp,
+		Long:  versionHelp,
+		Run: func(cmd *cobra.Command, args []string) {
+			fmt.Fprintln(out, ver())
+		},
+	}
+	return cmd
+}
+
+func ver() string {
+	if v := strings.TrimSpace(version); v != "" {
+		return v
+	} else {
+		return unreleased
+	}
 }
 `
 
@@ -139,6 +180,11 @@ func (c golang) files(plugin *Metadata, pdir string) []file {
 			path:     filepath.Join(pdir, "main.go"),
 			in:       plugin,
 			template: golangMain,
+		},
+		tpl{
+			path:     filepath.Join(pdir, "version.go"),
+			in:       plugin,
+			template: golangVersion,
 		},
 		tpl{
 			path:     filepath.Join(pdir, "Makefile"),

@@ -35,7 +35,7 @@ func newPluginCmd(out io.Writer) *cobra.Command {
 }
 
 func runHook(p *plugin.Plugin) error {
-	if err := plugin.SetupPluginEnv(p.Metadata.Name, p.Dir); err != nil {
+	if err := plugin.SetupPluginEnv(p.Metadata.Name, p.Dir, name, version); err != nil {
 		return err
 	}
 	command, err := p.Metadata.Hook.GetCommand()

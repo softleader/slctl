@@ -96,21 +96,23 @@ func LoadAll(basedir string) ([]*Plugin, error) {
 // the plugin subsystem itself needs access to the environment variables
 // created here.
 func SetupPluginEnv(
-	shortName, base string) (err error) {
+	shortName, base, cli, version string) (err error) {
 	var conf *config.ConfFile
 	if conf, err = config.LoadConfFile(environment.Settings.Home.ConfigFile()); err != nil && err != config.ErrTokenNotExist {
 		return err
 	}
 
-	for key, val := range pluginEnv(shortName, base, conf.Token) {
+	for key, val := range pluginEnv(shortName, base, cli, version, conf.Token) {
 		os.Setenv(key, val)
 	}
 
 	return nil
 }
 
-func pluginEnv(shortName, base, token string) map[string]string {
+func pluginEnv(shortName, base, cli, version, token string) map[string]string {
 	return map[string]string{
+		"SL_CLI":         cli,
+		"SL_VERSION":     version,
 		"SL_PLUGIN_NAME": shortName,
 		"SL_PLUGIN_DIR":  base,
 		"SL_BIN":         os.Args[0],
@@ -123,7 +125,7 @@ func pluginEnv(shortName, base, token string) map[string]string {
 }
 
 func envs() (envs []string) {
-	m := pluginEnv("", "", "")
+	m := pluginEnv("", "", "", "", "")
 	for env := range m {
 		envs = append(envs, env)
 	}
