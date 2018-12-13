@@ -18,6 +18,7 @@ var (
 	legalPluginName         = regexp.MustCompile(`^[\w\d_-]+$`)
 	ErrIllegalPluginName    = errors.New("plugin name must match " + legalPluginName.String())
 	ErrIllegalPluginVersion = errors.New("require a Semantic 2 version: https://semver.org/")
+	ErrAlreadyUpToDate      = errors.New("already up-to-date")
 )
 
 type localInstaller struct {
