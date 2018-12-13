@@ -63,9 +63,6 @@ func (c *{{.Name|lowerCamel}}Cmd) run() error {
 const golangVersion = `package main
 
 import (
-	"fmt"
-	"github.com/spf13/cobra"
-	"io"
 	"strings"
 )
 
