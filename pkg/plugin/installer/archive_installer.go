@@ -8,6 +8,7 @@ import (
 	"github.com/softleader/slctl/pkg/slpath"
 	"github.com/softleader/slctl/pkg/v"
 	"io"
+	"io/ioutil"
 	"os"
 	"path/filepath"
 )
@@ -79,6 +80,9 @@ func (i *archiveInstaller) retrievePlugin() error {
 	}
 	v.Fprintln(i.out, "extracting archive to", extractDir)
 	if err = extract(saved, extractDir); err != nil {
+		return err
+	}
+	if err := ioutil.WriteFile(filepath.Join(extractDir, plugin.SourceFileName), []byte(i.source), 0644); err != nil {
 		return err
 	}
 	i.source = extractDir

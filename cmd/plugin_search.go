@@ -7,6 +7,7 @@ import (
 	"github.com/gosuri/uitable"
 	"github.com/softleader/slctl/pkg/config"
 	"github.com/softleader/slctl/pkg/environment"
+	"github.com/softleader/slctl/pkg/plugin"
 	"github.com/softleader/slctl/pkg/slpath"
 	"github.com/spf13/cobra"
 	"golang.org/x/oauth2"
@@ -70,17 +71,31 @@ func (c *pluginSearchCmd) run() (err error) {
 		fmt.Fprintln(c.out, "No search results")
 		return
 	}
+	plugins, err := findPlugins(environment.Settings.PluginDirs())
+	if err != nil {
+		return err
+	}
 	table := uitable.New()
-	table.AddRow("NAME", "SOURCE", "DESCRIPTION")
+	table.AddRow("INSTALLED", "NAME", "SOURCE", "DESCRIPTION")
 	for _, repo := range repos {
 		if name := repo.GetName(); strings.HasPrefix(name, "slctl-") {
 			if c.name != "" && !strings.Contains(name, c.name) {
 				continue
 			}
-			table.AddRow(name, fmt.Sprintf("github.com/%s", repo.GetFullName()), repo.GetDescription())
+			source := fmt.Sprintf("github.com/%s", repo.GetFullName())
+			table.AddRow(installed(plugins, source), name, source, repo.GetDescription())
 		}
 
 	}
 	fmt.Fprintln(c.out, table)
 	return
+}
+
+func installed(plugins []*plugin.Plugin, source string) string {
+	for _, plugin := range plugins {
+		if plugin.Source == source {
+			return "V"
+		}
+	}
+	return ""
 }

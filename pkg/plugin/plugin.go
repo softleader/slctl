@@ -12,6 +12,7 @@ import (
 )
 
 const MetadataFileName = "metadata.yaml"
+const SourceFileName = ".source"
 
 var (
 	Envs = envs()
@@ -31,6 +32,7 @@ type Metadata struct {
 type Plugin struct {
 	Metadata *Metadata
 	Dir      string
+	Source   string // 在安裝 plugin 時的 source, 只有非本機的 source 才會紀錄, 為了方便之後做 github plugin 的 upgrade
 }
 
 // PrepareCommand takes a Plugin.Command and prepares it for execution.
@@ -57,11 +59,15 @@ func LoadDir(dirname string) (*Plugin, error) {
 	if err != nil {
 		return nil, err
 	}
-
 	plug := &Plugin{Dir: dirname}
 	if err := yaml.Unmarshal(data, &plug.Metadata); err != nil {
 		return nil, err
 	}
+	b, err := ioutil.ReadFile(filepath.Join(dirname, SourceFileName))
+	if err != nil && !os.IsNotExist(err) {
+		return nil, err
+	}
+	plug.Source = string(b)
 	return plug, nil
 }
 
