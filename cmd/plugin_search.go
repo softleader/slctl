@@ -15,13 +15,14 @@ import (
 	"strings"
 )
 
-const pluginSearchDesc = `收尋 SoftLeader 官方 Plugin
+const pluginSearchDesc = `Search SoftLeader official plugin
 
 	$ slctl plugin search NAME
 
-'NAME' 有給則以模糊查詢過濾; 反之沒給則列出全部
+NAME 可傳入指定的 Plugin 名稱, 會視為模糊條件來過濾; 反之列出全部
 
 	$ slctl plugin search
+	$ slctl plugin search whereis
 `
 
 type pluginSearchCmd struct {

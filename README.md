@@ -47,11 +47,30 @@ $ slctl init --token GITHUB_TOKEN
 
 ## Plugins
 
+Searching SoftLeader official plugin
+
+```sh
+$ slctl plugin search NAME
+```
+
+*NAME* 可傳入指定的 Plugin 名稱, 會視為模糊條件來過濾; 反之列出全部
+
+```sh
+$ slctl plugin search
+$ slctl plugin search whereis
+```
+
 執行 `$ slctl plugin install SOURCE` 即可安裝, 點擊 [Installing a Plugin](https://github.com/softleader/slctl/wiki/Plugins-Guide#installing-a-plugin) 查看多種 *SOURCE* 的安裝方式
+
+以下列出所有 Plugin 清單 (包含官方或個人貢獻的 Plugin)
 
 - [softleader/slctl-whereis](https://github.com/softleader/slctl-whereis) - 快速查看同事現在在哪兒
 - [softleader/slctl-make](https://github.com/softleader/slctl-make) - 在不同作業系統間都可以使用 GUN Make
 - [softleader/slctl-contacts](https://github.com/softleader/slctl-contacts) - 查看公司通訊錄
+
+### Upgrading Plugins
+
+*Slctl* 支援 GitHub Plugin 自動更新, 請參考 [Upgrading Plugins](https://github.com/softleader/slctl/wiki/Plugins-Guide#upgrading-plugins)
 
 ### Writing Custom Plugins
 

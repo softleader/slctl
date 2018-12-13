@@ -10,9 +10,22 @@ import (
 	"strings"
 )
 
-const pluginUpgradeDesc = `更新 Plugin, 只會更新 SOURCE 為 GitHub 的 Plugin
+const pluginUpgradeDesc = `Upgrade plugin which installed from GitHub
 
 	$ slctl plugin upgrade NAME...
+
+NAME 可傳入指定要更新的 Plugin 完整名稱 (一或多個, 以空白區隔); 反之更新全部
+
+	$ slctl plugin upgrade
+	$ slctl plugin upgrade slctl-whereis
+
+傳入 '--tag' 可以指定要更新的 release 版本
+
+	$ slctl plugin upgrade slctl-whereis --tag 1.0.0
+
+傳入 '--tag' 及 '--asset' 可以指定要更新的 release 版本以及要下載第幾個 asset 檔案 (從 0 開始)
+
+	$ slctl plugin upgrade slctl-whereis --tag 1.0.0 --asset 2
 `
 
 type pluginUpgradeCmd struct {
@@ -26,8 +39,8 @@ type pluginUpgradeCmd struct {
 func newPluginUpgradeCmd(out io.Writer) *cobra.Command {
 	c := &pluginUpgradeCmd{out: out}
 	cmd := &cobra.Command{
-		Use:   "upgrade NAME",
-		Short: "upgrade plugin from Source Github",
+		Use:   "upgrade NAME...",
+		Short: "upgrade plugin  which installed from GitHub",
 		Long:  usage(pluginUpgradeDesc),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			if environment.Settings.Offline {
@@ -41,8 +54,9 @@ func newPluginUpgradeCmd(out io.Writer) *cobra.Command {
 		},
 	}
 
-	cmd.Flags().StringVar(&c.tag, "tag", "", "specify a tag constraint. If this is not specified, the latest release tag is installed")
-	cmd.Flags().IntVar(&c.asset, "asset", -1, "specify a asset number, start from zero, to download")
+	f := cmd.Flags()
+	f.StringVar(&c.tag, "tag", "", "specify a tag constraint. If this is not specified, the latest release tag is installed")
+	f.IntVar(&c.asset, "asset", -1, "specify a asset number, start from zero, to download")
 
 	return cmd
 }
