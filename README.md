@@ -64,7 +64,7 @@ Slctl 預設會 cache 每次查詢的結果並保留最多一天
 傳入 `--force` 可以先強制更新 cache
 
 ```sh
-$ {{.}} plugin search -f
+$ slctl plugin search -f
 ```
 
 執行 `$ slctl plugin install SOURCE` 即可安裝, 點擊 [Installing a Plugin](https://github.com/softleader/slctl/wiki/Plugins-Guide#installing-a-plugin) 查看多種 *SOURCE* 的安裝方式
