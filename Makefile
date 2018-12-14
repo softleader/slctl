@@ -6,6 +6,8 @@ BUILD := $(CURDIR)/_build
 LDFLAGS := "-X main.version=${VERSION}"
 BINARY := slctl
 MAIN := github.com/softleader/slctl/cmd
+CHOCO_SERVER := http://ci.softleader.com.tw:8081/repository/choco/
+CHOCO_USER := choco:choco
 
 .PHONY: install
 install: bootstrap test
@@ -56,3 +58,11 @@ endif
 clean:
 	rm -rf _*
 	rm -f /usr/local/bin/$(BINARY)
+
+.PHONY: choco-push
+choco-push:
+	cp .nuspec $(BUILD)
+	rm $(BUILD)/$(BINARY)
+	cd $(BUILD)
+	choco pack --version $(VERSION)
+	curl -X PUT -F "file=@slctl.$(VERSION).nupkg" $(CHOCO_SERVER) -u $(CHOCO_USER) -v

@@ -2,7 +2,7 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
     <metadata>
         <id>slctl</id>
-        <version></version>
+        <version>0.0.0</version>
         <description>Slctl is a command line interface for running commands against SoftLeader services.</description>
         <authors>SoftLeader</authors>
     </metadata>
