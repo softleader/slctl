@@ -16,7 +16,7 @@ brew install softleader/tap/slctl
 Windows 使用者可以透過 [Chocolatey](https://chocolatey.org/) 來安裝:
 
 ```sh
-TODO
+choco install slctl -s http://ci.softleader.com.tw:8081/repository/choco/
 ```
 
 你也可以參考 [Builing Soruce](https://github.com/softleader/slctl/wiki/Building-Source) 來 hacking slctl (:cat::computer:) 或是從 [releases page](https://github.com/softleader/slctl/releases) 直接下載執行檔.
