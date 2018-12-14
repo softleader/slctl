@@ -20,17 +20,21 @@ NAME 可傳入指定的 Plugin 名稱, 會視為模糊條件來過濾; 反之列
 	$ {{.}} plugin search
 	$ {{.}} plugin search whereis
 
-查詢的結果將會被 cache 並留存一天
-傳入 '--force' 可以先強制更新 cache
+傳入 '--installed' 只列出已安裝的 Plugin
+
+	$ {{.}} plugin search -i
+
+查詢的結果將會被 cache 並留存一天, 傳入 '--force' 在查詢前強制更新 cache
 
 	$ {{.}} plugin search -f
 `
 
 type pluginSearchCmd struct {
-	home  slpath.Home
-	out   io.Writer
-	name  string
-	force bool
+	home      slpath.Home
+	out       io.Writer
+	name      string
+	installed bool
+	force     bool
 }
 
 func newPluginSearchCmd(out io.Writer) *cobra.Command {
@@ -53,6 +57,7 @@ func newPluginSearchCmd(out io.Writer) *cobra.Command {
 
 	f := cmd.Flags()
 	f.BoolVarP(&c.force, "force", "f", false, "force to update cache before searching plugins")
+	f.BoolVarP(&c.installed, "installed", "i", false, "only shows installed plugins")
 
 	return cmd
 }
@@ -73,7 +78,14 @@ func (c *pluginSearchCmd) run() (err error) {
 	table := uitable.New()
 	table.AddRow("INSTALLED", "NAME", "SOURCE", "DESCRIPTION")
 	for _, repo := range r.Repos {
-		table.AddRow(installed(plugins, repo.Source), repo.Name, repo.Source, repo.Description)
+		i := installed(plugins, repo.Source)
+		if c.installed && i != "V" {
+			continue
+		}
+		if c.name != "" && !strings.Contains(repo.Name, c.name) {
+			continue
+		}
+		table.AddRow(i, repo.Name, repo.Source, repo.Description)
 	}
 	fmt.Fprintln(c.out, table)
 	return

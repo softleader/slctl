@@ -60,7 +60,13 @@ $ slctl plugin search
 $ slctl plugin search whereis
 ```
 
-查詢的結果將會被 cache 並留存一天, 傳入 `--force` 可以強制更新 cache
+傳入 ``--installed` 只列出已安裝的 Plugin
+
+```sh
+$ slctl plugin search -i
+```
+
+查詢的結果將會被 cache 並留存一天, 傳入 '--force' 在查詢前強制更新 cache
 
 ```sh
 $ slctl plugin search -f
