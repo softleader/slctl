@@ -20,7 +20,7 @@ NAME 可傳入指定的 Plugin 名稱, 會視為模糊條件來過濾; 反之列
 	$ {{.}} plugin search
 	$ {{.}} plugin search whereis
 
-{{.|title}} 預設會 cache 每次查詢的結果並保留一天
+查詢的結果將會被 cache 留存最多一天
 傳入 '--force' 可以先強制更新 cache
 
 	$ {{.}} plugin search -f
