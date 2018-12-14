@@ -13,7 +13,6 @@ import (
 	"gopkg.in/yaml.v2"
 	"io"
 	"io/ioutil"
-	"math/rand"
 	"os"
 	"path/filepath"
 	"strings"
@@ -22,8 +21,6 @@ import (
 
 const (
 	RepoFileName = ".repository"
-	maxAgeMin    = 8 // 最小設為上班時間
-	maxAgeMax    = 24
 )
 
 type Repo struct {
@@ -103,7 +100,7 @@ func fetchOnline(out io.Writer, home slpath.Home, org string) (r *Repository, er
 		return
 	}
 	r = &Repository{}
-	r.Expires = time.Now().Add(randomMaxAge(maxAgeMin, maxAgeMax))
+	r.Expires = time.Now().AddDate(0, 0, 1)
 	for _, repo := range repos {
 		if name := repo.GetName(); strings.HasPrefix(name, "slctl-") {
 			source := fmt.Sprintf("github.com/%s", repo.GetFullName())
@@ -123,14 +120,4 @@ func fetchOnline(out io.Writer, home slpath.Home, org string) (r *Repository, er
 		fmt.Fprintln(out, table)
 	}
 	return
-}
-
-func randomMaxAge(min, max int) (d time.Duration) {
-	rand.Seed(time.Now().Unix())
-	age := rand.Intn(max-min) + min
-	var err error
-	if d, err = time.ParseDuration(fmt.Sprintf("%vh", age)); err != nil {
-		d, _ = time.ParseDuration(fmt.Sprintf("%vh", min))
-	}
-	return d
 }
