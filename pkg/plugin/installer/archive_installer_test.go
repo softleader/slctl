@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"compress/flate"
 	"github.com/mholt/archiver"
+	"github.com/softleader/slctl/pkg/plugin"
 	"github.com/softleader/slctl/pkg/slpath"
 	"io/ioutil"
 	"os"
@@ -56,7 +57,7 @@ func TestArchiveInstaller_Install(t *testing.T) {
 		t.Errorf("expected downloaded dir to be %s", dst)
 	}
 
-	if !isLocalReference(arcPath) {
+	if !plugin.IsLocalReference(arcPath) {
 		t.Errorf("expected downloaded dir to be a legal local reference: %s", dst)
 	}
 }

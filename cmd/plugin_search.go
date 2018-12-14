@@ -1,34 +1,36 @@
 package main
 
 import (
-	"context"
 	"fmt"
-	"github.com/google/go-github/github"
 	"github.com/gosuri/uitable"
-	"github.com/softleader/slctl/pkg/config"
 	"github.com/softleader/slctl/pkg/environment"
 	"github.com/softleader/slctl/pkg/plugin"
 	"github.com/softleader/slctl/pkg/slpath"
 	"github.com/spf13/cobra"
-	"golang.org/x/oauth2"
 	"io"
 	"strings"
 )
 
 const pluginSearchDesc = `Search SoftLeader official plugin
 
-	$ slctl plugin search NAME
+	$ {{.}} plugin search NAME
 
 NAME 可傳入指定的 Plugin 名稱, 會視為模糊條件來過濾; 反之列出全部
 
-	$ slctl plugin search
-	$ slctl plugin search whereis
+	$ {{.}} plugin search
+	$ {{.}} plugin search whereis
+
+{{.|title}} 預設會 cache 每次查詢的結果並保留一天
+傳入 '--force' 可以先強制更新 cache
+
+	$ {{.}} plugin search -f
 `
 
 type pluginSearchCmd struct {
-	home slpath.Home
-	out  io.Writer
-	name string
+	home  slpath.Home
+	out   io.Writer
+	name  string
+	force bool
 }
 
 func newPluginSearchCmd(out io.Writer) *cobra.Command {
@@ -48,27 +50,19 @@ func newPluginSearchCmd(out io.Writer) *cobra.Command {
 			return c.run()
 		},
 	}
+
+	f := cmd.Flags()
+	f.BoolVarP(&c.force, "force", "f", false, "force to update cache before searching plugins")
+
 	return cmd
 }
 
 func (c *pluginSearchCmd) run() (err error) {
-	cfg, err := config.LoadConfFile(c.home.ConfigFile())
+	r, err := plugin.LoadRepository(c.out, c.home, organization, c.force)
 	if err != nil {
-		return
+		return err
 	}
-	ctx := context.Background()
-	ts := oauth2.StaticTokenSource(
-		&oauth2.Token{AccessToken: cfg.Token},
-	)
-	tc := oauth2.NewClient(ctx, ts)
-	client := github.NewClient(tc)
-	repos, _, err := client.Repositories.ListByOrg(ctx, organization, &github.RepositoryListByOrgOptions{
-		ListOptions: github.ListOptions{PerPage: 999999},
-	})
-	if err != nil {
-		return
-	}
-	if len(repos) == 0 {
+	if len(r.Repos) == 0 {
 		fmt.Fprintln(c.out, "No search results")
 		return
 	}
@@ -78,15 +72,8 @@ func (c *pluginSearchCmd) run() (err error) {
 	}
 	table := uitable.New()
 	table.AddRow("INSTALLED", "NAME", "SOURCE", "DESCRIPTION")
-	for _, repo := range repos {
-		if name := repo.GetName(); strings.HasPrefix(name, "slctl-") {
-			if c.name != "" && !strings.Contains(name, c.name) {
-				continue
-			}
-			source := fmt.Sprintf("github.com/%s", repo.GetFullName())
-			table.AddRow(installed(plugins, source), name, source, repo.GetDescription())
-		}
-
+	for _, repo := range r.Repos {
+		table.AddRow(installed(plugins, repo.Source), repo.Name, repo.Source, repo.Description)
 	}
 	fmt.Fprintln(c.out, table)
 	return
@@ -94,7 +81,7 @@ func (c *pluginSearchCmd) run() (err error) {
 
 func installed(plugins []*plugin.Plugin, source string) string {
 	for _, plugin := range plugins {
-		if plugin.Source == source {
+		if strings.Contains(plugin.Source, source) {
 			return "V"
 		}
 	}
