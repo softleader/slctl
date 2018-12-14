@@ -66,20 +66,16 @@ func (c *pluginUpgradeCmd) run() error {
 	if err != nil {
 		return err
 	}
-	var upgrades []*plugin.Plugin
+	var errors []string
 	for _, p := range plugins {
-		if !p.FromGitHub() {
+		if !plugin.IsGitHubRepo(p.Source) {
 			continue
 		}
-		if match(p, c.names) {
-			upgrades = append(upgrades, p)
-		}
-	}
-	var errors []string
-	for _, plug := range upgrades {
-		fmt.Fprintf(c.out, "Upgrading %q plugin\n", plug.Metadata.Name)
-		if err := install(c.out, plug.Source, c.tag, c.asset, c.home, true, true); err != nil {
-			errors = append(errors, err.Error())
+		if len(c.names) == 0 || match(p, c.names) {
+			fmt.Fprintf(c.out, "Upgrading %q plugin\n", p.Metadata.Name)
+			if err := install(c.out, p.Source, c.tag, c.asset, c.home, true, true); err != nil {
+				errors = append(errors, err.Error())
+			}
 		}
 	}
 	if len(errors) > 0 {
@@ -89,9 +85,6 @@ func (c *pluginUpgradeCmd) run() error {
 }
 
 func match(p *plugin.Plugin, names []string) bool {
-	if len(names) == 0 {
-		return true
-	}
 	for _, n := range names {
 		if strings.ToLower(p.Metadata.Name) == strings.ToLower(n) {
 			return true

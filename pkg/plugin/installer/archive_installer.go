@@ -13,27 +13,6 @@ import (
 	"path/filepath"
 )
 
-var supportedExtensions = []string{
-	".zip",
-	".tar",
-	".tar.gz",
-	".tgz",
-	".tar.bz2",
-	".tbz2",
-	".tar.xz",
-	".txz",
-	".tar.lz4",
-	".tlz4",
-	".tar.sz",
-	".tsz",
-	".rar",
-	".bz2",
-	".gz",
-	".lz4",
-	".sz",
-	".xz",
-}
-
 type archiveInstaller struct {
 	localInstaller
 	downloader downloader
@@ -47,7 +26,7 @@ func newArchiveInstaller(out io.Writer, source string, home slpath.Home, force, 
 	ai.home = home
 	ai.force = force
 	ai.soft = soft
-	if isLocalReference(source) {
+	if plugin.IsLocalReference(source) {
 		var r io.Reader
 		if r, err = os.Open(source); err != nil {
 			return nil, err

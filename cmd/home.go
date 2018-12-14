@@ -9,8 +9,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
-const longHomeHelp = `
-This command displays the location of SL_HOME.
+const longHomeHelp = `This command displays the location of SL_HOME.
 `
 
 func newHomeCmd(out io.Writer) *cobra.Command {

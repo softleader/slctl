@@ -9,8 +9,7 @@ import (
 )
 
 const (
-	initScopesDesc = `
-列出所有 {{.}} 需要的 GitHub Personal Access Token 權限 (https://github.com/settings/tokens)
+	initScopesDesc = `列出所有 {{.}} 需要的 GitHub Personal Access Token 權限 (https://github.com/settings/tokens)
 
 	$ {{.}} init scopes
 `

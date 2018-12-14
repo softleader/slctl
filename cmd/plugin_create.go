@@ -12,8 +12,7 @@ import (
 	"strings"
 )
 
-const pluginCreateDesc = `
-產生 Plugin 範本, 如: '{{.}} plugin create foo' 將會產生 golang plugin 範本, 目錄結構大致如下:
+const pluginCreateDesc = `產生 Plugin 範本, 如: '{{.}} plugin create foo' 將會產生 golang plugin 範本, 目錄結構大致如下:
 
 	foo/
 	  |

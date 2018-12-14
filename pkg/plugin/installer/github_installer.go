@@ -6,17 +6,15 @@ import (
 	"github.com/google/go-github/github"
 	"github.com/softleader/slctl/pkg/config"
 	"github.com/softleader/slctl/pkg/environment"
+	"github.com/softleader/slctl/pkg/plugin"
 	"github.com/softleader/slctl/pkg/slpath"
 	"github.com/softleader/slctl/pkg/v"
 	"golang.org/x/oauth2"
 	"io"
 	"path/filepath"
-	"regexp"
 	"runtime"
 	"strings"
 )
-
-var gitHubRepo = regexp.MustCompile(`^(http[s]?://)?github.com/([^/]+)/([^/]+)[/]?$`)
 
 type gitHubInstaller struct {
 	archiveInstaller
@@ -82,7 +80,7 @@ func newGitHubInstaller(out io.Writer, source, tag string, asset int, home slpat
 }
 
 func dismantle(url string) (owner, repo string) {
-	match := gitHubRepo.FindStringSubmatch(url)
+	match := plugin.GitHubRepo.FindStringSubmatch(url)
 	owner = match[2]
 	repo = match[3]
 	return
