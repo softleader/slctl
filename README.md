@@ -60,8 +60,7 @@ $ slctl plugin search
 $ slctl plugin search whereis
 ```
 
-Slctl 預設會 cache 每次查詢的結果並保留最多一天
-傳入 `--force` 可以先強制更新 cache
+Slctl 會 cache 每次查詢的結果並保留最多一天, 傳入 `--force` 可以先強制更新 cache
 
 ```sh
 $ slctl plugin search -f
