@@ -61,8 +61,6 @@ clean:
 
 .PHONY: choco-push
 choco-push:
-	cp .nuspec $(BUILD)
-	rm $(BUILD)/$(BINARY)
-	cd $(BUILD)
-	choco pack --version $(VERSION)
-	curl -X PUT -F "file=@slctl.$(VERSION).nupkg" $(CHOCO_SERVER) -u $(CHOCO_USER) -v
+	cp .nuspec $(BUILD) && rm $(BUILD)/$(BINARY)
+	cd $(BUILD) && choco pack --version $(VERSION) && cd -
+	curl -X PUT -F "file=@$(BUILD)/slctl.$(VERSION).nupkg" $(CHOCO_SERVER) -u $(CHOCO_USER) -v
