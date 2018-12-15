@@ -24,6 +24,7 @@ deploy:
     repo: softleader/slctl
 - provider: script
   script: make choco-push VERSION=${TRAVIS_TAG}
+  skip_cleanup: true
   on:
     condition: $TRAVIS_OS_NAME = windows
     tags: true
