@@ -34,15 +34,14 @@ func newVersionCmd(out io.Writer) *cobra.Command {
 }
 
 func ver() string {
-	var v, c, d string
-	if v = strings.TrimSpace(version); v == "" {
-		v = unreleased
+	if version = strings.TrimSpace(version); version == "" {
+		version = unreleased
 	}
-	if c = strings.TrimSpace(commit); c == "" {
-		c = none
+	if commit = strings.TrimSpace(commit); commit == "" {
+		commit = none
 	}
-	if d = strings.TrimSpace(date); d == "" {
-		d = unknown
+	if date = strings.TrimSpace(date); date == "" {
+		date = unknown
 	}
 	return fmt.Sprintf("%v, commit %v, built at %v", version, commit, date)
 }
