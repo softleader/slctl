@@ -11,9 +11,15 @@ import (
 const (
 	versionHelp = `print {{.}} version.`
 	unreleased  = "unreleased"
+	none        = "none"
+	unknown     = "unknown"
 )
 
-var version string
+var (
+	version string
+	commit  string
+	date    string
+)
 
 func newVersionCmd(out io.Writer) *cobra.Command {
 	cmd := &cobra.Command{
@@ -28,9 +34,15 @@ func newVersionCmd(out io.Writer) *cobra.Command {
 }
 
 func ver() string {
-	if v := strings.TrimSpace(version); v != "" {
-		return v
-	} else {
-		return unreleased
+	var v, c, d string
+	if v = strings.TrimSpace(version); v == "" {
+		v = unreleased
 	}
+	if c = strings.TrimSpace(commit); c == "" {
+		c = none
+	}
+	if d = strings.TrimSpace(date); d == "" {
+		d = unknown
+	}
+	return fmt.Sprintf("%v, commit %v, built at %v", version, commit, date)
 }
