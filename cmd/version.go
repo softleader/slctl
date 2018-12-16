@@ -21,19 +21,25 @@ var (
 	date    string
 )
 
+type BuildMetadata struct {
+	GitVersion string
+	GitCommit  string
+	BuildDate  string
+}
+
 func newVersionCmd(out io.Writer) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "version",
 		Short: usage(versionHelp),
 		Long:  usage(versionHelp),
 		Run: func(cmd *cobra.Command, args []string) {
-			fmt.Fprintln(out, ver())
+			fmt.Fprintf(out, "%#v\n", buildMetadata())
 		},
 	}
 	return cmd
 }
 
-func ver() string {
+func buildMetadata() BuildMetadata {
 	if version = strings.TrimSpace(version); version == "" {
 		version = unreleased
 	}
@@ -43,5 +49,9 @@ func ver() string {
 	if date = strings.TrimSpace(date); date == "" {
 		date = unknown
 	}
-	return fmt.Sprintf("%v, commit %v, built at %v", version, commit, date)
+	return BuildMetadata{
+		GitVersion: version,
+		GitCommit:  commit,
+		BuildDate:  date,
+	}
 }
