@@ -66,7 +66,7 @@ func ver() *Version {
 
 func formatVersion(v *Version, short bool) string {
 	if short && v.GitCommit != "" {
-		return fmt.Sprintf("%s+%s", v.GitCommit, v.GitCommit[:7])
+		return fmt.Sprintf("%s+%s", v.GitVersion, v.GitCommit[:7])
 	}
 	return fmt.Sprintf("%#v", v)
 }
