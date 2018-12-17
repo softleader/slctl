@@ -1,6 +1,7 @@
 package plugin
 
 import (
+	"fmt"
 	"path/filepath"
 	"strings"
 )
@@ -160,7 +161,7 @@ func (c golang) files(plugin *Metadata, pdir string) []file {
 	cmd := strings.ToLower(plugin.Name)
 	return []file{
 		tpl{
-			path:     filepath.Join(pdir, "cmd", cmd, "main.go"),
+			path:     filepath.Join(pdir, "cmd", cmd, fmt.Sprintf("%s.go", cmd)),
 			in:       plugin,
 			template: golangMain,
 		},
