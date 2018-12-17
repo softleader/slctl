@@ -60,7 +60,7 @@ $ slctl plugin search
 $ slctl plugin search whereis
 ```
 
-傳入 ``--installed` 只列出已安裝的 Plugin
+傳入 `--installed` 只列出已安裝的 Plugin
 
 ```sh
 $ slctl plugin search -i
