@@ -2,6 +2,7 @@ package plugin
 
 import (
 	"path/filepath"
+	"strings"
 )
 
 const golangMain = `package main
@@ -90,6 +91,7 @@ DIST := $(CURDIR)/_dist
 BUILD := $(CURDIR)/_build
 LDFLAGS := "-X main.version=${VERSION}"
 BINARY := {{.Name}}
+MAIN := ./cmd/{{.Name|lower}}
 
 .PHONY: install
 install: bootstrap test build
@@ -105,7 +107,7 @@ test:
 build: clean bootstrap
 	mkdir -p $(BUILD)
 	cp $(METADATA) $(BUILD)
-	go build -o $(BUILD)/$(BINARY)
+	go build -o $(BUILD)/$(BINARY) $(MAIN)
 
 .PHONY: dist
 dist:
@@ -155,14 +157,15 @@ func (c golang) hook(plugin *Metadata) Commands {
 }
 
 func (c golang) files(plugin *Metadata, pdir string) []file {
+	cmd := strings.ToLower(plugin.Name)
 	return []file{
 		tpl{
-			path:     filepath.Join(pdir, "main.go"),
+			path:     filepath.Join(pdir, "cmd", cmd, "main.go"),
 			in:       plugin,
 			template: golangMain,
 		},
 		tpl{
-			path:     filepath.Join(pdir, "version.go"),
+			path:     filepath.Join(pdir, "cmd", cmd, "version.go"),
 			in:       plugin,
 			template: golangVersion,
 		},

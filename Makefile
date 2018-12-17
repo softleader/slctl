@@ -5,7 +5,7 @@ DIST := $(CURDIR)/_dist
 BUILD := $(CURDIR)/_build
 LDFLAGS := "-X main.version=${VERSION}"
 BINARY := slctl
-MAIN := github.com/softleader/slctl/cmd/slctl
+MAIN := ./cmd/slctl
 CHOCO_SERVER := http://ci.softleader.com.tw:8081/repository/choco/
 CHOCO_USER := choco:choco
 

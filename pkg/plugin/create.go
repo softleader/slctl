@@ -119,6 +119,8 @@ func (u tpl) content() ([]byte, error) {
 		"title":      strings.Title,
 		"camel":      strcase.ToCamel,
 		"lowerCamel": strcase.ToLowerCamel,
+		"lower":      strings.ToLower,
+		"upper":      strings.ToUpper,
 	}
 	var buf bytes.Buffer
 	parsed := template.Must(template.New("").Funcs(funcMap).Parse(u.template))
