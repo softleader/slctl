@@ -34,7 +34,7 @@ func newVersionCmd(out io.Writer) *cobra.Command {
 		Long:  usage(versionHelp),
 		Run: func(cmd *cobra.Command, args []string) {
 			if short {
-				fmt.Fprintln(out, formatVersion(ver(), short))
+				fmt.Fprintln(out, ver().Short())
 			} else {
 				fmt.Fprintf(out, "%#v\n", ver())
 			}
@@ -42,9 +42,13 @@ func newVersionCmd(out io.Writer) *cobra.Command {
 	}
 
 	f := cmd.Flags()
-	f.BoolVar(&short, "short", false, "print the version number plus first 7 digits of the commit hash")
+	f.BoolVar(&short, "short", false, "print only the version number plus first 7 digits of the commit hash")
 
 	return cmd
+}
+
+func (v *Version) Short() string {
+	return fmt.Sprintf("%s+%s", v.GitVersion, v.GitCommit[:7])
 }
 
 func ver() *Version {
@@ -62,11 +66,4 @@ func ver() *Version {
 		GitCommit:  commit,
 		BuildDate:  date,
 	}
-}
-
-func formatVersion(v *Version, short bool) string {
-	if short && v.GitCommit != "" {
-		return fmt.Sprintf("%s+%s", v.GitVersion, v.GitCommit[:7])
-	}
-	return fmt.Sprintf("%#v", v)
 }
