@@ -6,7 +6,7 @@ import (
 	"github.com/softleader/slctl/pkg/environment"
 	"github.com/softleader/slctl/pkg/plugin"
 	"github.com/softleader/slctl/pkg/slpath"
-	"github.com/softleader/slctl/pkg/v"
+	"github.com/softleader/slctl/pkg/verbose"
 	"io"
 	"io/ioutil"
 	"os"
@@ -19,7 +19,7 @@ type archiveInstaller struct {
 }
 
 func newArchiveInstaller(out io.Writer, source string, home slpath.Home, force, soft bool) (ai *archiveInstaller, err error) {
-	v.Fprintf(out, "downloading the archive: %s\n", source)
+	verbose.Fprintf(out, "downloading the archive: %s\n", source)
 	ai = &archiveInstaller{}
 	ai.out = out
 	ai.source = source
@@ -53,12 +53,12 @@ func (i *archiveInstaller) retrievePlugin() error {
 	if err != nil {
 		return err
 	}
-	v.Fprintf(i.out, "successfully downloaded and saved it to: %s\n", saved)
+	verbose.Fprintf(i.out, "successfully downloaded and saved it to: %s\n", saved)
 	extractDir := filepath.Join(i.home.CachePlugins(), filepath.Base(saved))
 	if err := ensureDirEmpty(extractDir); err != nil {
 		return err
 	}
-	v.Fprintln(i.out, "extracting archive to", extractDir)
+	verbose.Fprintln(i.out, "extracting archive to", extractDir)
 	if err = extract(saved, extractDir); err != nil {
 		return err
 	}

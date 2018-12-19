@@ -3,7 +3,7 @@ package main
 import (
 	"fmt"
 	"github.com/softleader/slctl/pkg/plugin"
-	"github.com/softleader/slctl/pkg/v"
+	"github.com/softleader/slctl/pkg/verbose"
 	"github.com/spf13/cobra"
 	"io"
 	"os"
@@ -49,7 +49,7 @@ func runHook(p *plugin.Plugin) error {
 		return err
 	}
 	prog := exec.Command(main, argv...)
-	v.Printf("running hook: %v\n", command)
+	verbose.Printf("running hook: %v\n", command)
 	prog.Stdout, prog.Stderr = os.Stdout, os.Stderr
 	if err := prog.Run(); err != nil {
 		if e, ok := err.(*exec.ExitError); ok {

@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"github.com/softleader/slctl/pkg/environment"
 	"github.com/softleader/slctl/pkg/slpath"
-	"github.com/softleader/slctl/pkg/v"
+	"github.com/softleader/slctl/pkg/verbose"
 	"io"
 
 	"github.com/gosuri/uitable"
@@ -30,7 +30,7 @@ func newPluginListCmd(out io.Writer) *cobra.Command {
 }
 
 func (c *pluginListCmd) run() error {
-	v.Printf("search in plugin dirs: %s", environment.Settings.PluginDirs())
+	verbose.Printf("search in plugin dirs: %s", environment.Settings.PluginDirs())
 	plugins, err := findPlugins(environment.Settings.PluginDirs())
 	if err != nil {
 		return err

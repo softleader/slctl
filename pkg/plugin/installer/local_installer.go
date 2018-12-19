@@ -6,7 +6,7 @@ import (
 	"github.com/Masterminds/semver"
 	"github.com/softleader/slctl/pkg/plugin"
 	"github.com/softleader/slctl/pkg/slpath"
-	"github.com/softleader/slctl/pkg/v"
+	"github.com/softleader/slctl/pkg/verbose"
 	"io"
 	"os"
 	"path/filepath"
@@ -75,11 +75,11 @@ func (i *localInstaller) Install() (*plugin.Plugin, error) {
 				return exist, ErrAlreadyUpToDate
 			}
 		}
-		v.Fprintf(i.out, "plugin %q already exists, force to remove it\n", plug.Metadata.Name)
+		verbose.Fprintf(i.out, "plugin %q already exists, force to remove it\n", plug.Metadata.Name)
 		os.RemoveAll(link)
 	}
 
-	v.Printf("symlinking %s to %s\n", plug.Dir, link)
+	verbose.Printf("symlinking %s to %s\n", plug.Dir, link)
 	if err := os.Symlink(plug.Dir, link); err != nil {
 		return nil, err
 	}

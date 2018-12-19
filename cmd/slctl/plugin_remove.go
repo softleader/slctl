@@ -6,7 +6,7 @@ import (
 	"github.com/softleader/slctl/pkg/environment"
 	"github.com/softleader/slctl/pkg/plugin"
 	"github.com/softleader/slctl/pkg/slpath"
-	"github.com/softleader/slctl/pkg/v"
+	"github.com/softleader/slctl/pkg/verbose"
 	"io"
 	"os"
 	"strings"
@@ -45,7 +45,7 @@ func (pcmd *pluginRemoveCmd) complete(args []string) error {
 }
 
 func (c *pluginRemoveCmd) run() error {
-	v.Printf("loading installed plugins from %s\n", environment.Settings.PluginDirs())
+	verbose.Printf("loading installed plugins from %s\n", environment.Settings.PluginDirs())
 	plugins, err := findPlugins(environment.Settings.PluginDirs())
 	if err != nil {
 		return err

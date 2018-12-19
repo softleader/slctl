@@ -1,4 +1,4 @@
-package v
+package verbose
 
 import (
 	"fmt"

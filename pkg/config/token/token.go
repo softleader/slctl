@@ -7,7 +7,7 @@ import (
 	"fmt"
 	"github.com/google/go-github/github"
 	"github.com/softleader/slctl/pkg/environment"
-	"github.com/softleader/slctl/pkg/v"
+	"github.com/softleader/slctl/pkg/verbose"
 	"golang.org/x/crypto/ssh/terminal"
 	"golang.org/x/oauth2"
 	"io"
@@ -170,7 +170,7 @@ func Grant(username, password string, out io.Writer, force bool) (token string, 
 			if !force {
 				return "", ErrOauthAccessAlreadyExists
 			}
-			v.Fprintf(out, "Removing exist token\n")
+			verbose.Fprintf(out, "Removing exist token\n")
 			if _, err = client.Authorizations.Delete(ctx, auth.GetID()); err != nil {
 				return "", err
 			}
@@ -205,7 +205,7 @@ func Confirm(org, token string, out io.Writer) (name string, err error) {
 	if mem, _, err = client.Organizations.GetOrgMembership(ctx, "", org); err != nil {
 		return "", err
 	}
-	// v.Fprintf(out, "%s\n", github.Stringify(mem))
+	// verbose.Fprintf(out, "%s\n", github.Stringify(mem))
 	if mem.GetState() != "active" {
 		return "", fmt.Errorf("you are not a active member of %s", org)
 	}
@@ -213,6 +213,6 @@ func Confirm(org, token string, out io.Writer) (name string, err error) {
 	if user, _, err = client.Users.Get(ctx, ""); err != nil {
 		return "", err
 	}
-	// v.Fprintf(out, "%s\n", github.Stringify(user))
+	// verbose.Fprintf(out, "%s\n", github.Stringify(user))
 	return user.GetName(), err
 }

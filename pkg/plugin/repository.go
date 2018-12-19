@@ -8,7 +8,7 @@ import (
 	"github.com/softleader/slctl/pkg/config"
 	"github.com/softleader/slctl/pkg/environment"
 	"github.com/softleader/slctl/pkg/slpath"
-	"github.com/softleader/slctl/pkg/v"
+	"github.com/softleader/slctl/pkg/verbose"
 	"golang.org/x/oauth2"
 	"gopkg.in/yaml.v2"
 	"io"
@@ -47,7 +47,7 @@ func LoadRepository(out io.Writer, home slpath.Home, org string, force bool) (r 
 		return nil, err
 	}
 	if expired(r) {
-		v.Fprintln(out, "cache is out of date")
+		verbose.Fprintln(out, "cache is out of date")
 		if r, err = fetchOnline(out, home, org); err == nil {
 			r.save(cached)
 		}
@@ -68,7 +68,7 @@ func (r *Repository) save(path string) error {
 }
 
 func loadLocal(out io.Writer, path string) (r *Repository, err error) {
-	v.Fprintf(out, "loading cached plugin repositories from: %s\n", path)
+	verbose.Fprintf(out, "loading cached plugin repositories from: %s\n", path)
 	data, err := ioutil.ReadFile(path)
 	if err != nil {
 		return
@@ -82,7 +82,7 @@ func fetchOnline(out io.Writer, home slpath.Home, org string) (r *Repository, er
 	if environment.Settings.Offline {
 		return nil, fmt.Errorf("can not fetch plugin repository in offline mode")
 	}
-	v.Fprintf(out, "fetching the plugin repositories\n")
+	verbose.Fprintf(out, "fetching the plugin repositories\n")
 	cfg, err := config.LoadConfFile(home.ConfigFile())
 	if err != nil {
 		return
@@ -111,7 +111,7 @@ func fetchOnline(out io.Writer, home slpath.Home, org string) (r *Repository, er
 			})
 		}
 	}
-	v.Fprintf(out, "retrieved %v plugins\n", len(r.Repos))
+	verbose.Fprintf(out, "retrieved %v plugins\n", len(r.Repos))
 	if environment.Settings.Verbose {
 		table := uitable.New()
 		for _, r := range r.Repos {

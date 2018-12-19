@@ -3,7 +3,7 @@ package main
 import (
 	"fmt"
 	"github.com/softleader/slctl/pkg/environment"
-	"github.com/softleader/slctl/pkg/v"
+	"github.com/softleader/slctl/pkg/verbose"
 	"io"
 
 	"github.com/spf13/cobra"
@@ -20,9 +20,9 @@ func newHomeCmd(out io.Writer) *cobra.Command {
 		Run: func(cmd *cobra.Command, args []string) {
 			h := environment.Settings.Home
 			fmt.Fprintln(out, h)
-			v.Fprintf(out, "Config: %s\n", h.Config())
-			v.Fprintf(out, "ConfigFile: %s\n", h.ConfigFile())
-			v.Fprintf(out, "Plugins: %s\n", h.Plugins())
+			verbose.Fprintf(out, "Config: %s\n", h.Config())
+			verbose.Fprintf(out, "ConfigFile: %s\n", h.ConfigFile())
+			verbose.Fprintf(out, "Plugins: %s\n", h.Plugins())
 		},
 	}
 	return cmd

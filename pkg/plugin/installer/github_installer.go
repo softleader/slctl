@@ -8,7 +8,7 @@ import (
 	"github.com/softleader/slctl/pkg/environment"
 	"github.com/softleader/slctl/pkg/plugin"
 	"github.com/softleader/slctl/pkg/slpath"
-	"github.com/softleader/slctl/pkg/v"
+	"github.com/softleader/slctl/pkg/verbose"
 	"golang.org/x/oauth2"
 	"io"
 	"path/filepath"
@@ -39,12 +39,12 @@ func newGitHubInstaller(out io.Writer, source, tag string, asset int, home slpat
 
 	var release *github.RepositoryRelease
 	if tag == "" {
-		v.Fprintf(out, "fetching the latest published release from github.com/%s/%s\n", owner, repo)
+		verbose.Fprintf(out, "fetching the latest published release from github.com/%s/%s\n", owner, repo)
 		if release, _, err = client.Repositories.GetLatestRelease(ctx, owner, repo); err != nil {
 			return nil, err
 		}
 	} else {
-		v.Fprintf(out, "fetching the release from github.com/%s/%s with tag %q\n", owner, repo, tag)
+		verbose.Fprintf(out, "fetching the release from github.com/%s/%s with tag %q\n", owner, repo, tag)
 		if release, _, err = client.Repositories.GetReleaseByTag(ctx, owner, repo, tag); err != nil {
 			return nil, err
 		}
@@ -68,7 +68,7 @@ func newGitHubInstaller(out io.Writer, source, tag string, asset int, home slpat
 	ghi.soft = soft
 
 	binary := ra.GetBrowserDownloadURL()
-	v.Fprintf(out, "downloading the binary content: %s\n", binary)
+	verbose.Fprintf(out, "downloading the binary content: %s\n", binary)
 
 	if url != "" {
 		ghi.downloader = newUrlDownloader(url, home, filepath.Base(binary))
@@ -98,9 +98,9 @@ func pickAsset(out io.Writer, release *github.RepositoryRelease, asset int) (ra 
 		ra = &release.Assets[asset]
 		return
 	}
-	v.Fprintf(out, "trying to find asset name contains %q from release %q\n", runtime.GOOS, release.GetName())
+	verbose.Fprintf(out, "trying to find asset name contains %q from release %q\n", runtime.GOOS, release.GetName())
 	if ra = findRuntimeOsAsset(out, release.Assets); ra == nil {
-		v.Fprintf(out, "%s asset not found, using first asset\n", runtime.GOOS)
+		verbose.Fprintf(out, "%s asset not found, using first asset\n", runtime.GOOS)
 		ra = &release.Assets[0]
 	}
 	return
