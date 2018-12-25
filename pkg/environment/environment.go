@@ -1,7 +1,7 @@
 package environment
 
 import (
-	"github.com/softleader/slctl/pkg/homedir"
+	"github.com/mitchellh/go-homedir"
 	"github.com/softleader/slctl/pkg/slpath"
 	"github.com/spf13/pflag"
 	"os"
@@ -26,14 +26,20 @@ type EnvSettings struct {
 	Offline bool
 }
 
-func (s *EnvSettings) AddFlags(fs *pflag.FlagSet) {
-	defaultHome := filepath.Join(homedir.HomeDir(), ".sl")
+func (s *EnvSettings) AddFlags(fs *pflag.FlagSet) error {
+	h, err := homedir.Dir()
+	if err != nil {
+		panic(err)
+	}
+
+	defaultHome := filepath.Join(h, ".sl")
 	if v, found := os.LookupEnv("SL_HOME"); found {
 		defaultHome = v
 	}
 	fs.StringVar((*string)(&s.Home), "home", defaultHome, "location of your config. Overrides $SL_HOME")
 	fs.BoolVarP(&s.Verbose, "verbose", "v", false, "enable verbose output")
 	fs.BoolVar(&s.Offline, "offline", false, "work offline")
+	return nil
 }
 
 func (s *EnvSettings) Init(fs *pflag.FlagSet) {
