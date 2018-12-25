@@ -1,4 +1,3 @@
-HAS_GLIDE := $(shell command -v glide;)
 HAS_DOCKER := $(shell command -v docker;)
 VERSION := ""
 DIST := $(CURDIR)/_dist
@@ -49,10 +48,7 @@ endif
 
 .PHONY: bootstrap
 bootstrap:
-ifndef HAS_GLIDE
-	go get -u github.com/Masterminds/glide
-endif
-	glide install --strip-vendor
+	go mod tidy
 
 .PHONY: clean
 clean:
