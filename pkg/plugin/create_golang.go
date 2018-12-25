@@ -86,7 +86,6 @@ func ver() string {
 const golangMakefile = `SL_HOME ?= $(shell slctl home)
 SL_PLUGIN_DIR ?= $(SL_HOME)/plugins/{{.Name}}/
 METADATA := metadata.yaml
-HAS_GLIDE := $(shell command -v glide;)
 VERSION := $(shell sed -n -e 's/version:[ "]*\([^"]*\).*/\1/p' $(METADATA))
 DIST := $(CURDIR)/_dist
 BUILD := $(CURDIR)/_build
@@ -125,13 +124,10 @@ dist:
 
 .PHONY: bootstrap
 bootstrap:
-ifndef HAS_GLIDE
-	go get -u github.com/Masterminds/glide
+ifeq (,$(wildcard ./go.mod))
+	go mod init {{.Name}}
 endif
-ifeq (,$(wildcard ./glide.yaml))
-	glide init --non-interactive
-endif
-	glide install --strip-vendor	
+	go mod tidy
 
 .PHONY: clean
 clean:
