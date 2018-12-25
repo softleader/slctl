@@ -3,7 +3,9 @@ package main
 import (
 	"bytes"
 	"fmt"
+	"github.com/sirupsen/logrus"
 	"github.com/softleader/slctl/pkg/environment"
+	"github.com/softleader/slctl/pkg/formatter"
 	"github.com/spf13/cobra"
 	"os"
 	"strings"
@@ -48,18 +50,23 @@ func newRootCmd(args []string) *cobra.Command {
 		Short:        name + " against SoftLeader services.",
 		Long:         usage(globalUsage),
 		SilenceUsage: true,
+		PersistentPreRun: func(cmd *cobra.Command, args []string) {
+			logrus.SetOutput(cmd.OutOrStdout())
+			logrus.SetFormatter(&formatter.PlainFormatter{})
+			if environment.Settings.Verbose {
+				logrus.SetLevel(logrus.DebugLevel)
+			}
+		},
 	}
 	flags := cmd.PersistentFlags()
 
 	environment.Settings.AddFlags(flags)
 
-	out := cmd.OutOrStdout()
-
 	cmd.AddCommand(
-		newHomeCmd(out),
-		newInitCmd(out),
-		newPluginCmd(out),
-		newVersionCmd(out),
+		newHomeCmd(),
+		newInitCmd(),
+		newPluginCmd(),
+		newVersionCmd(),
 	)
 
 	flags.Parse(args)
@@ -68,7 +75,7 @@ func newRootCmd(args []string) *cobra.Command {
 	environment.Settings.Init(flags)
 
 	// Find and add plugins
-	loadPlugins(cmd, out)
+	loadPlugins(cmd)
 
 	return cmd
 }

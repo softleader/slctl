@@ -1,7 +1,7 @@
 package main
 
 import (
-	"fmt"
+	"github.com/sirupsen/logrus"
 	"github.com/softleader/slctl/pkg/config/token"
 	"github.com/softleader/slctl/pkg/environment"
 	"github.com/softleader/slctl/pkg/plugin"
@@ -51,8 +51,8 @@ Plugin 也可以是一個 GitHub repo, 傳入 'github.com/OWNER/REPO', {{.}} 會
 	$ slctl plugin install github.com/softleader/slctl-whereis -f
 `
 
-func newPluginInstallCmd(out io.Writer) *cobra.Command {
-	c := &pluginInstallCmd{out: out}
+func newPluginInstallCmd() *cobra.Command {
+	c := &pluginInstallCmd{}
 	cmd := &cobra.Command{
 		Use:   "install [options] <SOURCE>...",
 		Short: "install one or more plugins",
@@ -84,11 +84,11 @@ func (c *pluginInstallCmd) complete(args []string) error {
 }
 
 func (c *pluginInstallCmd) run() error {
-	return install(c.out, c.source, c.tag, c.asset, c.home, c.force, c.soft)
+	return install(c.source, c.tag, c.asset, c.home, c.force, c.soft)
 }
 
-func install(out io.Writer, source string, tag string, asset int, home slpath.Home, force, soft bool) error {
-	i, err := installer.NewInstaller(out, source, tag, asset, home, force, soft)
+func install(source string, tag string, asset int, home slpath.Home, force, soft bool) error {
+	i, err := installer.NewInstaller(logrus.StandardLogger(), source, tag, asset, home, force, soft)
 	if err != nil {
 		return err
 	}
@@ -96,13 +96,13 @@ func install(out io.Writer, source string, tag string, asset int, home slpath.Ho
 
 	if p, err = i.Install(); err != nil {
 		if err == installer.ErrAlreadyUpToDate {
-			fmt.Fprintf(out, "Plugin \"%s@%s\" already up-to-date\n", p.Metadata.Name, p.Metadata.Version)
+			logrus.Printf("Plugin \"%s@%s\" already up-to-date\n", p.Metadata.Name, p.Metadata.Version)
 			return nil
 		}
 		return err
 	}
 
-	if err = token.EnsureScopes(out, p.Metadata.GitHub.Scopes); err != nil {
+	if err = token.EnsureScopes(logrus.StandardLogger(), p.Metadata.GitHub.Scopes); err != nil {
 		return err
 	}
 
@@ -112,6 +112,6 @@ func install(out io.Writer, source string, tag string, asset int, home slpath.Ho
 		}
 	}
 
-	fmt.Fprintf(out, "Installed plugin: %s@%s\n", p.Metadata.Name, p.Metadata.Version)
+	logrus.Printf("Installed plugin: %s@%s\n", p.Metadata.Name, p.Metadata.Version)
 	return nil
 }

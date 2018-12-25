@@ -3,11 +3,10 @@ package main
 import (
 	"errors"
 	"fmt"
+	"github.com/sirupsen/logrus"
 	"github.com/softleader/slctl/pkg/environment"
 	"github.com/softleader/slctl/pkg/plugin"
 	"github.com/softleader/slctl/pkg/slpath"
-	"github.com/softleader/slctl/pkg/verbose"
-	"io"
 	"os"
 	"strings"
 
@@ -17,11 +16,10 @@ import (
 type pluginRemoveCmd struct {
 	names []string
 	home  slpath.Home
-	out   io.Writer
 }
 
-func newPluginRemoveCmd(out io.Writer) *cobra.Command {
-	pcmd := &pluginRemoveCmd{out: out}
+func newPluginRemoveCmd() *cobra.Command {
+	pcmd := &pluginRemoveCmd{}
 	cmd := &cobra.Command{
 		Use:   "remove <plugin>...",
 		Short: "remove one or more plugins",
@@ -45,7 +43,7 @@ func (pcmd *pluginRemoveCmd) complete(args []string) error {
 }
 
 func (c *pluginRemoveCmd) run() error {
-	verbose.Printf("loading installed plugins from %s\n", environment.Settings.PluginDirs())
+	logrus.Debugf("loading installed plugins from %s\n", environment.Settings.PluginDirs())
 	plugins, err := findPlugins(environment.Settings.PluginDirs())
 	if err != nil {
 		return err
@@ -56,7 +54,7 @@ func (c *pluginRemoveCmd) run() error {
 			if err := removePlugin(found); err != nil {
 				errorPlugins = append(errorPlugins, fmt.Sprintf("Failed to remove plugin %s, got error (%v)", name, err))
 			} else {
-				fmt.Fprintf(c.out, "Removed plugin: %s\n", name)
+				logrus.Printf("Removed plugin: %s\n", name)
 			}
 		} else {
 			errorPlugins = append(errorPlugins, fmt.Sprintf("Plugin: %s not found", name))

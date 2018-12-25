@@ -1,7 +1,7 @@
 package main
 
 import (
-	"bytes"
+	"github.com/sirupsen/logrus"
 	"github.com/softleader/slctl/pkg/config"
 	"github.com/softleader/slctl/pkg/environment"
 	"github.com/softleader/slctl/pkg/slpath"
@@ -35,21 +35,21 @@ func TestRefreshConfig(t *testing.T) {
 	}
 	defer os.RemoveAll(home)
 
-	b := bytes.NewBuffer(nil)
+	log := logrus.New()
 	hh := slpath.Home(home)
 	environment.Settings.Home = hh
 
 	environment.Settings.Verbose = true
 
-	if err = ensureDirectories(hh, b); err != nil {
+	if err = ensureDirectories(hh, log); err != nil {
 		t.Error(err)
 	}
-	if err := ensureConfigFile(hh, b); err != nil {
+	if err := ensureConfigFile(hh, log); err != nil {
 		t.Error(err)
 	}
 
 	token := "this.is.a.fake.token"
-	if err = config.Refresh(hh, token, b); err != nil {
+	if err = config.Refresh(hh, token, log); err != nil {
 		t.Error(err)
 	}
 

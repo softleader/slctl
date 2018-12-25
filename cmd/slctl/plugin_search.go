@@ -3,11 +3,11 @@ package main
 import (
 	"fmt"
 	"github.com/gosuri/uitable"
+	"github.com/sirupsen/logrus"
 	"github.com/softleader/slctl/pkg/environment"
 	"github.com/softleader/slctl/pkg/plugin"
 	"github.com/softleader/slctl/pkg/slpath"
 	"github.com/spf13/cobra"
-	"io"
 	"strings"
 )
 
@@ -31,14 +31,13 @@ NAME 可傳入指定的 Plugin 名稱, 會視為模糊條件來過濾; 反之列
 
 type pluginSearchCmd struct {
 	home      slpath.Home
-	out       io.Writer
 	name      string
 	installed bool
 	force     bool
 }
 
-func newPluginSearchCmd(out io.Writer) *cobra.Command {
-	c := &pluginSearchCmd{out: out}
+func newPluginSearchCmd() *cobra.Command {
+	c := &pluginSearchCmd{}
 	cmd := &cobra.Command{
 		Use:   "search NAME",
 		Short: "search SoftLeader official plugin",
@@ -63,12 +62,12 @@ func newPluginSearchCmd(out io.Writer) *cobra.Command {
 }
 
 func (c *pluginSearchCmd) run() (err error) {
-	r, err := plugin.LoadRepository(c.out, c.home, organization, c.force)
+	r, err := plugin.LoadRepository(logrus.StandardLogger(), c.home, organization, c.force)
 	if err != nil {
 		return err
 	}
 	if len(r.Repos) == 0 {
-		fmt.Fprintln(c.out, "No search results")
+		logrus.Println("No search results")
 		return
 	}
 	plugins, err := findPlugins(environment.Settings.PluginDirs())
@@ -87,7 +86,7 @@ func (c *pluginSearchCmd) run() (err error) {
 		}
 		table.AddRow(i, repo.Name, repo.Source, repo.Description)
 	}
-	fmt.Fprintln(c.out, table)
+	logrus.Println(table)
 	return
 }
 

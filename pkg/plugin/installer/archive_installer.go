@@ -3,10 +3,10 @@ package installer
 import (
 	"fmt"
 	"github.com/mholt/archiver"
+	"github.com/sirupsen/logrus"
 	"github.com/softleader/slctl/pkg/environment"
 	"github.com/softleader/slctl/pkg/plugin"
 	"github.com/softleader/slctl/pkg/slpath"
-	"github.com/softleader/slctl/pkg/verbose"
 	"io"
 	"io/ioutil"
 	"os"
@@ -18,10 +18,10 @@ type archiveInstaller struct {
 	downloader downloader
 }
 
-func newArchiveInstaller(out io.Writer, source string, home slpath.Home, force, soft bool) (ai *archiveInstaller, err error) {
-	verbose.Fprintf(out, "downloading the archive: %s\n", source)
+func newArchiveInstaller(log *logrus.Logger, source string, home slpath.Home, force, soft bool) (ai *archiveInstaller, err error) {
+	log.Debugf("downloading the archive: %s\n", source)
 	ai = &archiveInstaller{}
-	ai.out = out
+	ai.log = log
 	ai.source = source
 	ai.home = home
 	ai.force = force
@@ -53,12 +53,12 @@ func (i *archiveInstaller) retrievePlugin() error {
 	if err != nil {
 		return err
 	}
-	verbose.Fprintf(i.out, "successfully downloaded and saved it to: %s\n", saved)
+	i.log.Debugf("successfully downloaded and saved it to: %s\n", saved)
 	extractDir := filepath.Join(i.home.CachePlugins(), filepath.Base(saved))
 	if err := ensureDirEmpty(extractDir); err != nil {
 		return err
 	}
-	verbose.Fprintln(i.out, "extracting archive to", extractDir)
+	i.log.Debugln("extracting archive to", extractDir)
 	if err = extract(saved, extractDir); err != nil {
 		return err
 	}

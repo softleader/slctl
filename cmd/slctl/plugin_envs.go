@@ -1,22 +1,19 @@
 package main
 
 import (
-	"fmt"
+	"github.com/sirupsen/logrus"
 	"github.com/softleader/slctl/pkg/environment"
 	"github.com/softleader/slctl/pkg/plugin"
 	"github.com/softleader/slctl/pkg/slpath"
-	"io"
-
 	"github.com/spf13/cobra"
 )
 
 type pluginEnvsCmd struct {
 	home slpath.Home
-	out  io.Writer
 }
 
-func newPluginEnvsCmd(out io.Writer) *cobra.Command {
-	c := &pluginEnvsCmd{out: out}
+func newPluginEnvsCmd() *cobra.Command {
+	c := &pluginEnvsCmd{}
 	cmd := &cobra.Command{
 		Use:   "envs",
 		Short: "list all environment variables a plugin can get",
@@ -30,7 +27,7 @@ func newPluginEnvsCmd(out io.Writer) *cobra.Command {
 
 func (c *pluginEnvsCmd) run() error {
 	for _, env := range plugin.Envs {
-		fmt.Fprintln(c.out, env)
+		logrus.Println(env)
 	}
 	return nil
 }

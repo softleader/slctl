@@ -2,11 +2,11 @@ package main
 
 import (
 	"fmt"
+	"github.com/sirupsen/logrus"
 	"github.com/softleader/slctl/pkg/environment"
 	"github.com/softleader/slctl/pkg/plugin"
 	"github.com/softleader/slctl/pkg/slpath"
 	"github.com/spf13/cobra"
-	"io"
 	"strings"
 )
 
@@ -30,14 +30,13 @@ NAME 可傳入指定要更新的 Plugin 完整名稱 (一或多個, 以空白區
 
 type pluginUpgradeCmd struct {
 	home  slpath.Home
-	out   io.Writer
 	names []string
 	tag   string
 	asset int
 }
 
-func newPluginUpgradeCmd(out io.Writer) *cobra.Command {
-	c := &pluginUpgradeCmd{out: out}
+func newPluginUpgradeCmd() *cobra.Command {
+	c := &pluginUpgradeCmd{}
 	cmd := &cobra.Command{
 		Use:   "upgrade NAME...",
 		Short: "upgrade plugin  which installed from GitHub",
@@ -72,8 +71,8 @@ func (c *pluginUpgradeCmd) run() error {
 			continue
 		}
 		if len(c.names) == 0 || match(p, c.names) {
-			fmt.Fprintf(c.out, "Upgrading %q plugin\n", p.Metadata.Name)
-			if err := install(c.out, p.Source, c.tag, c.asset, c.home, true, true); err != nil {
+			logrus.Printf("Upgrading %q plugin\n", p.Metadata.Name)
+			if err := install(p.Source, c.tag, c.asset, c.home, true, true); err != nil {
 				errors = append(errors, err.Error())
 			}
 		}

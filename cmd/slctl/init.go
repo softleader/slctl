@@ -2,12 +2,12 @@ package main
 
 import (
 	"fmt"
+	"github.com/sirupsen/logrus"
 	"github.com/softleader/slctl/pkg/config"
 	"github.com/softleader/slctl/pkg/config/token"
 	"github.com/softleader/slctl/pkg/environment"
 	"github.com/softleader/slctl/pkg/slpath"
 	"github.com/spf13/cobra"
-	"io"
 	"os"
 )
 
@@ -36,7 +36,6 @@ const (
 )
 
 type initCmd struct {
-	out      io.Writer
 	home     slpath.Home
 	username string
 	password string
@@ -44,8 +43,8 @@ type initCmd struct {
 	force    bool
 }
 
-func newInitCmd(out io.Writer) *cobra.Command {
-	i := &initCmd{out: out}
+func newInitCmd() *cobra.Command {
+	i := &initCmd{}
 
 	cmd := &cobra.Command{
 		Use:   "init",
@@ -64,7 +63,7 @@ func newInitCmd(out io.Writer) *cobra.Command {
 	f.StringVarP(&i.password, "password", "p", "", "github password")
 
 	cmd.AddCommand(
-		newInitScopesCmd(out),
+		newInitScopesCmd(),
 	)
 
 	return cmd
@@ -78,33 +77,33 @@ for more details: https://github.com/softleader/slctl/wiki/Home-Path
 `, c.home.String())
 	}
 
-	if err = ensureDirectories(c.home, c.out); err != nil {
+	if err = ensureDirectories(c.home, logrus.StandardLogger()); err != nil {
 		return err
 	}
-	fmt.Fprintf(c.out, "Slctl home has been configured at %s.\n", environment.Settings.Home)
+	logrus.Printf("Slctl home has been configured at %s.\n", environment.Settings.Home)
 
-	if err = ensureConfigFile(c.home, c.out); err != nil {
+	if err = ensureConfigFile(c.home, logrus.StandardLogger()); err != nil {
 		return err
 	}
 	var username string
 	if !environment.Settings.Offline {
 		if c.token == "" {
-			if c.token, err = token.Grant(c.username, c.password, c.out, c.force); err != nil {
+			if c.token, err = token.Grant(c.username, c.password, logrus.StandardLogger(), c.force); err != nil {
 				return err
 			}
 		}
-		if username, err = token.Confirm(organization, c.token, c.out); err != nil {
+		if username, err = token.Confirm(organization, c.token, logrus.StandardLogger()); err != nil {
 			return err
 		}
 	}
-	if err = config.Refresh(c.home, c.token, c.out); err != nil {
+	if err = config.Refresh(c.home, c.token, logrus.StandardLogger()); err != nil {
 		return err
 	}
-	fmt.Fprintf(c.out, "Welcome aboard %s!\n", username)
+	logrus.Printf("Welcome aboard %s!\n", username)
 	return
 }
 
-func ensureDirectories(home slpath.Home, out io.Writer) (err error) {
+func ensureDirectories(home slpath.Home, log *logrus.Logger) (err error) {
 	configDirectories := []string{
 		home.String(),
 		home.Config(),
@@ -115,7 +114,7 @@ func ensureDirectories(home slpath.Home, out io.Writer) (err error) {
 	}
 	for _, p := range configDirectories {
 		if fi, err := os.Stat(p); err != nil {
-			fmt.Fprintf(out, "Creating %s \n", p)
+			log.Printf("Creating %s \n", p)
 			if err = os.MkdirAll(p, 0755); err != nil {
 				return fmt.Errorf("could not create %s: %s", p, err)
 			}
@@ -127,10 +126,10 @@ func ensureDirectories(home slpath.Home, out io.Writer) (err error) {
 	return
 }
 
-func ensureConfigFile(home slpath.Home, out io.Writer) (err error) {
+func ensureConfigFile(home slpath.Home, log *logrus.Logger) (err error) {
 	conf := home.ConfigFile()
 	if fi, err := os.Stat(conf); err != nil {
-		fmt.Fprintf(out, "Creating %s \n", conf)
+		log.Printf("Creating %s \n", conf)
 		f := config.NewConfFile()
 		if err := f.WriteFile(conf, config.ReadWrite); err != nil {
 			return err

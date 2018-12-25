@@ -1,23 +1,19 @@
 package main
 
 import (
-	"fmt"
+	"github.com/gosuri/uitable"
+	"github.com/sirupsen/logrus"
 	"github.com/softleader/slctl/pkg/environment"
 	"github.com/softleader/slctl/pkg/slpath"
-	"github.com/softleader/slctl/pkg/verbose"
-	"io"
-
-	"github.com/gosuri/uitable"
 	"github.com/spf13/cobra"
 )
 
 type pluginListCmd struct {
 	home slpath.Home
-	out  io.Writer
 }
 
-func newPluginListCmd(out io.Writer) *cobra.Command {
-	pcmd := &pluginListCmd{out: out}
+func newPluginListCmd() *cobra.Command {
+	pcmd := &pluginListCmd{}
 	cmd := &cobra.Command{
 		Use:   "list",
 		Short: "list installed plugins",
@@ -30,7 +26,7 @@ func newPluginListCmd(out io.Writer) *cobra.Command {
 }
 
 func (c *pluginListCmd) run() error {
-	verbose.Printf("search in plugin dirs: %s", environment.Settings.PluginDirs())
+	logrus.Debugf("search in plugin dirs: %s", environment.Settings.PluginDirs())
 	plugins, err := findPlugins(environment.Settings.PluginDirs())
 	if err != nil {
 		return err
@@ -41,6 +37,6 @@ func (c *pluginListCmd) run() error {
 	for _, p := range plugins {
 		table.AddRow(p.Metadata.Name, p.Metadata.Version, p.Metadata.Description, p.Source)
 	}
-	fmt.Fprintln(c.out, table)
+	logrus.Println(table)
 	return nil
 }

@@ -1,28 +1,25 @@
 package main
 
 import (
-	"fmt"
+	"github.com/sirupsen/logrus"
 	"github.com/softleader/slctl/pkg/environment"
-	"github.com/softleader/slctl/pkg/verbose"
-	"io"
-
 	"github.com/spf13/cobra"
 )
 
 const longHomeHelp = `This command displays the location of SL_HOME.
 `
 
-func newHomeCmd(out io.Writer) *cobra.Command {
+func newHomeCmd() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "home",
 		Short: "displays the location of SL_HOME",
 		Long:  usage(longHomeHelp),
 		Run: func(cmd *cobra.Command, args []string) {
 			h := environment.Settings.Home
-			fmt.Fprintln(out, h)
-			verbose.Fprintf(out, "Config: %s\n", h.Config())
-			verbose.Fprintf(out, "ConfigFile: %s\n", h.ConfigFile())
-			verbose.Fprintf(out, "Plugins: %s\n", h.Plugins())
+			logrus.Println(h)
+			logrus.Debugf("Config: %s\n", h.Config())
+			logrus.Debugf("ConfigFile: %s\n", h.ConfigFile())
+			logrus.Debugf("Plugins: %s\n", h.Plugins())
 		},
 	}
 	return cmd

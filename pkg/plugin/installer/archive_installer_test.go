@@ -1,9 +1,9 @@
 package installer
 
 import (
-	"bytes"
 	"compress/flate"
 	"github.com/mholt/archiver"
+	"github.com/sirupsen/logrus"
 	"github.com/softleader/slctl/pkg/plugin"
 	"github.com/softleader/slctl/pkg/slpath"
 	"io/ioutil"
@@ -18,7 +18,6 @@ func TestArchiveInstaller_Install(t *testing.T) {
 		t.Fatal(err)
 	}
 	defer os.RemoveAll(home)
-	b := bytes.NewBuffer(nil)
 	hh := slpath.Home(home)
 	z := archiver.Zip{
 		CompressionLevel:       flate.DefaultCompression,
@@ -40,7 +39,8 @@ func TestArchiveInstaller_Install(t *testing.T) {
 		return
 	}
 
-	i, err := newArchiveInstaller(b, arcPath, hh, true, false)
+	log := logrus.New()
+	i, err := newArchiveInstaller(log, arcPath, hh, true, false)
 	if err != nil {
 		t.Error(err)
 		return

@@ -4,13 +4,12 @@ import (
 	"context"
 	"fmt"
 	"github.com/google/go-github/github"
+	"github.com/sirupsen/logrus"
 	"github.com/softleader/slctl/pkg/config"
 	"github.com/softleader/slctl/pkg/environment"
 	"github.com/softleader/slctl/pkg/plugin"
 	"github.com/softleader/slctl/pkg/slpath"
-	"github.com/softleader/slctl/pkg/verbose"
 	"golang.org/x/oauth2"
-	"io"
 	"path/filepath"
 	"runtime"
 	"strings"
@@ -20,7 +19,7 @@ type gitHubInstaller struct {
 	archiveInstaller
 }
 
-func newGitHubInstaller(out io.Writer, source, tag string, asset int, home slpath.Home, force, soft bool) (*gitHubInstaller, error) {
+func newGitHubInstaller(log *logrus.Logger, source, tag string, asset int, home slpath.Home, force, soft bool) (*gitHubInstaller, error) {
 	if environment.Settings.Offline {
 		return nil, ErrNonResolvableInOfflineMode
 	}
@@ -39,18 +38,18 @@ func newGitHubInstaller(out io.Writer, source, tag string, asset int, home slpat
 
 	var release *github.RepositoryRelease
 	if tag == "" {
-		verbose.Fprintf(out, "fetching the latest published release from github.com/%s/%s\n", owner, repo)
+		log.Debugf("fetching the latest published release from github.com/%s/%s\n", owner, repo)
 		if release, _, err = client.Repositories.GetLatestRelease(ctx, owner, repo); err != nil {
 			return nil, err
 		}
 	} else {
-		verbose.Fprintf(out, "fetching the release from github.com/%s/%s with tag %q\n", owner, repo, tag)
+		log.Debugf("fetching the release from github.com/%s/%s with tag %q\n", owner, repo, tag)
 		if release, _, err = client.Repositories.GetReleaseByTag(ctx, owner, repo, tag); err != nil {
 			return nil, err
 		}
 	}
 
-	ra, err := pickAsset(out, release, asset)
+	ra, err := pickAsset(log, release, asset)
 	if err != nil {
 		return nil, err
 	}
@@ -63,12 +62,12 @@ func newGitHubInstaller(out io.Writer, source, tag string, asset int, home slpat
 	ghi := gitHubInstaller{}
 	ghi.source = source
 	ghi.home = home
-	ghi.out = out
+	ghi.log = log
 	ghi.force = force
 	ghi.soft = soft
 
 	binary := ra.GetBrowserDownloadURL()
-	verbose.Fprintf(out, "downloading the binary content: %s\n", binary)
+	log.Debugf("downloading the binary content: %s\n", binary)
 
 	if url != "" {
 		ghi.downloader = newUrlDownloader(url, home, filepath.Base(binary))
@@ -86,7 +85,7 @@ func dismantle(url string) (owner, repo string) {
 	return
 }
 
-func pickAsset(out io.Writer, release *github.RepositoryRelease, asset int) (ra *github.ReleaseAsset, err error) {
+func pickAsset(log *logrus.Logger, release *github.RepositoryRelease, asset int) (ra *github.ReleaseAsset, err error) {
 	if len(release.Assets) < 1 {
 		err = fmt.Errorf("no assets found on release %q", release.GetName())
 		return
@@ -98,15 +97,15 @@ func pickAsset(out io.Writer, release *github.RepositoryRelease, asset int) (ra 
 		ra = &release.Assets[asset]
 		return
 	}
-	verbose.Fprintf(out, "trying to find asset name contains %q from release %q\n", runtime.GOOS, release.GetName())
-	if ra = findRuntimeOsAsset(out, release.Assets); ra == nil {
-		verbose.Fprintf(out, "%s asset not found, using first asset\n", runtime.GOOS)
+	log.Debugf("trying to find asset name contains %q from release %q\n", runtime.GOOS, release.GetName())
+	if ra = findRuntimeOsAsset(log, release.Assets); ra == nil {
+		log.Debugf("%s asset not found, using first asset\n", runtime.GOOS)
 		ra = &release.Assets[0]
 	}
 	return
 }
 
-func findRuntimeOsAsset(_ io.Writer, assets []github.ReleaseAsset) *github.ReleaseAsset {
+func findRuntimeOsAsset(_ *logrus.Logger, assets []github.ReleaseAsset) *github.ReleaseAsset {
 	for _, asset := range assets {
 		if strings.Contains(asset.GetName(), runtime.GOOS) {
 			return &asset

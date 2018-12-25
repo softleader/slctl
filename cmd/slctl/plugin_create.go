@@ -3,11 +3,11 @@ package main
 import (
 	"errors"
 	"fmt"
+	"github.com/sirupsen/logrus"
 	"github.com/softleader/slctl/pkg/environment"
 	"github.com/softleader/slctl/pkg/plugin"
 	"github.com/softleader/slctl/pkg/slpath"
 	"github.com/spf13/cobra"
-	"io"
 	"path/filepath"
 	"strings"
 )
@@ -41,13 +41,12 @@ Plugin 本身沒有撰寫的語言限制, {{.}} 推薦並預設產生 golang 的
 type pluginCreateCmd struct {
 	home   slpath.Home
 	name   string
-	out    io.Writer
 	lang   string
 	output string
 }
 
-func newPluginCreateCmd(out io.Writer) *cobra.Command {
-	pcc := &pluginCreateCmd{out: out}
+func newPluginCreateCmd() *cobra.Command {
+	pcc := &pluginCreateCmd{}
 	cmd := &cobra.Command{
 		Use:   "create NAME",
 		Short: "create a new plugin with the given name",
@@ -69,7 +68,7 @@ func newPluginCreateCmd(out io.Writer) *cobra.Command {
 	f.StringVarP(&pcc.output, "output", "o", "", "output directory name, uses plugin name if leave blank")
 
 	cmd.AddCommand(
-		newPluginCreateLangsCmd(out),
+		newPluginCreateLangsCmd(),
 	)
 
 	return cmd
@@ -77,7 +76,7 @@ func newPluginCreateCmd(out io.Writer) *cobra.Command {
 
 func (c *pluginCreateCmd) run() (err error) {
 	pname := filepath.Base(c.name)
-	fmt.Fprintf(c.out, "Creating %s plugin %q\n", c.lang, c.name)
+	logrus.Printf("Creating %s plugin %q\n", c.lang, c.name)
 	pfile := &plugin.Metadata{
 		Name:        pname,
 		Usage:       fmt.Sprintf("the %s plugin", pname),
@@ -85,6 +84,6 @@ func (c *pluginCreateCmd) run() (err error) {
 		Version:     "0.1.0",
 	}
 	path, err := plugin.Create(c.lang, pfile, c.output)
-	fmt.Fprintf(c.out, "Successfully created plugin and saved it to: %s\n", path)
+	logrus.Printf("Successfully created plugin and saved it to: %s\n", path)
 	return
 }

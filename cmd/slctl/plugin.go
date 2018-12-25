@@ -2,10 +2,9 @@ package main
 
 import (
 	"fmt"
+	"github.com/sirupsen/logrus"
 	"github.com/softleader/slctl/pkg/plugin"
-	"github.com/softleader/slctl/pkg/verbose"
 	"github.com/spf13/cobra"
-	"io"
 	"os"
 	"os/exec"
 )
@@ -16,22 +15,22 @@ const pluginHelp = `Manage {{.}} plugins.
 Please manually drop plugin folder into $SL_PLUGIN (default $SL_HOME/plugins).
 `
 
-func newPluginCmd(out io.Writer) *cobra.Command {
+func newPluginCmd() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "plugin",
 		Short: "add, list, remove, or create plugins",
 		Long:  usage(pluginHelp),
 	}
 	cmd.AddCommand(
-		newPluginListCmd(out),
-		newPluginInstallCmd(out),
-		newPluginRemoveCmd(out),
-		newPluginCreateCmd(out),
-		newPluginEnvsCmd(out),
-		newPluginFlagsCmd(out),
-		newPluginSearchCmd(out),
-		newPluginUpgradeCmd(out),
-		newPluginExtsCmd(out),
+		newPluginListCmd(),
+		newPluginInstallCmd(),
+		newPluginRemoveCmd(),
+		newPluginCreateCmd(),
+		newPluginEnvsCmd(),
+		newPluginFlagsCmd(),
+		newPluginSearchCmd(),
+		newPluginUpgradeCmd(),
+		newPluginExtsCmd(),
 	)
 	return cmd
 }
@@ -49,7 +48,7 @@ func runHook(p *plugin.Plugin) error {
 		return err
 	}
 	prog := exec.Command(main, argv...)
-	verbose.Printf("running hook: %v\n", command)
+	logrus.Debugf("running hook: %v\n", command)
 	prog.Stdout, prog.Stderr = os.Stdout, os.Stderr
 	if err := prog.Run(); err != nil {
 		if e, ok := err.(*exec.ExitError); ok {

@@ -2,10 +2,10 @@ package main
 
 import (
 	"fmt"
+	"github.com/sirupsen/logrus"
 	"github.com/softleader/slctl/pkg/environment"
 	"github.com/softleader/slctl/pkg/plugin"
 	"github.com/spf13/cobra"
-	"io"
 	"os"
 	"os/exec"
 	"path/filepath"
@@ -17,7 +17,7 @@ type PluginError struct {
 	Code int
 }
 
-func loadPlugins(baseCmd *cobra.Command, out io.Writer) {
+func loadPlugins(baseCmd *cobra.Command) {
 
 	if os.Getenv("SL_NO_PLUGINS") == "1" {
 		return
@@ -73,7 +73,7 @@ func loadPlugins(baseCmd *cobra.Command, out io.Writer) {
 				prog := exec.Command(main, argv...)
 				prog.Env = os.Environ()
 				prog.Stdin = os.Stdin
-				prog.Stdout = out
+				prog.Stdout = logrus.StandardLogger().Out
 				prog.Stderr = os.Stderr
 				if err := prog.Run(); err != nil {
 					if eerr, ok := err.(*exec.ExitError); ok {

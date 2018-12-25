@@ -2,10 +2,9 @@ package main
 
 import (
 	"errors"
-	"fmt"
+	"github.com/sirupsen/logrus"
 	"github.com/softleader/slctl/pkg/plugin"
 	"github.com/spf13/cobra"
-	"io"
 )
 
 const (
@@ -15,7 +14,7 @@ const (
 `
 )
 
-func newPluginExtsCmd(out io.Writer) *cobra.Command {
+func newPluginExtsCmd() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "exts",
 		Short: "list supported plugin archive extension to install",
@@ -25,7 +24,7 @@ func newPluginExtsCmd(out io.Writer) *cobra.Command {
 				return errors.New("this command does not accept arguments")
 			}
 			for _, ext := range plugin.SupportedExtensions {
-				fmt.Fprintln(out, ext)
+				logrus.Println(ext)
 			}
 			return nil
 		},

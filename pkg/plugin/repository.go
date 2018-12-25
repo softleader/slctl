@@ -5,13 +5,12 @@ import (
 	"fmt"
 	"github.com/google/go-github/github"
 	"github.com/gosuri/uitable"
+	"github.com/sirupsen/logrus"
 	"github.com/softleader/slctl/pkg/config"
 	"github.com/softleader/slctl/pkg/environment"
 	"github.com/softleader/slctl/pkg/slpath"
-	"github.com/softleader/slctl/pkg/verbose"
 	"golang.org/x/oauth2"
 	"gopkg.in/yaml.v2"
-	"io"
 	"io/ioutil"
 	"os"
 	"path/filepath"
@@ -34,21 +33,21 @@ type Repository struct {
 	Expires time.Time
 }
 
-func LoadRepository(out io.Writer, home slpath.Home, org string, force bool) (r *Repository, err error) {
+func LoadRepository(log *logrus.Logger, home slpath.Home, org string, force bool) (r *Repository, err error) {
 	cached := filepath.Join(home.CachePlugins(), RepoFileName)
 	if force {
-		if r, err = fetchOnline(out, home, org); err == nil {
+		if r, err = fetchOnline(log, home, org); err == nil {
 			r.save(cached)
 		}
 		return
 	}
-	r, err = loadLocal(out, cached)
+	r, err = loadLocal(log, cached)
 	if err != nil && !os.IsNotExist(err) {
 		return nil, err
 	}
 	if expired(r) {
-		verbose.Fprintln(out, "cache is out of date")
-		if r, err = fetchOnline(out, home, org); err == nil {
+		log.Debugln("cache is out of date")
+		if r, err = fetchOnline(log, home, org); err == nil {
 			r.save(cached)
 		}
 	}
@@ -67,8 +66,8 @@ func (r *Repository) save(path string) error {
 	return ioutil.WriteFile(path, data, 0644)
 }
 
-func loadLocal(out io.Writer, path string) (r *Repository, err error) {
-	verbose.Fprintf(out, "loading cached plugin repositories from: %s\n", path)
+func loadLocal(log *logrus.Logger, path string) (r *Repository, err error) {
+	log.Debugf("loading cached plugin repositories from: %s\n", path)
 	data, err := ioutil.ReadFile(path)
 	if err != nil {
 		return
@@ -78,11 +77,11 @@ func loadLocal(out io.Writer, path string) (r *Repository, err error) {
 	return
 }
 
-func fetchOnline(out io.Writer, home slpath.Home, org string) (r *Repository, err error) {
+func fetchOnline(log *logrus.Logger, home slpath.Home, org string) (r *Repository, err error) {
 	if environment.Settings.Offline {
 		return nil, fmt.Errorf("can not fetch plugin repository in offline mode")
 	}
-	verbose.Fprintf(out, "fetching the plugin repositories\n")
+	log.Debugf("fetching the plugin repositories\n")
 	cfg, err := config.LoadConfFile(home.ConfigFile())
 	if err != nil {
 		return
@@ -111,13 +110,13 @@ func fetchOnline(out io.Writer, home slpath.Home, org string) (r *Repository, er
 			})
 		}
 	}
-	verbose.Fprintf(out, "retrieved %v plugins\n", len(r.Repos))
+	log.Debugf("retrieved %v plugins\n", len(r.Repos))
 	if environment.Settings.Verbose {
 		table := uitable.New()
 		for _, r := range r.Repos {
 			table.AddRow(r.Name, r.Source)
 		}
-		fmt.Fprintln(out, table)
+		log.Println(table)
 	}
 	return
 }

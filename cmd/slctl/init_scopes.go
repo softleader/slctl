@@ -2,10 +2,9 @@ package main
 
 import (
 	"errors"
-	"fmt"
+	"github.com/sirupsen/logrus"
 	"github.com/softleader/slctl/pkg/config/token"
 	"github.com/spf13/cobra"
-	"io"
 )
 
 const (
@@ -15,7 +14,7 @@ const (
 `
 )
 
-func newInitScopesCmd(out io.Writer) *cobra.Command {
+func newInitScopesCmd() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "scopes",
 		Short: "list scopes of token that " + name + " required",
@@ -25,7 +24,7 @@ func newInitScopesCmd(out io.Writer) *cobra.Command {
 				return errors.New("this command does not accept arguments")
 			}
 			for _, scope := range token.Scopes {
-				fmt.Fprintln(out, scope)
+				logrus.Println(scope)
 			}
 			return nil
 		},

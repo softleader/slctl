@@ -6,11 +6,10 @@ import (
 	"errors"
 	"fmt"
 	"github.com/google/go-github/github"
+	"github.com/sirupsen/logrus"
 	"github.com/softleader/slctl/pkg/environment"
-	"github.com/softleader/slctl/pkg/verbose"
 	"golang.org/x/crypto/ssh/terminal"
 	"golang.org/x/oauth2"
-	"io"
 	"os"
 	"strings"
 	"syscall"
@@ -28,7 +27,7 @@ To re-generate a new token, use '--force' flag.
 Use 'init --help' for more information about the command.`)
 )
 
-func EnsureScopes(out io.Writer, scopes []github.Scope) (err error) {
+func EnsureScopes(log *logrus.Logger, scopes []github.Scope) (err error) {
 	if environment.Settings.Offline {
 		return
 	}
@@ -43,17 +42,17 @@ func EnsureScopes(out io.Writer, scopes []github.Scope) (err error) {
 		return
 	}
 
-	fmt.Fprintf(out, "Checking authorization scopes %q for the GitHub access token\n", scopes)
+	log.Printf("Checking authorization scopes %q for the GitHub access token\n", scopes)
 
 	r := bufio.NewReader(os.Stdin)
 
-	fmt.Fprint(out, "GitHub username: ")
+	log.Print("GitHub username: ")
 	username, _ := r.ReadString('\n')
 
-	fmt.Fprint(out, "GitHub password: ")
+	log.Print( "GitHub password: ")
 	bytePassword, _ := terminal.ReadPassword(int(syscall.Stdin))
 	password := string(bytePassword)
-	fmt.Fprintln(out, "")
+	log.Print( "")
 
 	tp := github.BasicAuthTransport{
 		Username: strings.TrimSpace(username),
@@ -65,7 +64,7 @@ func EnsureScopes(out io.Writer, scopes []github.Scope) (err error) {
 
 	auths, _, err := client.Authorizations.List(ctx, &github.ListOptions{})
 	if _, ok := err.(*github.TwoFactorAuthError); ok {
-		fmt.Fprint(out, "GitHub two-factor authentication code: ")
+		log.Print("GitHub two-factor authentication code: ")
 		otp, _ := r.ReadString('\n')
 		tp.OTP = strings.TrimSpace(otp)
 		if auths, _, err = client.Authorizations.List(ctx, &github.ListOptions{}); err != nil {
@@ -86,7 +85,7 @@ func EnsureScopes(out io.Writer, scopes []github.Scope) (err error) {
 		return
 	}
 
-	fmt.Fprintf(out, "granting scopes: %q\n", addScopes)
+	log.Printf("granting scopes: %q\n", addScopes)
 
 	_, _, err = client.Authorizations.Edit(ctx, auth.GetID(), newAuthorizationUpdateRequest(addScopes))
 	return
@@ -134,17 +133,17 @@ func contains(base []github.Scope, target github.Scope) bool {
 	return false
 }
 
-func Grant(username, password string, out io.Writer, force bool) (token string, err error) {
+func Grant(username, password string, log *logrus.Logger, force bool) (token string, err error) {
 	r := bufio.NewReader(os.Stdin)
 	if username == "" {
-		fmt.Fprint(out, "GitHub username: ")
+		log.Println("GitHub username: ")
 		username, _ = r.ReadString('\n')
 	}
 	if password == "" {
-		fmt.Fprint(out, "GitHub password: ")
+		log.Println("GitHub password: ")
 		bytePassword, _ := terminal.ReadPassword(int(syscall.Stdin))
 		password = string(bytePassword)
-		fmt.Fprintln(out, "")
+		log.Println("")
 	}
 
 	tp := github.BasicAuthTransport{
@@ -157,7 +156,7 @@ func Grant(username, password string, out io.Writer, force bool) (token string, 
 
 	auths, _, err := client.Authorizations.List(ctx, &github.ListOptions{})
 	if _, ok := err.(*github.TwoFactorAuthError); ok {
-		fmt.Fprint(out, "GitHub two-factor authentication code: ")
+		log.Print("GitHub two-factor authentication code: ")
 		otp, _ := r.ReadString('\n')
 		tp.OTP = strings.TrimSpace(otp)
 		if auths, _, err = client.Authorizations.List(ctx, &github.ListOptions{}); err != nil {
@@ -170,7 +169,7 @@ func Grant(username, password string, out io.Writer, force bool) (token string, 
 			if !force {
 				return "", ErrOauthAccessAlreadyExists
 			}
-			verbose.Fprintf(out, "Removing exist token\n")
+			log.Debugf("Removing exist token\n")
 			if _, err = client.Authorizations.Delete(ctx, auth.GetID()); err != nil {
 				return "", err
 			}
@@ -190,7 +189,7 @@ func Grant(username, password string, out io.Writer, force bool) (token string, 
 	return auth.GetToken(), nil
 }
 
-func Confirm(org, token string, out io.Writer) (name string, err error) {
+func Confirm(org, token string, _ *logrus.Logger) (name string, err error) {
 	if token == "" {
 		return "", fmt.Errorf("required flag(s) \"token\" not set")
 	}
@@ -205,7 +204,7 @@ func Confirm(org, token string, out io.Writer) (name string, err error) {
 	if mem, _, err = client.Organizations.GetOrgMembership(ctx, "", org); err != nil {
 		return "", err
 	}
-	// verbose.Fprintf(out, "%s\n", github.Stringify(mem))
+	// log.Debugf("%s\n", github.Stringify(mem))
 	if mem.GetState() != "active" {
 		return "", fmt.Errorf("you are not a active member of %s", org)
 	}
@@ -213,6 +212,6 @@ func Confirm(org, token string, out io.Writer) (name string, err error) {
 	if user, _, err = client.Users.Get(ctx, ""); err != nil {
 		return "", err
 	}
-	// verbose.Fprintf(out, "%s\n", github.Stringify(user))
+	// log.Debugf("%s\n", github.Stringify(user))
 	return user.GetName(), err
 }

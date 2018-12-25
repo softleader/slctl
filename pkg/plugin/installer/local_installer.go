@@ -4,10 +4,9 @@ import (
 	"errors"
 	"fmt"
 	"github.com/Masterminds/semver"
+	"github.com/sirupsen/logrus"
 	"github.com/softleader/slctl/pkg/plugin"
 	"github.com/softleader/slctl/pkg/slpath"
-	"github.com/softleader/slctl/pkg/verbose"
-	"io"
 	"os"
 	"path/filepath"
 	"regexp"
@@ -22,20 +21,20 @@ var (
 )
 
 type localInstaller struct {
-	out    io.Writer
+	log    *logrus.Logger
 	home   slpath.Home
 	source string
 	force  bool
 	soft   bool // soft means remove exist plugin only if version is different
 }
 
-func newLocalInstaller(out io.Writer, source string, home slpath.Home, force, soft bool) (*localInstaller, error) {
+func newLocalInstaller(log *logrus.Logger, source string, home slpath.Home, force, soft bool) (*localInstaller, error) {
 	src, err := filepath.Abs(source)
 	if err != nil {
 		return nil, fmt.Errorf("unable to get absolute path to plugin: %v", err)
 	}
 	return &localInstaller{
-		out:    out,
+		log:    log,
 		source: src,
 		home:   home,
 		force:  force,
@@ -75,11 +74,11 @@ func (i *localInstaller) Install() (*plugin.Plugin, error) {
 				return exist, ErrAlreadyUpToDate
 			}
 		}
-		verbose.Fprintf(i.out, "plugin %q already exists, force to remove it\n", plug.Metadata.Name)
+		i.log.Debugf("plugin %q already exists, force to remove it\n", plug.Metadata.Name)
 		os.RemoveAll(link)
 	}
 
-	verbose.Printf("symlinking %s to %s\n", plug.Dir, link)
+	i.log.Printf("symlinking %s to %s\n", plug.Dir, link)
 	if err := os.Symlink(plug.Dir, link); err != nil {
 		return nil, err
 	}

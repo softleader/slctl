@@ -2,7 +2,7 @@ package main
 
 import (
 	"fmt"
-	"io"
+	"github.com/sirupsen/logrus"
 	"strings"
 
 	"github.com/spf13/cobra"
@@ -26,7 +26,7 @@ type Version struct {
 	BuildDate  string
 }
 
-func newVersionCmd(out io.Writer) *cobra.Command {
+func newVersionCmd() *cobra.Command {
 	var short bool
 	cmd := &cobra.Command{
 		Use:   "version",
@@ -34,9 +34,9 @@ func newVersionCmd(out io.Writer) *cobra.Command {
 		Long:  usage(versionHelp),
 		Run: func(cmd *cobra.Command, args []string) {
 			if short {
-				fmt.Fprintln(out, ver().Short())
+				logrus.Println(ver().Short())
 			} else {
-				fmt.Fprintf(out, "%#v\n", ver())
+				logrus.Printf("%#v\n", ver())
 			}
 		},
 	}
