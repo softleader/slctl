@@ -27,14 +27,16 @@ type EnvSettings struct {
 }
 
 func (s *EnvSettings) AddFlags(fs *pflag.FlagSet) error {
-	h, err := homedir.Dir()
-	if err != nil {
-		panic(err)
-	}
-
-	defaultHome := filepath.Join(h, ".sl")
-	if v, found := os.LookupEnv("SL_HOME"); found {
-		defaultHome = v
+	var found bool
+	var defaultHome string
+	if defaultHome, found = os.LookupEnv("SL_HOME"); found {
+		defaultHome, _ = homedir.Expand(defaultHome)
+	} else {
+		if h, err := homedir.Dir(); err != nil {
+			return err
+		} else {
+			defaultHome = filepath.Join(h, ".sl")
+		}
 	}
 	fs.StringVar((*string)(&s.Home), "home", defaultHome, "location of your config. Overrides $SL_HOME")
 	fs.BoolVarP(&s.Verbose, "verbose", "v", false, "enable verbose output")

@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"github.com/Masterminds/semver"
+	"github.com/mitchellh/go-homedir"
 	"github.com/sirupsen/logrus"
 	"github.com/softleader/slctl/pkg/plugin"
 	"github.com/softleader/slctl/pkg/slpath"
@@ -29,6 +30,7 @@ type localInstaller struct {
 }
 
 func newLocalInstaller(log *logrus.Logger, source string, home slpath.Home, force, soft bool) (*localInstaller, error) {
+	source, _ = homedir.Expand(source)
 	src, err := filepath.Abs(source)
 	if err != nil {
 		return nil, fmt.Errorf("unable to get absolute path to plugin: %v", err)

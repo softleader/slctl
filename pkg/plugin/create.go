@@ -3,6 +3,7 @@ package plugin
 import (
 	"bytes"
 	"fmt"
+	"github.com/mitchellh/go-homedir"
 	"github.com/softleader/slctl/pkg/config/token"
 	"github.com/softleader/slctl/pkg/strcase"
 	"gopkg.in/yaml.v2"
@@ -34,7 +35,9 @@ type creator interface {
 }
 
 func Create(lang string, plugin *Metadata, dir string) (string, error) {
-	if dir = strings.TrimSpace(dir); dir == "" {
+	if dir = strings.TrimSpace(dir); dir != "" {
+		dir, _ = homedir.Expand(dir)
+	} else {
 		if wd, err := os.Getwd(); err != nil {
 			return "", err
 		} else {

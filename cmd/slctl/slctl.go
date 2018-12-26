@@ -34,17 +34,23 @@ Environment:
 var organization = "softleader"
 
 func main() {
-	command := newRootCmd(os.Args[1:])
-	if err := command.Execute(); err != nil {
-		switch e := err.(type) {
-		case PluginError:
-			os.Exit(e.Code)
-		default:
-			os.Exit(1)
-		}
+	if cmd, err := newRootCmd(os.Args[1:]); err != nil {
+		exit(err)
+	} else if err = cmd.Execute(); err != nil {
+		exit(err)
 	}
 }
-func newRootCmd(args []string) *cobra.Command {
+
+func exit(err error) {
+	switch e := err.(type) {
+	case PluginError:
+		os.Exit(e.Code)
+	default:
+		os.Exit(1)
+	}
+}
+
+func newRootCmd(args []string) (*cobra.Command, error) {
 	cmd := &cobra.Command{
 		Use:          name,
 		Short:        name + " against SoftLeader services.",
@@ -60,7 +66,9 @@ func newRootCmd(args []string) *cobra.Command {
 	}
 	flags := cmd.PersistentFlags()
 
-	environment.Settings.AddFlags(flags)
+	if err := environment.Settings.AddFlags(flags); err != nil {
+		return nil, err
+	}
 
 	cmd.AddCommand(
 		newHomeCmd(),
@@ -77,7 +85,7 @@ func newRootCmd(args []string) *cobra.Command {
 	// Find and add plugins
 	loadPlugins(cmd)
 
-	return cmd
+	return cmd, nil
 }
 
 func usage(tpl string) string {
