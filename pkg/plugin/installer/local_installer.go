@@ -30,7 +30,9 @@ type localInstaller struct {
 }
 
 func newLocalInstaller(log *logrus.Logger, source string, home slpath.Home, force, soft bool) (*localInstaller, error) {
-	source, _ = homedir.Expand(source)
+	if expanded, err := homedir.Expand(source); err != nil {
+		source = expanded
+	}
 	src, err := filepath.Abs(source)
 	if err != nil {
 		return nil, fmt.Errorf("unable to get absolute path to plugin: %v", err)

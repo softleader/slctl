@@ -36,7 +36,9 @@ type creator interface {
 
 func Create(lang string, plugin *Metadata, dir string) (string, error) {
 	if dir = strings.TrimSpace(dir); dir != "" {
-		dir, _ = homedir.Expand(dir)
+		if expanded, err := homedir.Expand(dir); err != nil {
+			dir = expanded
+		}
 	} else {
 		if wd, err := os.Getwd(); err != nil {
 			return "", err

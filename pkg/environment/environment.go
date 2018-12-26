@@ -30,7 +30,9 @@ func (s *EnvSettings) AddFlags(fs *pflag.FlagSet) error {
 	var found bool
 	var defaultHome string
 	if defaultHome, found = os.LookupEnv("SL_HOME"); found {
-		defaultHome, _ = homedir.Expand(defaultHome)
+		if expanded, err := homedir.Expand(defaultHome); err != nil {
+			defaultHome = expanded
+		}
 	} else {
 		if h, err := homedir.Dir(); err != nil {
 			return err
