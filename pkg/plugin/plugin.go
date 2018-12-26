@@ -121,16 +121,17 @@ func SetupPluginEnv(
 
 func pluginEnv(shortName, base, cli, version, token string) map[string]string {
 	return map[string]string{
-		"SL_CLI":         cli,
-		"SL_VERSION":     version,
-		"SL_PLUGIN_NAME": shortName,
-		"SL_PLUGIN_DIR":  base,
-		"SL_BIN":         os.Args[0],
-		"SL_PLUGIN":      environment.Settings.PluginDirs(),
-		"SL_HOME":        environment.Settings.Home.String(),
-		"SL_VERBOSE":     strconv.FormatBool(environment.Settings.Verbose),
-		"SL_OFFLINE":     strconv.FormatBool(environment.Settings.Offline),
-		"SL_TOKEN":       token,
+		"SL_CLI":          cli,
+		"SL_VERSION":      version,
+		"SL_PLUGIN_NAME":  shortName,
+		"SL_PLUGIN_DIR":   base,
+		"SL_PLUGIN_MOUNT": "TODO",
+		"SL_BIN":          os.Args[0],
+		"SL_PLUGIN":       environment.Settings.PluginDirs(),
+		"SL_HOME":         environment.Settings.Home.String(),
+		"SL_VERBOSE":      strconv.FormatBool(environment.Settings.Verbose),
+		"SL_OFFLINE":      strconv.FormatBool(environment.Settings.Offline),
+		"SL_TOKEN":        token,
 	}
 }
 

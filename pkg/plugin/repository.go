@@ -18,10 +18,6 @@ import (
 	"time"
 )
 
-const (
-	RepoFileName = ".repository"
-)
-
 type Repo struct {
 	Name        string
 	Source      string
@@ -34,7 +30,7 @@ type Repository struct {
 }
 
 func LoadRepository(log *logrus.Logger, home slpath.Home, org string, force bool) (r *Repository, err error) {
-	cached := filepath.Join(home.CachePlugins(), RepoFileName)
+	cached := home.CacheRepositoryFile()
 	if force {
 		if r, err = fetchOnline(log, home, org); err == nil {
 			r.save(cached)

@@ -38,8 +38,16 @@ func (h Home) CachePlugins() string {
 	return h.Path("cache", "plugins")
 }
 
+func (h Home) CacheRepositoryFile() string {
+	return h.Path("cache", "plugins", "repository.yaml")
+}
+
 func (h Home) CacheArchives() string {
 	return h.Path("cache", "archives")
+}
+
+func (h Home) Mounts() string {
+	return h.Path("mounts")
 }
 
 func (h Home) ContainsAnySpace() bool {
