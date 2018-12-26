@@ -3,11 +3,15 @@ package formatter
 import (
 	"bytes"
 	"github.com/sirupsen/logrus"
+	"fmt"
+	"strings"
 )
 
 // 什麼都不 format 的 formatter
 type PlainFormatter struct {
 }
+
+var ln = fmt.Sprintln()
 
 func (f *PlainFormatter) Format(entry *logrus.Entry) ([]byte, error) {
 	var buf *bytes.Buffer
@@ -16,6 +20,11 @@ func (f *PlainFormatter) Format(entry *logrus.Entry) ([]byte, error) {
 	} else {
 		buf = &bytes.Buffer{}
 	}
-	buf.WriteString(entry.Message)
+	if entry.Message != "" {
+		buf.WriteString(entry.Message)
+	}
+	if !strings.HasSuffix(entry.Message, ln) {
+		buf.WriteString(ln)
+	}
 	return buf.Bytes(), nil
 }
