@@ -32,7 +32,7 @@ build:
 
 .PHONY: release
 release:
-ifneq ($(VERSION), "TRUE")
+ifneq ($(strip $(VERSION)),)
 	$(error VERSION is not set)
 endif
 	git tag -a $(VERSION) -m "$(VERSION)"

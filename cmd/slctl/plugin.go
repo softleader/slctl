@@ -10,9 +10,6 @@ import (
 )
 
 const pluginHelp = `Manage {{.}} plugins.
-
-'plugin install' command is not supported for now! 
-Please manually drop plugin folder into $SL_PLUGIN (default $SL_HOME/plugins).
 `
 
 func newPluginCmd() *cobra.Command {
