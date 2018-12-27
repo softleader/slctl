@@ -14,16 +14,16 @@ script:
 before_deploy:
 - if [ "$TRAVIS_OS_NAME" == "linux" ]; then make dist VERSION=${TRAVIS_TAG}; fi
 deploy:
-- provider: releases
-  api_key:
-    secure: fRJBFj/UO2MHEFA9MHMoSPr5MiIJAkF6JkEBC7BeVug/4ojDyzuhQ4A1XazdVl47fhihY4VC8Sjnd4LdvyM3+NwljwxPbZjPFYYsIFvw1X34ewTdCBHRv4cdDGKNGT1IYVod/4xmtVMGiNrPjxQVnaoPXNfo43Tn14MoCXRgYPQJ+1rCC/p8hRFA66KeyWJmk/FLIGCuC6NWHkYn58tpMd0V8t2bm1MjVhZSwsEMj6/ubCvqzqrQIGlSzi/2i0o6k1rJULL7KieeAasc3qrV3bglO4LnQPuXVaaDZhcFJtZQZjdK/0PeMs58mhOFItlLmYEjN9dlUWpfAb3sjAxXsBDWT4DU0u7GHViAuntCca+Lpum+CFTfw0m55RBFJBAVXCdj8cBKb3ytTjQJsVPGfx2TT4ohywLITPLKamxNqEI7jRBbZrZZ4XNOC8ZhFcagjTzTDyxapdBGO49a8sl2sE00qbLdA14T1H724aHJw5/SISiHGgq+55Tro7zzFiMQ2zEftIrNbvwsi0ODcDumvMw9gQB4kxKmEsDxSlo3LACuNEjkwGpSg8oaHxp8L/9MChdNDd7/trtiQurV8xycX5LSkdSqZRm4L6rxLvmwVdBpPoIvlge/GIQgXDsfeCFLGbPKH3lgMa5T4RZCrj5on3txfV14h8b27/sb69y2b44=
-  file: "_dist/*"
-  file_glob: true
-  skip_cleanup: true
-  on:
-    condition: $TRAVIS_OS_NAME = linux
-    tags: true
-    repo: softleader/slctl
+        #- provider: releases
+        #  api_key:
+        #    secure: fRJBFj/UO2MHEFA9MHMoSPr5MiIJAkF6JkEBC7BeVug/4ojDyzuhQ4A1XazdVl47fhihY4VC8Sjnd4LdvyM3+NwljwxPbZjPFYYsIFvw1X34ewTdCBHRv4cdDGKNGT1IYVod/4xmtVMGiNrPjxQVnaoPXNfo43Tn14MoCXRgYPQJ+1rCC/p8hRFA66KeyWJmk/FLIGCuC6NWHkYn58tpMd0V8t2bm1MjVhZSwsEMj6/ubCvqzqrQIGlSzi/2i0o6k1rJULL7KieeAasc3qrV3bglO4LnQPuXVaaDZhcFJtZQZjdK/0PeMs58mhOFItlLmYEjN9dlUWpfAb3sjAxXsBDWT4DU0u7GHViAuntCca+Lpum+CFTfw0m55RBFJBAVXCdj8cBKb3ytTjQJsVPGfx2TT4ohywLITPLKamxNqEI7jRBbZrZZ4XNOC8ZhFcagjTzTDyxapdBGO49a8sl2sE00qbLdA14T1H724aHJw5/SISiHGgq+55Tro7zzFiMQ2zEftIrNbvwsi0ODcDumvMw9gQB4kxKmEsDxSlo3LACuNEjkwGpSg8oaHxp8L/9MChdNDd7/trtiQurV8xycX5LSkdSqZRm4L6rxLvmwVdBpPoIvlge/GIQgXDsfeCFLGbPKH3lgMa5T4RZCrj5on3txfV14h8b27/sb69y2b44=
+        #  file: "_dist/*"
+        #  file_glob: true
+        #  skip_cleanup: true
+        #  on:
+        #    condition: $TRAVIS_OS_NAME = linux
+        #    tags: true
+        #    repo: softleader/slctl
 - provider: script
   script: make choco-push VERSION=${TRAVIS_TAG}
   skip_cleanup: true

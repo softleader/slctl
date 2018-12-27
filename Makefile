@@ -30,21 +30,14 @@ test:
 build:
 	go build -o $(BUILD)/$(BINARY) -ldflags $(LDFLAGS) $(MAIN)
 
-# build static binaries: https://medium.com/@diogok/on-golang-static-binaries-cross-compiling-and-plugins-1aed33499671
-.PHONY: dist
-dist:
-ifndef VERSION
+.PHONY: release
+release:
+ifneq ($(VERSION), "TRUE")
 	$(error VERSION is not set)
 endif
-	mkdir -p $(BUILD)
-	mkdir -p $(DIST)
-	cp README.md $(BUILD) && cp LICENSE $(BUILD)
-	CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o $(BUILD)/$(BINARY) -ldflags $(LDFLAGS) -a -tags netgo $(MAIN)
-	tar -C $(BUILD) -zcvf $(DIST)/$(BINARY)-linux-$(VERSION).tgz $(BINARY) README.md LICENSE
-	CGO_ENABLED=0 GOOS=darwin GOARCH=amd64 go build -o $(BUILD)/$(BINARY) -ldflags $(LDFLAGS) -a -tags netgo $(MAIN)
-	tar -C $(BUILD) -zcvf $(DIST)/$(BINARY)-darwin-$(VERSION).tgz $(BINARY) README.md LICENSE
-	CGO_ENABLED=0 GOOS=windows GOARCH=amd64 go build -o $(BUILD)/$(BINARY).exe -ldflags $(LDFLAGS) -a -tags netgo $(MAIN)
-	tar -C $(BUILD) -llzcvf $(DIST)/$(BINARY)-windows-$(VERSION).tgz $(BINARY).exe README.md LICENSE
+	git tag -a $(VERSION) -m "$(VERSION)"
+	git push origin $(VERSION)
+	goreleaser
 
 .PHONY: bootstrap
 bootstrap:
