@@ -1,7 +1,9 @@
 package plugin
 
 import (
+	"github.com/sirupsen/logrus"
 	"github.com/softleader/slctl/pkg/config"
+	"github.com/softleader/slctl/pkg/dir"
 	"github.com/softleader/slctl/pkg/environment"
 	"gopkg.in/yaml.v2"
 	"io/ioutil"
@@ -106,26 +108,28 @@ func LoadAll(basedir string) ([]*Plugin, error) {
 // the plugin subsystem itself needs access to the environment variables
 // created here.
 func SetupPluginEnv(
-	shortName, base, cli, version string) (err error) {
+	plugName, plugDir, cli, version string) (err error) {
 	var conf *config.ConfFile
 	if conf, err = config.LoadConfFile(environment.Settings.Home.ConfigFile()); err != nil && err != config.ErrTokenNotExist {
 		return err
 	}
+	plugMount := filepath.Join(environment.Settings.Home.Mounts(), plugName)
+	dir.EnsureDirectory(logrus.StandardLogger(), plugMount)
 
-	for key, val := range pluginEnv(shortName, base, cli, version, conf.Token) {
+	for key, val := range pluginEnv(plugName, plugDir, plugMount, cli, version, conf.Token) {
 		os.Setenv(key, val)
 	}
 
 	return nil
 }
 
-func pluginEnv(shortName, base, cli, version, token string) map[string]string {
+func pluginEnv(pluginName, pluginDir, pluginMount, cli, version, token string) map[string]string {
 	return map[string]string{
 		"SL_CLI":          cli,
 		"SL_VERSION":      version,
-		"SL_PLUGIN_NAME":  shortName,
-		"SL_PLUGIN_DIR":   base,
-		"SL_PLUGIN_MOUNT": "TODO",
+		"SL_PLUGIN_NAME":  pluginName,
+		"SL_PLUGIN_DIR":   pluginDir,
+		"SL_PLUGIN_MOUNT": pluginMount,
 		"SL_BIN":          os.Args[0],
 		"SL_PLUGIN":       environment.Settings.PluginDirs(),
 		"SL_HOME":         environment.Settings.Home.String(),
@@ -135,10 +139,14 @@ func pluginEnv(shortName, base, cli, version, token string) map[string]string {
 	}
 }
 
-func envs() (envs []string) {
-	m := pluginEnv("", "", "", "", "")
-	for env := range m {
-		envs = append(envs, env)
-	}
-	return
+func envs() (m map[string]string) {
+	plug := "foo"
+	h := environment.Settings.Home
+	return pluginEnv(
+		plug,
+		filepath.Join(h.Plugins(), plug),
+		filepath.Join(h.Mounts(), plug),
+		"slctl",
+		"<version.of.slctl>",
+		"<github.token>")
 }

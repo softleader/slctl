@@ -5,6 +5,7 @@ import (
 	"github.com/sirupsen/logrus"
 	"github.com/softleader/slctl/pkg/config"
 	"github.com/softleader/slctl/pkg/config/token"
+	"github.com/softleader/slctl/pkg/dir"
 	"github.com/softleader/slctl/pkg/environment"
 	"github.com/softleader/slctl/pkg/slpath"
 	"github.com/spf13/cobra"
@@ -111,19 +112,9 @@ func ensureDirectories(home slpath.Home, log *logrus.Logger) (err error) {
 		home.Cache(),
 		home.CachePlugins(),
 		home.CacheArchives(),
+		home.Mounts(),
 	}
-	for _, p := range configDirectories {
-		if fi, err := os.Stat(p); err != nil {
-			log.Printf("Creating %s \n", p)
-			if err = os.MkdirAll(p, 0755); err != nil {
-				return fmt.Errorf("could not create %s: %s", p, err)
-			}
-		} else if !fi.IsDir() {
-			return fmt.Errorf("%s must be a directory", p)
-		}
-	}
-
-	return
+	return dir.EnsureDirectories(log, configDirectories...)
 }
 
 func ensureConfigFile(home slpath.Home, log *logrus.Logger) (err error) {

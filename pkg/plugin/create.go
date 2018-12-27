@@ -4,7 +4,9 @@ import (
 	"bytes"
 	"fmt"
 	"github.com/mitchellh/go-homedir"
+	"github.com/sirupsen/logrus"
 	"github.com/softleader/slctl/pkg/config/token"
+	"github.com/softleader/slctl/pkg/dir"
 	"github.com/softleader/slctl/pkg/strcase"
 	"gopkg.in/yaml.v2"
 	"io/ioutil"
@@ -34,61 +36,49 @@ type creator interface {
 	files(plugin *Metadata, pluginDir string) []file
 }
 
-func Create(lang string, plugin *Metadata, dir string) (string, error) {
-	if dir = strings.TrimSpace(dir); dir != "" {
-		if expanded, err := homedir.Expand(dir); err != nil {
-			dir = expanded
+func Create(lang string, plugin *Metadata, path string) (string, error) {
+	if path = strings.TrimSpace(path); path != "" {
+		if expanded, err := homedir.Expand(path); err != nil {
+			path = expanded
 		}
 	} else {
 		if wd, err := os.Getwd(); err != nil {
 			return "", err
 		} else {
-			dir = filepath.Join(wd, plugin.Name)
+			path = filepath.Join(wd, plugin.Name)
 		}
 	}
 
-	dir, err := filepath.Abs(dir)
+	path, err := filepath.Abs(path)
 	if err != nil {
-		return dir, err
+		return path, err
 	}
 
-	if err := mkdir(dir); err != nil {
-		return dir, err
+	if err := dir.EnsureDirectory(logrus.StandardLogger(), path); err != nil {
+		return path, err
 	}
 
 	creator, found := Creators[lang]
 	if !found {
-		return dir, fmt.Errorf(`unsupported creating %s template.
+		return path, fmt.Errorf(`unsupported creating %s template.
 You might need to run 'slctl plugin create langs'`, lang)
 	}
 	plugin.Exec = creator.exec(plugin)
 	plugin.Hook = creator.hook(plugin)
 	plugin.GitHub.Scopes = token.Scopes
 	plugin.IgnoreGlobalFlags = false
-	files := creator.files(plugin, dir)
+	files := creator.files(plugin, path)
 	files = append(files, marshal{
-		path: filepath.Join(dir, MetadataFileName),
+		path: filepath.Join(path, MetadataFileName),
 		in:   plugin,
 	})
 
 	for _, file := range files {
 		if err := save(file); err != nil {
-			return dir, err
+			return path, err
 		}
 	}
-	return dir, nil
-}
-
-func mkdir(path string) error {
-	if fi, err := os.Stat(path); !os.IsNotExist(err) {
-		return err
-	} else if err == nil && !fi.IsDir() {
-		return fmt.Errorf("file %s already exists and is not a directory", path)
-	}
-	if err := os.MkdirAll(path, 0755); err != nil {
-		return err
-	}
-	return nil
+	return path, nil
 }
 
 type file interface {
@@ -136,7 +126,7 @@ func (u tpl) content() ([]byte, error) {
 }
 
 func save(file file) (err error) {
-	mkdir(filepath.Dir(file.filepath())) // ensure parent exist
+	dir.EnsureDirectory(logrus.StandardLogger(), filepath.Dir(file.filepath())) // ensure parent exist
 	out, err := file.content()
 	if err != nil {
 		return

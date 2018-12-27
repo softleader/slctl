@@ -26,8 +26,8 @@ func newPluginEnvsCmd() *cobra.Command {
 }
 
 func (c *pluginEnvsCmd) run() error {
-	for _, env := range plugin.Envs {
-		logrus.Println(env)
+	for k, v := range plugin.Envs {
+		logrus.Printf("%s=%s", k, v)
 	}
 	return nil
 }
