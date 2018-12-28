@@ -98,7 +98,8 @@ func fetchOnline(log *logrus.Logger, home slpath.Home, org string) (r *Repositor
 	)
 	tc := oauth2.NewClient(ctx, ts)
 	client := github.NewClient(tc)
-	resp, _, err := client.Search.Repositories(ctx, officialPluginTopic, &github.SearchOptions{
+	query := fmt.Sprintf("org:%s+topic:%s", org, officialPluginTopic)
+	resp, _, err := client.Search.Repositories(ctx, query, &github.SearchOptions{
 		ListOptions: github.ListOptions{
 			PerPage: 999,
 		},
