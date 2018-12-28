@@ -37,13 +37,17 @@ func (s *EnvSettings) AddFlags(fs *pflag.FlagSet) error {
 		if h, err := homedir.Dir(); err != nil {
 			return err
 		} else {
-			defaultHome = filepath.Join(h, ".sl")
+			defaultHome = DefaultHome(h)
 		}
 	}
 	fs.StringVar((*string)(&s.Home), "home", defaultHome, "location of your config. Overrides $SL_HOME")
 	fs.BoolVarP(&s.Verbose, "verbose", "v", false, "enable verbose output")
 	fs.BoolVar(&s.Offline, "offline", false, "work offline")
 	return nil
+}
+
+func DefaultHome(base string) string {
+	return filepath.Join(base, ".sl")
 }
 
 func (s *EnvSettings) Init(fs *pflag.FlagSet) {

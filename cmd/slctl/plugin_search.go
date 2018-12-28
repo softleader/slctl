@@ -13,9 +13,9 @@ import (
 
 const pluginSearchDesc = `Search SoftLeader official plugin
 
-	$ {{.}} plugin search NAME
+	$ {{.}} plugin search <FILTER...>
 
-NAME 可傳入指定的 Plugin 名稱, 會視為模糊條件來過濾; 反之列出全部
+NAME 可傳入多個 FILTERS, 會以 Or 且模糊條件來過濾 SOURCE; 反之列出全部
 
 	$ {{.}} plugin search
 	$ {{.}} plugin search whereis
@@ -30,16 +30,16 @@ NAME 可傳入指定的 Plugin 名稱, 會視為模糊條件來過濾; 反之列
 `
 
 type pluginSearchCmd struct {
-	home      slpath.Home
-	name      string
-	installed bool
-	force     bool
+	home              slpath.Home
+	filters           []string
+	onlyShowInstalled bool
+	force             bool
 }
 
 func newPluginSearchCmd() *cobra.Command {
 	c := &pluginSearchCmd{}
 	cmd := &cobra.Command{
-		Use:   "search NAME",
+		Use:   "search <FILTER...>",
 		Short: "search SoftLeader official plugin",
 		Long:  usage(pluginSearchDesc),
 		Args:  cobra.MaximumNArgs(1),
@@ -48,7 +48,7 @@ func newPluginSearchCmd() *cobra.Command {
 				return fmt.Errorf("can not run the command in offline mode")
 			}
 			if len(args) > 0 {
-				c.name = strings.TrimSpace(args[0])
+				c.filters = args
 			}
 			c.home = environment.Settings.Home
 			return c.run()
@@ -57,7 +57,7 @@ func newPluginSearchCmd() *cobra.Command {
 
 	f := cmd.Flags()
 	f.BoolVarP(&c.force, "force", "f", false, "force to update cache before searching plugins")
-	f.BoolVarP(&c.installed, "installed", "i", false, "only shows installed plugins")
+	f.BoolVarP(&c.onlyShowInstalled, "installed", "i", false, "only shows installed plugins")
 
 	return cmd
 }
@@ -76,26 +76,30 @@ func (c *pluginSearchCmd) run() (err error) {
 		return err
 	}
 	table := uitable.New()
-	table.AddRow("INSTALLED", "NAME", "SOURCE", "DESCRIPTION")
+	table.AddRow("INSTALLED", "SOURCE", "DESCRIPTION")
 	for _, repo := range r.Repos {
-		i := installed(plugins, repo.Source)
-		if c.installed && i != "V" {
+		hasInstalled := installed(plugins, repo.Source)
+		if c.onlyShowInstalled && !hasInstalled { // 要求只顯示安裝過的
 			continue
 		}
-		if c.name != "" && !strings.Contains(repo.Name, c.name) {
+		if len(c.filters) > 0 && !repo.Contains(c.filters...) {
 			continue
 		}
-		table.AddRow(i, repo.Name, repo.Source, repo.Description)
+		var installed string
+		if hasInstalled {
+			installed = "V"
+		}
+		table.AddRow(installed, repo.Source, repo.Description)
 	}
 	logrus.Println(table)
 	return
 }
 
-func installed(plugins []*plugin.Plugin, source string) string {
+func installed(plugins []*plugin.Plugin, source string) bool {
 	for _, plugin := range plugins {
 		if strings.Contains(plugin.Source, source) {
-			return "V"
+			return true
 		}
 	}
-	return ""
+	return false
 }

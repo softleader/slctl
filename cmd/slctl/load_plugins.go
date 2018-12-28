@@ -113,7 +113,7 @@ func manuallyProcessArgs(args []string) (known []string, unknown []string) {
 
 // findPlugins returns a list of YAML files that describe plugins.
 func findPlugins(plugdirs string) ([]*plugin.Plugin, error) {
-	found := []*plugin.Plugin{}
+	var found []*plugin.Plugin
 	// Let's get all UNIXy and allow path separators
 	for _, p := range filepath.SplitList(plugdirs) {
 		matches, err := plugin.LoadAll(p)

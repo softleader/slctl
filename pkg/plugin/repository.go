@@ -4,7 +4,6 @@ import (
 	"context"
 	"fmt"
 	"github.com/google/go-github/github"
-	"github.com/gosuri/uitable"
 	"github.com/sirupsen/logrus"
 	"github.com/softleader/slctl/pkg/config"
 	"github.com/softleader/slctl/pkg/environment"
@@ -17,10 +16,22 @@ import (
 	"time"
 )
 
+const (
+	officialPluginTopic = "slctl-plugin"
+)
+
 type Repo struct {
-	Name        string
 	Source      string
 	Description string
+}
+
+func (r *Repo) Contains(filters ...string) bool {
+	for _, filter := range filters {
+		if strings.Contains(r.Source, filter) || strings.Contains(r.Description, filter) {
+			return true
+		}
+	}
+	return false
 }
 
 type Repository struct {
@@ -87,31 +98,23 @@ func fetchOnline(log *logrus.Logger, home slpath.Home, org string) (r *Repositor
 	)
 	tc := oauth2.NewClient(ctx, ts)
 	client := github.NewClient(tc)
-	repos, _, err := client.Repositories.ListByOrg(ctx, org, &github.RepositoryListByOrgOptions{
-		ListOptions: github.ListOptions{PerPage: 999999},
+	resp, _, err := client.Search.Repositories(ctx, officialPluginTopic, &github.SearchOptions{
+		ListOptions: github.ListOptions{
+			PerPage: 999,
+		},
 	})
 	if err != nil {
 		return
 	}
 	r = &Repository{}
 	r.Expires = time.Now().AddDate(0, 0, 1)
-	for _, repo := range repos {
-		if name := repo.GetName(); strings.HasPrefix(name, "slctl-") {
-			source := fmt.Sprintf("github.com/%s", repo.GetFullName())
-			r.Repos = append(r.Repos, Repo{
-				Name:        name,
-				Source:      source,
-				Description: repo.GetDescription(),
-			})
-		}
+	for _, repo := range resp.Repositories {
+		source := fmt.Sprintf("github.com/%s", repo.GetFullName())
+		r.Repos = append(r.Repos, Repo{
+			Source:      source,
+			Description: repo.GetDescription(),
+		})
 	}
 	log.Debugf("retrieved %v plugins\n", len(r.Repos))
-	if environment.Settings.Verbose {
-		table := uitable.New()
-		for _, r := range r.Repos {
-			table.AddRow(r.Name, r.Source)
-		}
-		log.Println(table)
-	}
 	return
 }
