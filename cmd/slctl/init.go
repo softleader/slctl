@@ -51,6 +51,7 @@ func newInitCmd() *cobra.Command {
 		Use:   "init",
 		Short: "initialize " + name,
 		Long:  usage(initDesc),
+		Args:  cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			i.home = environment.Settings.Home
 			return i.run()

@@ -1,7 +1,6 @@
 package main
 
 import (
-	"errors"
 	"github.com/sirupsen/logrus"
 	"github.com/softleader/slctl/pkg/config/token"
 	"github.com/spf13/cobra"
@@ -19,10 +18,8 @@ func newInitScopesCmd() *cobra.Command {
 		Use:   "scopes",
 		Short: "list scopes of token that " + name + " required",
 		Long:  usage(initScopesDesc),
+		Args:  cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
-			if len(args) != 0 {
-				return errors.New("this command does not accept arguments")
-			}
 			for _, scope := range token.Scopes {
 				logrus.Println(scope)
 			}

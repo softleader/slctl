@@ -1,7 +1,6 @@
 package main
 
 import (
-	"errors"
 	"fmt"
 	"github.com/sirupsen/logrus"
 	"github.com/softleader/slctl/pkg/environment"
@@ -9,7 +8,6 @@ import (
 	"github.com/softleader/slctl/pkg/slpath"
 	"github.com/spf13/cobra"
 	"path/filepath"
-	"strings"
 )
 
 const pluginCreateDesc = `產生 Plugin 範本, 如: '{{.}} plugin create foo' 將會產生 golang plugin 範本, 目錄結構大致如下:
@@ -51,14 +49,10 @@ func newPluginCreateCmd() *cobra.Command {
 		Use:   "create NAME",
 		Short: "create a new plugin with the given name",
 		Long:  usage(pluginCreateDesc),
+		Args:  cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			pcc.home = environment.Settings.Home
-			if len(args) == 0 {
-				return errors.New("the name of the new plugin is required")
-			}
-			if pcc.name = strings.TrimSpace(args[0]); pcc.name == "" {
-				return errors.New("the name of the new plugin is required")
-			}
+			pcc.name = args[0]
 			return pcc.run()
 		},
 	}

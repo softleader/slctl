@@ -17,6 +17,7 @@ func newPluginEnvsCmd() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "envs",
 		Short: "list all environment variables a plugin can get",
+		Args:  cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			c.home = environment.Settings.Home
 			return c.run()

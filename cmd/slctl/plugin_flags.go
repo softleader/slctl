@@ -20,6 +20,7 @@ func newPluginFlagsCmd() *cobra.Command {
 		Use:   "flags",
 		Short: "list all global flags",
 		Long:  usage(pluginFlagsDesc),
+		Args:  cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			c.home = environment.Settings.Home
 			return c.run()

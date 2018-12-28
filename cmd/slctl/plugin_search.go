@@ -42,6 +42,7 @@ func newPluginSearchCmd() *cobra.Command {
 		Use:   "search NAME",
 		Short: "search SoftLeader official plugin",
 		Long:  usage(pluginSearchDesc),
+		Args:  cobra.MaximumNArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			if environment.Settings.Offline {
 				return fmt.Errorf("can not run the command in offline mode")

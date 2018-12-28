@@ -1,7 +1,6 @@
 package main
 
 import (
-	"errors"
 	"github.com/sirupsen/logrus"
 	"github.com/softleader/slctl/pkg/plugin"
 	"github.com/spf13/cobra"
@@ -19,10 +18,8 @@ func newPluginExtsCmd() *cobra.Command {
 		Use:   "exts",
 		Short: "list supported plugin archive extension to install",
 		Long:  usage(pluginExtsDesc),
+		Args:  cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
-			if len(args) != 0 {
-				return errors.New("this command does not accept arguments")
-			}
 			for _, ext := range plugin.SupportedExtensions {
 				logrus.Println(ext)
 			}

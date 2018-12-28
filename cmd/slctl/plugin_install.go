@@ -57,10 +57,10 @@ func newPluginInstallCmd() *cobra.Command {
 		Use:   "install [options] <SOURCE>...",
 		Short: "install one or more plugins",
 		Long:  usage(pluginInstallDesc),
-		PreRunE: func(cmd *cobra.Command, args []string) error {
-			return c.complete(args)
-		},
+		Args:  cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
+			c.source = args[0]
+			c.home = environment.Settings.Home
 			return c.run()
 		},
 	}
@@ -74,14 +74,14 @@ func newPluginInstallCmd() *cobra.Command {
 	return cmd
 }
 
-func (c *pluginInstallCmd) complete(args []string) error {
-	if err := checkArgsLength(len(args), "plugin"); err != nil {
-		return err
-	}
-	c.source = args[0]
-	c.home = environment.Settings.Home
-	return nil
-}
+//func (c *pluginInstallCmd) complete(args []string) error {
+//	if err := checkArgsLength(len(args), "plugin"); err != nil {
+//		return err
+//	}
+//	c.source = args[0]
+//	c.home = environment.Settings.Home
+//	return nil
+//}
 
 func (c *pluginInstallCmd) run() error {
 	return install(c.source, c.tag, c.asset, c.home, c.force, c.soft)

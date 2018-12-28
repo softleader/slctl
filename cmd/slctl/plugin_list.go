@@ -17,6 +17,7 @@ func newPluginListCmd() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "list",
 		Short: "list installed plugins",
+		Args:  cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			pcmd.home = environment.Settings.Home
 			return pcmd.run()

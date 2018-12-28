@@ -2,7 +2,6 @@ package main
 
 import (
 	"bytes"
-	"fmt"
 	"github.com/sirupsen/logrus"
 	"github.com/softleader/slctl/pkg/environment"
 	"github.com/softleader/slctl/pkg/formatter"
@@ -101,14 +100,14 @@ func usage(tpl string) string {
 	return buf.String()
 }
 
-func checkArgsLength(argsReceived int, requiredArgs ...string) error {
-	expectedNum := len(requiredArgs)
-	if argsReceived != expectedNum {
-		arg := "arguments"
-		if expectedNum == 1 {
-			arg = "argument"
-		}
-		return fmt.Errorf("this command needs %v %s: %s", expectedNum, arg, strings.Join(requiredArgs, ", "))
-	}
-	return nil
-}
+//func checkArgsLength(argsReceived int, requiredArgs ...string) error {
+//	expectedNum := len(requiredArgs)
+//	if argsReceived != expectedNum {
+//		arg := "arguments"
+//		if expectedNum == 1 {
+//			arg = "argument"
+//		}
+//		return fmt.Errorf("this command needs %v %s: %s", expectedNum, arg, strings.Join(requiredArgs, ", "))
+//	}
+//	return nil
+//}

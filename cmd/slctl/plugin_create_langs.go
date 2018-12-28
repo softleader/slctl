@@ -1,7 +1,6 @@
 package main
 
 import (
-	"errors"
 	"github.com/sirupsen/logrus"
 	"github.com/softleader/slctl/pkg/plugin"
 	"github.com/spf13/cobra"
@@ -20,10 +19,8 @@ func newPluginCreateLangsCmd() *cobra.Command {
 		Use:   "langs",
 		Short: "list languages of plugin template",
 		Long:  usage(pluginCreateLangsDesc),
+		Args:  cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
-			if len(args) != 0 {
-				return errors.New("this command does not accept arguments")
-			}
 			for _, c := range plugin.Creators {
 				logrus.Println(reflect.TypeOf(c).Name())
 			}

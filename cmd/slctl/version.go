@@ -32,6 +32,7 @@ func newVersionCmd() *cobra.Command {
 		Use:   "version",
 		Short: usage(versionHelp),
 		Long:  usage(versionHelp),
+		Args:  cobra.NoArgs,
 		Run: func(cmd *cobra.Command, args []string) {
 			if short {
 				logrus.Println(ver().Short())

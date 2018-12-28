@@ -1,7 +1,6 @@
 package main
 
 import (
-	"errors"
 	"fmt"
 	"github.com/sirupsen/logrus"
 	"github.com/softleader/slctl/pkg/environment"
@@ -23,24 +22,24 @@ func newPluginRemoveCmd() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "remove <plugin>...",
 		Short: "remove one or more plugins",
-		PreRunE: func(cmd *cobra.Command, args []string) error {
-			return pcmd.complete(args)
-		},
+		Args:  cobra.MinimumNArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
+			pcmd.names = args
+			pcmd.home = environment.Settings.Home
 			return pcmd.run()
 		},
 	}
 	return cmd
 }
 
-func (pcmd *pluginRemoveCmd) complete(args []string) error {
-	if len(args) == 0 {
-		return errors.New("please provide plugin name to remove")
-	}
-	pcmd.names = args
-	pcmd.home = environment.Settings.Home
-	return nil
-}
+//func (pcmd *pluginRemoveCmd) complete(args []string) error {
+//	if len(args) == 0 {
+//		return errors.New("please provide plugin name to remove")
+//	}
+//	pcmd.names = args
+//	pcmd.home = environment.Settings.Home
+//	return nil
+//}
 
 func (c *pluginRemoveCmd) run() error {
 	logrus.Debugf("loading installed plugins from %s\n", environment.Settings.PluginDirs())

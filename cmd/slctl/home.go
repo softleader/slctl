@@ -14,6 +14,7 @@ func newHomeCmd() *cobra.Command {
 		Use:   "home",
 		Short: "displays the location of SL_HOME",
 		Long:  usage(longHomeHelp),
+		Args:  cobra.NoArgs,
 		Run: func(cmd *cobra.Command, args []string) {
 			h := environment.Settings.Home
 			logrus.Println(h)
