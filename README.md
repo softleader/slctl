@@ -87,7 +87,7 @@ $ slctl plugin search -f
 
 *Slctl* 支援 GitHub Repo 的 Plugin 自動更新, 請參考 [Upgrading Plugins](https://github.com/softleader/slctl/wiki/Plugins-Guide#upgrading-plugins)
 
-### Writing Custom Plugins
+### Writing A Plugin
 
 *Slctl* 支援任何語言的 Plugin, 請參考 [Plugins Guide](https://github.com/softleader/slctl/wiki/Plugins-Guide)
 
