@@ -13,7 +13,7 @@ import (
 
 const pluginSearchDesc = `Search SoftLeader official plugin
 
-	$ {{.}} plugin search FILTER..
+	$ {{.}} plugin search FILTER...
 
 使用空白分隔傳入多個 FILTER, 會以 Or 且模糊條件來過濾 SOURCE; 反之列出全部
 

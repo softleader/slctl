@@ -57,7 +57,7 @@ $ slctl init --token GITHUB_TOKEN
 Slctl 有完整的 Plugin 系統, 你可以從收尋公司官方的 Plugin 開始:
 
 ```sh
-$ slctl plugin search FILTER..
+$ slctl plugin search FILTER...
 ```
 
 使用空白分隔傳入多個 FILTER, 會以 Or 且模糊條件來過濾 SOURCE; 反之列出全部
