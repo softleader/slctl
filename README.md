@@ -12,14 +12,14 @@ Slctl 建議透過套件管理來安裝:
 - MacOS 使用者建議使用 [Homebrew](https://brew.sh)
 
 	```sh
-	brew install softleader/tap/slctl
+	$ brew install softleader/tap/slctl
 	```
 
 - Windows 或 Linux 使用者建議使用 [GoFish](https://gofi.sh/):
 
 	```sh
-	gofish add https://github.com/softleader/fish-food
-	gofish install slctl
+	$ gofish add https://github.com/softleader/fish-food
+	$ gofish install slctl
 	```
 
 你也可以直接從 [Releases page](https://github.com/softleader/slctl/releases) 下載執行檔, 將其解壓縮後加入 PATH 中即可使用
