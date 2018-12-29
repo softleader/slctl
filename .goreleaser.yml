@@ -2,18 +2,21 @@ before:
   hooks:
     - go mod download
 builds:
-- env:
-  - CGO_ENABLED=0
+  - main: ./cmd/foo
+    env:
+      - CGO_ENABLED=0
+    goos:
+      - darwin
+      - linux
+      - windows
+    goarch:
+      - amd64
+dist: _dist
 archive:
-  wrap_in_directory: false
-  files:
-    - LICENSE.txt
-    - README.md
   replacements:
     darwin: darwin
     linux: linux
-    windows: windows
-    amd64: x86_64
+    window: windows
 checksum:
   name_template: 'checksums.txt'
 snapshot:
@@ -22,5 +25,5 @@ changelog:
   sort: asc
   filters:
     exclude:
-    - '^docs:'
-    - '^test:'
+      - '^docs:'
+      - '^test:'

@@ -13,18 +13,18 @@ import (
 
 const pluginSearchDesc = `Search SoftLeader official plugin
 
-	$ {{.}} plugin search <FILTER...>
+	$ {{.}} plugin search FILTER..
 
-NAME 可傳入多個 FILTERS, 會以 Or 且模糊條件來過濾 SOURCE; 反之列出全部
+使用空白分隔傳入多個 FILTER, 會以 Or 且模糊條件來過濾 SOURCE; 反之列出全部
 
 	$ {{.}} plugin search
-	$ {{.}} plugin search whereis
+	$ {{.}} plugin search whereis contacts
 
 傳入 '--installed' 只列出已安裝的 Plugin
 
 	$ {{.}} plugin search -i
 
-查詢的結果將會被 cache 並留存一天, 傳入 '--force' 在查詢前強制更新 cache
+查詢的結果將會被 cache 並留存一天, 傳入 '--force' 可以強制更新 cache
 
 	$ {{.}} plugin search -f
 `
