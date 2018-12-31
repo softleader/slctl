@@ -25,7 +25,7 @@ build:
 
 .PHONY: dist
 dist:
-	goreleaser release --skip-publish
+	goreleaser release --snapshot --rm-dist
 
 .PHONY: tag
 tag:
