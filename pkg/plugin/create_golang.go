@@ -28,7 +28,6 @@ var (
 	date    string
 )
 
-
 type Version struct {
 	GitVersion string
 	GitCommit  string
