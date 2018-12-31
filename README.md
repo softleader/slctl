@@ -11,22 +11,18 @@ Slctl is a command line interface for running commands against SoftLeader servic
 
 除了直接下載外, Slctl 支援了並**優先推薦**使用以下幾種套件管理程式來安裝:
 
-#### homebrew-tap
+- [Homebrew](https://brew.sh) 是在 Mac 上很受歡迎的套件管理系統, 推薦 MacOS 使用者使用:
 
-[Homebrew](https://brew.sh) 是在 Mac 上很受歡迎的套件管理系統, 推薦 MacOS 使用者使用
+	```sh
+	$ brew install softleader/tap/slctl
+	```
 
-```sh
-$ brew install softleader/tap/slctl
-```
+- [GoFish](https://gofi.sh/) 是一個跨 Platform 的套件管理程式, 推薦 Windows 或 Linux 使用者使用:
 
-#### GoFish
-
-[GoFish](https://gofi.sh/) 是一個跨 Platform 的套件管理程式, 支援 Mac, Linux 及 Windows, 推薦 Windows 或 Linux 使用者使用
-
-```sh
-$ gofish add https://github.com/softleader/fish-food
-$ gofish install slctl
-```
+	```sh
+	$ gofish add https://github.com/softleader/fish-food
+	$ gofish install slctl
+	```
 
 ### Compiling from source
 
