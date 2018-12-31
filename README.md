@@ -7,24 +7,30 @@ Slctl is a command line interface for running commands against SoftLeader servic
 
 ## Install
 
-Slctl 建議透過套件管理來安裝:
+所有的執行檔都會發佈並保留在 [Releases page](https://github.com/softleader/slctl/releases), 選擇想要的版本及 OS 執行檔, 下載後將其解壓縮並加入 PATH 中即可使用
 
-- MacOS 使用者建議使用 [Homebrew](https://brew.sh)
+除了直接下載外, Slctl 支援了並**優先推薦**使用以下幾種套件管理程式來安裝:
 
-	```sh
-	$ brew install softleader/tap/slctl
-	```
+#### homebrew-tap
 
-- Windows 或 Linux 使用者建議使用 [GoFish](https://gofi.sh/):
+[Homebrew](https://brew.sh) 是在 Mac 上很受歡迎的套件管理系統, 推薦 MacOS 使用者使用
 
-	```sh
-	$ gofish add https://github.com/softleader/fish-food
-	$ gofish install slctl
-	```
+```sh
+$ brew install softleader/tap/slctl
+```
 
-你也可以直接從 [Releases page](https://github.com/softleader/slctl/releases) 下載執行檔, 將其解壓縮後加入 PATH 中即可使用
+#### GoFish
 
-當然, 你也可以參考 [Builing Soruce](https://github.com/softleader/slctl/wiki/Building-Source) 從原始碼編譯後使用, Happing Hacking :cat::computer:
+[GoFish](https://gofi.sh/) 是一個跨 Platform 的套件管理程式, 支援 Mac, Linux 及 Windows, 推薦 Windows 或 Linux 使用者使用
+
+```sh
+$ gofish add https://github.com/softleader/fish-food
+$ gofish install slctl
+```
+
+### Compiling from source
+
+你也可以參考 [Compiling Source](https://github.com/softleader/slctl/wiki/Compiling-Source) 章節, 從原始碼編譯後使用, Happy Hacking :cat::computer:
 
 ## Getting Started
 
@@ -35,17 +41,17 @@ $ slctl init
 $ slctl init -u GITHUB_USERNAME -p GITHUB_PASSWORD
 ```
 
-執行 `scopes` 可以列出所有 slctl 需要的 Access Token 權限
-
-```sh
-$ slctl init scopes
-```
-
-使用 `--force` 在發現有重複的 Token 時, 會強制刪除既有的並產生一個全新的 Access Token, 若你想自己維護 Access Token (請務必確保有足夠的權限), 可以使用 `--token` 讓 slctl 驗證後直接儲存起來
+使用 `--force` 在發現有重複的 Token 時, 會強制刪除並產生一個全新的 Access Token
 
 ```sh
 $ slctl init -f
+```
+
+若你想自己維護 Access Token (請務必確保有足夠的權限), 可以使用 `--token` 讓 slctl 驗證後直接儲存起來, 執行 `scopes` 可以列出所有 slctl 需要的 Access Token 權限
+
+```sh
 $ slctl init --token GITHUB_TOKEN
+$ slctl init scopes
 ```
 
 使用 `--offline` 則 slctl 不會跟 GitHub API 有任何互動, 只會配置 [$SL_HOME](https://github.com/softleader/slctl/wiki/Home-Path) 環境目錄.
@@ -81,7 +87,9 @@ $ slctl plugin search -f
 
 ### Installing Plugins
 
-執行 `$ slctl plugin install SOURCE` 即可安裝, 點擊 [Installing a Plugin](https://github.com/softleader/slctl/wiki/Plugins-Guide#installing-a-plugin) 查看多種 *SOURCE* 的安裝方式
+執行 `$ slctl plugin install SOURCE` 即可安裝
+
+除了 GitHub Repo Source 外, Slctl 還支援了許多的 SOURCE 來源, 點擊 [Installing a Plugin](https://github.com/softleader/slctl/wiki/Plugins-Guide#installing-a-plugin) 查看更多的 *SOURCE* 說明
 
 ### Upgrading Plugins
 
@@ -90,4 +98,3 @@ $ slctl plugin search -f
 ### Writing A Plugin
 
 *Slctl* 支援任何語言的 Plugin, 請參考 [Plugins Guide](https://github.com/softleader/slctl/wiki/Plugins-Guide)
-

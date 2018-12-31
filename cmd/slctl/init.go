@@ -21,15 +21,15 @@ const (
 	$ {{.}} init
 	$ {{.}} init -u GITHUB_USERNAME -p GITHUB-PASSWORD
 
-執行 'scopes' 可以列出所有 {{.}} 需要的 Access Token 權限
-
-	$ {{.}} init scopes
-
-使用 '--force' 在發現有重複的 Token 時, 會強制刪除既有的並產生一個全新的 Access Token
-若你想自己維護 Access Token (請務必確保有足夠的權限), 可以使用 '--token' 讓 {{.}} 驗證後直接儲存起來
+使用 '--force' 在發現有重複的 Token 時, 會強制刪除並產生一個全新的 Access Token
 
 	$ {{.}} init -f
+
+若你想自己維護 Access Token (請務必確保有足夠的權限), 可以使用 '--token' 讓 slctl 驗證後直接儲存起來
+執行 'scopes'' 可以列出所有 slctl 需要的 Access Token 權限
+
 	$ {{.}} init --token GITHUB_TOKEN
+	$ {{.}} init scopes
 
 使用 '--offline' 則 {{.}} 不會跟 GitHub API 有任何互動, 只會配置 $SL_HOME 環境目錄.
 
