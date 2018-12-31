@@ -7,7 +7,7 @@ Slctl is a command line interface for running commands against SoftLeader servic
 
 ## Install
 
-所有的執行檔都會發佈並保留在 [Releases page](https://github.com/softleader/slctl/releases), 選擇版本及 OS 的執行檔, 下載後將其解壓縮並加入 PATH 中即可使用
+所有執行檔都會發佈並保留在 [Releases page](https://github.com/softleader/slctl/releases), 選擇版本及對應 OS 的執行檔, 下載後將其解壓縮並加入 PATH 中即可使用
 
 除了直接下載外, Slctl 支援了並**優先推薦**使用以下幾種套件管理程式來安裝:
 
