@@ -11,11 +11,29 @@ const golangMain = `package main
 import (
 	"fmt"
 	"github.com/spf13/cobra"
+	"io"
 	"os"
 	"strconv"
 	"strings"
-	"io"
 )
+
+const (
+	unreleased  = "unreleased"
+	unknown     = "unknown"
+)
+
+var (
+	version string
+	commit  string
+	date    string
+)
+
+
+type Version struct {
+	GitVersion string
+	GitCommit  string
+	BuildDate  string
+}
 
 type {{.Name|lowerCamel}}Cmd struct {
 	out     io.Writer	
@@ -45,93 +63,107 @@ func main() {
 	f.BoolVarP(&c.verbose, "verbose", "v", c.verbose, "enable verbose output, Overrides $SL_VERBOSE")
 	f.StringVar(&c.token, "token", "$SL_TOKEN", "github access token. Overrides $SL_TOKEN")
 
+	cmd.AddCommand(&cobra.Command{
+		Use: "version",
+		Run: func(cmd *cobra.Command, args []string) {
+			fmt.Fprintf(c.out, "%+v\n", ver())
+		},
+	})
+
 	if err := cmd.Execute(); err != nil {
 		os.Exit(1)
 	}
 }
 
-func (c *{{.Name|lowerCamel}}Cmd) run() error {
+func (c *fooCmd) run() error {
 	// use os.LookupEnv to retrieve the specific value of the environment (e.g. os.LookupEnv("SL_TOKEN"))
 	for _, env := range os.Environ() {
 		if strings.HasPrefix(env, "SL_") {
-			fmt.Println(env)
+			fmt.Fprintln(c.out, env)
 		}
 	}
-	fmt.Printf("%+v\n", c)
+	fmt.Fprintf(c.out, "%+v\n", c)
 	return nil
 }
-`
 
-const golangVersion = `package main
-
-import (
-	"strings"
-)
-
-const (
-	unreleased  = "unreleased"
-)
-
-var version string
-
-func ver() string {
-	if v := strings.TrimSpace(version); v != "" {
-		return v
-	} else {
-		return unreleased
+func ver() *Version {
+	if version = strings.TrimSpace(version); version == "" {
+		version = unreleased
+	}
+	if commit = strings.TrimSpace(commit); commit == "" {
+		commit = unknown
+	}
+	if date = strings.TrimSpace(date); date == "" {
+		date = unknown
+	}
+	return &Version{
+		GitVersion: version,
+		GitCommit:  commit,
+		BuildDate:  date,
 	}
 }
 `
 
-const golangMakefile = `SL_HOME ?= $(shell slctl home)
-SL_PLUGIN_DIR ?= $(SL_HOME)/plugins/{{.Name}}/
-METADATA := metadata.yaml
-VERSION := $(shell sed -n -e 's/version:[ "]*\([^"]*\).*/\1/p' $(METADATA))
-DIST := $(CURDIR)/_dist
-BUILD := $(CURDIR)/_build
-LDFLAGS := "-X main.version=${VERSION}"
+const golangGoReleaser = `before:
+  hooks:
+    - go mod download
+builds:
+  - main: ./cmd/{{.Name|lower}}
+    env:
+      - CGO_ENABLED=0
+    goos:
+      - darwin
+      - linux
+      - windows
+    goarch:
+      - amd64
+dist: _dist
+archive:
+  replacements:
+    darwin: darwin
+    linux: linux
+    window: windows
+  files:
+    - metadata.yaml
+checksum:
+  name_template: 'checksums.txt'
+snapshot:
+  name_template: "{{.Name|lower}}-SNAPSHOT"
+changelog:
+  sort: asc
+  filters:
+    exclude:
+      - '^docs:'
+      - '^test:'`
+
+const golangMakefile = `BUILD := $(CURDIR)/_build
 BINARY := {{.Name}}
 MAIN := ./cmd/{{.Name|lower}}
-
-.PHONY: install
-install: bootstrap test build
-	mkdir -p $(SL_PLUGIN_DIR)
-	cp $(BUILD)/$(BINARY) $(SL_PLUGIN_DIR)
-	cp $(METADATA) $(SL_PLUGIN_DIR)
+BUILD := $(CURDIR)/_build
 
 .PHONY: test
 test:
 	go test ./... -v
 
 .PHONY: build
-build: clean bootstrap
-	mkdir -p $(BUILD)
-	cp $(METADATA) $(BUILD)
+build:
 	go build -o $(BUILD)/$(BINARY) $(MAIN)
 
 .PHONY: dist
-dist:
-	go get -u github.com/inconshreveable/mousetrap
-	mkdir -p $(BUILD)
-	mkdir -p $(DIST)
-	sed -E 's/^(version: )(.+)/\1$(VERSION)/g' $(METADATA) > $(BUILD)/$(METADATA)
-	GOOS=linux GOARCH=amd64 go build -o $(BUILD)/$(BINARY) -ldflags $(LDFLAGS) -a -tags netgo $(MAIN)
-	tar -C $(BUILD) -zcvf $(DIST)/$(BINARY)-linux-$(VERSION).tgz $(BINARY) $(METADATA)
-	GOOS=darwin GOARCH=amd64 go build -o $(BUILD)/$(BINARY) -ldflags $(LDFLAGS) -a -tags netgo $(MAIN)
-	tar -C $(BUILD) -zcvf $(DIST)/$(BINARY)-darwin-$(VERSION).tgz $(BINARY) $(METADATA)
-	GOOS=windows GOARCH=amd64 go build -o $(BUILD)/$(BINARY).exe -ldflags $(LDFLAGS) -a -tags netgo $(MAIN)
-	tar -C $(BUILD) -llzcvf $(DIST)/$(BINARY)-windows-$(VERSION).tgz $(BINARY).exe $(METADATA)
+dist: bootstrap
+	goreleaser release --snapshot --rm-dist
 
 .PHONY: bootstrap
 bootstrap:
 ifeq (,$(wildcard ./go.mod))
 	go mod init {{.Name}}
 endif
-	go mod tidy
+	go mod download
 
 .PHONY: clean
 clean:
 	rm -rf _*
+	rm -f /usr/local/bin/$(BINARY)
 `
 
 type golang struct{}
@@ -162,9 +194,9 @@ func (c golang) files(plugin *Metadata, pdir string) []file {
 			template: golangMain,
 		},
 		tpl{
-			path:     filepath.Join(pdir, "cmd", cmd, "version.go"),
+			path:     filepath.Join(pdir, ".goreleaser.yml"),
 			in:       plugin,
-			template: golangVersion,
+			template: golangGoReleaser,
 		},
 		tpl{
 			path:     filepath.Join(pdir, "Makefile"),

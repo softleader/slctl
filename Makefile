@@ -1,13 +1,14 @@
 HAS_DOCKER := $(shell command -v docker;)
 BUILD := $(CURDIR)/_build
 BINARY := slctl
+MAIN := ./cmd/slctl
 
 .PHONY: sandbox
 sandbox: bootstrap test
 ifndef HAS_DOCKER
 	$(error You must install Docker)
 endif
-	GOOS=linux go build -o $(BUILD)/$(BINARY) -ldflags $(LDFLAGS) $(MAIN)
+	GOOS=linux go build -o $(BUILD)/$(BINARY) $(MAIN)
 	docker build -t slctl .
 	docker run --rm -it slctl bash
 
@@ -21,10 +22,10 @@ test:
 
 .PHONY: build
 build:
-	go build -o $(BUILD)/$(BINARY) -ldflags $(LDFLAGS) $(MAIN)
+	go build -o $(BUILD)/$(BINARY) $(MAIN)
 
 .PHONY: dist
-dist:
+dist: bootstrap
 	goreleaser release --snapshot --rm-dist
 
 .PHONY: tag
@@ -37,6 +38,9 @@ endif
 
 .PHONY: bootstrap
 bootstrap:
+ifeq (,$(wildcard ./go.mod))
+	go mod init {{.Name}}
+endif
 	go mod download
 
 .PHONY: clean
