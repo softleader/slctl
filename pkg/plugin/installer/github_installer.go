@@ -8,7 +8,7 @@ import (
 	"github.com/softleader/slctl/pkg/config"
 	"github.com/softleader/slctl/pkg/environment"
 	"github.com/softleader/slctl/pkg/plugin"
-	"github.com/softleader/slctl/pkg/slpath"
+	"github.com/softleader/slctl/pkg/paths"
 	"golang.org/x/oauth2"
 	"path/filepath"
 	"runtime"
@@ -19,7 +19,7 @@ type gitHubInstaller struct {
 	archiveInstaller
 }
 
-func newGitHubInstaller(log *logrus.Logger, source, tag string, asset int, home slpath.Home, force, soft bool) (*gitHubInstaller, error) {
+func newGitHubInstaller(log *logrus.Logger, source, tag string, asset int, home paths.Home, force, soft bool) (*gitHubInstaller, error) {
 	if environment.Settings.Offline {
 		return nil, ErrNonResolvableInOfflineMode
 	}

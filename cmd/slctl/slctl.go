@@ -78,10 +78,8 @@ func newRootCmd(args []string) (*cobra.Command, error) {
 
 	flags.Parse(args)
 
-	// set defaults from environment
 	environment.Settings.Init(flags)
 
-	// Find and add plugins
 	loadPlugins(cmd)
 
 	return cmd, nil

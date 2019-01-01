@@ -7,7 +7,7 @@ import (
 	"github.com/softleader/slctl/pkg/config/token"
 	"github.com/softleader/slctl/pkg/dir"
 	"github.com/softleader/slctl/pkg/environment"
-	"github.com/softleader/slctl/pkg/slpath"
+	"github.com/softleader/slctl/pkg/paths"
 	"github.com/spf13/cobra"
 	"os"
 )
@@ -38,7 +38,7 @@ const (
 )
 
 type initCmd struct {
-	home     slpath.Home
+	home     paths.Home
 	username string
 	password string
 	token    string
@@ -106,7 +106,7 @@ For more details: https://github.com/softleader/slctl/wiki/Home-Path
 	return
 }
 
-func ensureDirectories(home slpath.Home, log *logrus.Logger) (err error) {
+func ensureDirectories(home paths.Home, log *logrus.Logger) (err error) {
 	configDirectories := []string{
 		home.String(),
 		home.Config(),
@@ -119,7 +119,7 @@ func ensureDirectories(home slpath.Home, log *logrus.Logger) (err error) {
 	return dir.EnsureDirectories(log, configDirectories...)
 }
 
-func ensureConfigFile(home slpath.Home, log *logrus.Logger) (err error) {
+func ensureConfigFile(home paths.Home, log *logrus.Logger) (err error) {
 	conf := home.ConfigFile()
 	if fi, err := os.Stat(conf); err != nil {
 		log.Printf("Creating %s \n", conf)

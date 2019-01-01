@@ -4,7 +4,7 @@ import (
 	"github.com/mitchellh/go-homedir"
 	"github.com/sirupsen/logrus"
 	"github.com/softleader/slctl/pkg/environment"
-	"github.com/softleader/slctl/pkg/slpath"
+	"github.com/softleader/slctl/pkg/paths"
 	"os"
 	"testing"
 )
@@ -18,7 +18,7 @@ func TestFetchOnline(t *testing.T) {
 	if _, err := os.Stat(h); os.IsNotExist(err) {
 		t.SkipNow()
 	}
-	hh := slpath.Home(h)
+	hh := paths.Home(h)
 	r, err := fetchOnline(logrus.StandardLogger(), hh, "softleader")
 	if err != nil {
 		t.Error(err)

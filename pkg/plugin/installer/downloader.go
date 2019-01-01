@@ -1,7 +1,7 @@
 package installer
 
 import (
-	"github.com/softleader/slctl/pkg/slpath"
+	"github.com/softleader/slctl/pkg/paths"
 	"io"
 	"net/http"
 	"os"
@@ -12,7 +12,7 @@ type downloader interface {
 	download() (string, error)
 }
 
-func newUrlDownloader(url string, home slpath.Home, dstDir string) *urlDownloader {
+func newUrlDownloader(url string, home paths.Home, dstDir string) *urlDownloader {
 	return &urlDownloader{
 		dst: filepath.Join(home.CacheArchives(), dstDir),
 		url: url,
@@ -47,7 +47,7 @@ func (d *urlDownloader) download() (string, error) {
 	return d.dst, nil
 }
 
-func newReaderDownloader(r *io.Reader, home slpath.Home, dstDir string) *readerDownloader {
+func newReaderDownloader(r *io.Reader, home paths.Home, dstDir string) *readerDownloader {
 	return &readerDownloader{
 		dst: filepath.Join(home.CacheArchives(), dstDir),
 		r:   r,
@@ -77,7 +77,7 @@ func (d *readerDownloader) download() (string, error) {
 	return d.dst, nil
 }
 
-func newReadCloserDownloader(rc *io.ReadCloser, home slpath.Home, dstDir string) *readCloserDownloader {
+func newReadCloserDownloader(rc *io.ReadCloser, home paths.Home, dstDir string) *readCloserDownloader {
 	return &readCloserDownloader{
 		dst: filepath.Join(home.CacheArchives(), dstDir),
 		rc:  rc,

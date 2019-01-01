@@ -4,7 +4,7 @@ import (
 	"github.com/sirupsen/logrus"
 	"github.com/softleader/slctl/pkg/config"
 	"github.com/softleader/slctl/pkg/environment"
-	"github.com/softleader/slctl/pkg/slpath"
+	"github.com/softleader/slctl/pkg/paths"
 	"io/ioutil"
 	"os"
 	"testing"
@@ -36,7 +36,7 @@ func TestRefreshConfig(t *testing.T) {
 	defer os.RemoveAll(home)
 
 	log := logrus.New()
-	hh := slpath.Home(home)
+	hh := paths.Home(home)
 	environment.Settings.Home = hh
 
 	environment.Settings.Verbose = true

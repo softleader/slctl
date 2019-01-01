@@ -5,7 +5,7 @@ import (
 	"github.com/mholt/archiver"
 	"github.com/sirupsen/logrus"
 	"github.com/softleader/slctl/pkg/plugin"
-	"github.com/softleader/slctl/pkg/slpath"
+	"github.com/softleader/slctl/pkg/paths"
 	"io/ioutil"
 	"os"
 	"path/filepath"
@@ -18,7 +18,7 @@ func TestArchiveInstaller_Install(t *testing.T) {
 		t.Fatal(err)
 	}
 	defer os.RemoveAll(home)
-	hh := slpath.Home(home)
+	hh := paths.Home(home)
 	z := archiver.Zip{
 		CompressionLevel:       flate.DefaultCompression,
 		MkdirAll:               true,

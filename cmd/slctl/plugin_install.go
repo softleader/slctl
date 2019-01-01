@@ -6,7 +6,7 @@ import (
 	"github.com/softleader/slctl/pkg/environment"
 	"github.com/softleader/slctl/pkg/plugin"
 	"github.com/softleader/slctl/pkg/plugin/installer"
-	"github.com/softleader/slctl/pkg/slpath"
+	"github.com/softleader/slctl/pkg/paths"
 	"io"
 
 	"github.com/spf13/cobra"
@@ -16,7 +16,7 @@ type pluginInstallCmd struct {
 	source string
 	tag    string
 	asset  int
-	home   slpath.Home
+	home   paths.Home
 	out    io.Writer
 	force  bool
 	soft   bool
@@ -87,7 +87,7 @@ func (c *pluginInstallCmd) run() error {
 	return install(c.source, c.tag, c.asset, c.home, c.force, c.soft)
 }
 
-func install(source string, tag string, asset int, home slpath.Home, force, soft bool) error {
+func install(source string, tag string, asset int, home paths.Home, force, soft bool) error {
 	i, err := installer.NewInstaller(logrus.StandardLogger(), source, tag, asset, home, force, soft)
 	if err != nil {
 		return err

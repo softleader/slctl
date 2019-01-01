@@ -6,7 +6,7 @@ import (
 	"github.com/sirupsen/logrus"
 	"github.com/softleader/slctl/pkg/environment"
 	"github.com/softleader/slctl/pkg/plugin"
-	"github.com/softleader/slctl/pkg/slpath"
+	"github.com/softleader/slctl/pkg/paths"
 	"github.com/spf13/cobra"
 	"strings"
 )
@@ -30,7 +30,7 @@ const pluginSearchDesc = `Search SoftLeader official plugin
 `
 
 type pluginSearchCmd struct {
-	home              slpath.Home
+	home              paths.Home
 	filters           []string
 	onlyShowInstalled bool
 	force             bool

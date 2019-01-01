@@ -7,7 +7,7 @@ import (
 	"github.com/mitchellh/go-homedir"
 	"github.com/sirupsen/logrus"
 	"github.com/softleader/slctl/pkg/plugin"
-	"github.com/softleader/slctl/pkg/slpath"
+	"github.com/softleader/slctl/pkg/paths"
 	"os"
 	"path/filepath"
 	"regexp"
@@ -23,13 +23,13 @@ var (
 
 type localInstaller struct {
 	log    *logrus.Logger
-	home   slpath.Home
+	home   paths.Home
 	source string
 	force  bool
 	soft   bool // soft means remove exist plugin only if version is different
 }
 
-func newLocalInstaller(log *logrus.Logger, source string, home slpath.Home, force, soft bool) (*localInstaller, error) {
+func newLocalInstaller(log *logrus.Logger, source string, home paths.Home, force, soft bool) (*localInstaller, error) {
 	if expanded, err := homedir.Expand(source); err != nil {
 		source = expanded
 	}

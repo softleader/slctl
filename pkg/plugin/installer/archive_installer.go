@@ -6,7 +6,7 @@ import (
 	"github.com/sirupsen/logrus"
 	"github.com/softleader/slctl/pkg/environment"
 	"github.com/softleader/slctl/pkg/plugin"
-	"github.com/softleader/slctl/pkg/slpath"
+	"github.com/softleader/slctl/pkg/paths"
 	"io"
 	"io/ioutil"
 	"os"
@@ -18,7 +18,7 @@ type archiveInstaller struct {
 	downloader downloader
 }
 
-func newArchiveInstaller(log *logrus.Logger, source string, home slpath.Home, force, soft bool) (ai *archiveInstaller, err error) {
+func newArchiveInstaller(log *logrus.Logger, source string, home paths.Home, force, soft bool) (ai *archiveInstaller, err error) {
 	log.Debugf("downloading the archive: %s\n", source)
 	ai = &archiveInstaller{}
 	ai.log = log

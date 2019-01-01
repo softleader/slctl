@@ -5,7 +5,7 @@ import (
 	"github.com/sirupsen/logrus"
 	"github.com/softleader/slctl/pkg/environment"
 	"github.com/softleader/slctl/pkg/plugin"
-	"github.com/softleader/slctl/pkg/slpath"
+	"github.com/softleader/slctl/pkg/paths"
 	"github.com/spf13/cobra"
 	"strings"
 )
@@ -29,7 +29,7 @@ NAME 可傳入指定要更新的 Plugin 完整名稱 (一或多個, 以空白區
 `
 
 type pluginUpgradeCmd struct {
-	home  slpath.Home
+	home  paths.Home
 	names []string
 	tag   string
 	asset int

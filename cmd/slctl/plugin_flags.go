@@ -4,14 +4,14 @@ import (
 	"github.com/sirupsen/logrus"
 	"github.com/softleader/slctl/pkg/environment"
 	"github.com/softleader/slctl/pkg/plugin"
-	"github.com/softleader/slctl/pkg/slpath"
+	"github.com/softleader/slctl/pkg/paths"
 	"github.com/spf13/cobra"
 )
 
 const pluginFlagsDesc = "Global flags will passed to plugin only if 'ignoreGlobalFlags' in " + plugin.MetadataFileName + " of the plugin is true"
 
 type pluginFlagsCmd struct {
-	home slpath.Home
+	home paths.Home
 }
 
 func newPluginFlagsCmd() *cobra.Command {

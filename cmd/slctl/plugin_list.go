@@ -4,12 +4,12 @@ import (
 	"github.com/gosuri/uitable"
 	"github.com/sirupsen/logrus"
 	"github.com/softleader/slctl/pkg/environment"
-	"github.com/softleader/slctl/pkg/slpath"
+	"github.com/softleader/slctl/pkg/paths"
 	"github.com/spf13/cobra"
 )
 
 type pluginListCmd struct {
-	home slpath.Home
+	home paths.Home
 }
 
 func newPluginListCmd() *cobra.Command {

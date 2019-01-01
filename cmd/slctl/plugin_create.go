@@ -5,7 +5,7 @@ import (
 	"github.com/sirupsen/logrus"
 	"github.com/softleader/slctl/pkg/environment"
 	"github.com/softleader/slctl/pkg/plugin"
-	"github.com/softleader/slctl/pkg/slpath"
+	"github.com/softleader/slctl/pkg/paths"
 	"github.com/spf13/cobra"
 	"path/filepath"
 )
@@ -37,7 +37,7 @@ Plugin 本身沒有撰寫的語言限制, {{.}} 推薦並預設產生 golang 的
 `
 
 type pluginCreateCmd struct {
-	home   slpath.Home
+	home   paths.Home
 	name   string
 	lang   string
 	output string

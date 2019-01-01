@@ -2,7 +2,7 @@ package environment
 
 import (
 	"github.com/mitchellh/go-homedir"
-	"github.com/softleader/slctl/pkg/slpath"
+	"github.com/softleader/slctl/pkg/paths"
 	"github.com/spf13/pflag"
 	"os"
 	"path/filepath"
@@ -21,7 +21,7 @@ var (
 )
 
 type EnvSettings struct {
-	Home    slpath.Home
+	Home    paths.Home
 	Verbose bool
 	Offline bool
 }

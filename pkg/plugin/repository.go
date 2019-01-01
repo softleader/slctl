@@ -7,7 +7,7 @@ import (
 	"github.com/sirupsen/logrus"
 	"github.com/softleader/slctl/pkg/config"
 	"github.com/softleader/slctl/pkg/environment"
-	"github.com/softleader/slctl/pkg/slpath"
+	"github.com/softleader/slctl/pkg/paths"
 	"golang.org/x/oauth2"
 	"gopkg.in/yaml.v2"
 	"io/ioutil"
@@ -39,7 +39,7 @@ type Repository struct {
 	Expires time.Time
 }
 
-func LoadRepository(log *logrus.Logger, home slpath.Home, org string, force bool) (r *Repository, err error) {
+func LoadRepository(log *logrus.Logger, home paths.Home, org string, force bool) (r *Repository, err error) {
 	cached := home.CacheRepositoryFile()
 	if force {
 		if r, err = fetchOnline(log, home, org); err == nil {
@@ -83,7 +83,7 @@ func loadLocal(log *logrus.Logger, path string) (r *Repository, err error) {
 	return
 }
 
-func fetchOnline(log *logrus.Logger, home slpath.Home, org string) (r *Repository, err error) {
+func fetchOnline(log *logrus.Logger, home paths.Home, org string) (r *Repository, err error) {
 	if environment.Settings.Offline {
 		return nil, fmt.Errorf("can not fetch plugin repository in offline mode")
 	}

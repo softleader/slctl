@@ -1,4 +1,4 @@
-package slpath
+package paths
 
 import (
 	"os"
