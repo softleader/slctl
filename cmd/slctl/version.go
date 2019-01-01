@@ -25,15 +25,15 @@ type Version struct {
 }
 
 func newVersionCmd() *cobra.Command {
-	var long bool
+	var full bool
 	cmd := &cobra.Command{
 		Use:   "version",
 		Short: usage(versionHelp),
 		Long:  usage(versionHelp),
 		Args:  cobra.NoArgs,
 		Run: func(cmd *cobra.Command, args []string) {
-			if long {
-				logrus.Printf(ver().LongString())
+			if full {
+				logrus.Printf(ver().FullString())
 			} else {
 				logrus.Println(ver().String())
 			}
@@ -41,12 +41,12 @@ func newVersionCmd() *cobra.Command {
 	}
 
 	f := cmd.Flags()
-	f.BoolVar(&long, "long", false, "print long version number and commit hash")
+	f.BoolVar(&full, "full", false, "print full version number and commit hash")
 
 	return cmd
 }
 
-func (v *Version) LongString() string {
+func (v *Version) FullString() string {
 	return fmt.Sprintf("%#v", v)
 }
 
