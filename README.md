@@ -1,5 +1,5 @@
 ![beta](https://img.shields.io/badge/stability-beta-darkorange.svg)
-[![Build Status](https://travis-ci.com/softleader/slctl.svg?token=4jYjzyvNx4sjHcYtGC5V&branch=master)](https://travis-ci.com/softleader/slctl)
+[![Build Status](https://travis-ci.com/softleader/slctl.svg?branch=master)](https://travis-ci.com/softleader/slctl)
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://github.com/softleader/slctl/blob/master/LICENSE)
 [![Build Status](https://github-basic-badges.herokuapp.com/release/softleader/slctl.svg)](https://github.com/softleader/slctl/releases)
 
