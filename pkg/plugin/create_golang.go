@@ -11,28 +11,17 @@ const golangMain = `package main
 import (
 	"fmt"
 	"github.com/spf13/cobra"
-	"io"
 	"os"
 	"strconv"
 	"strings"
+	"io"
 )
 
 const (
 	unreleased  = "unreleased"
-	unknown     = "unknown"
 )
 
-var (
-	version string
-	commit  string
-	date    string
-)
-
-type Version struct {
-	GitVersion string
-	GitCommit  string
-	BuildDate  string
-}
+var version string
 
 type {{.Name|lowerCamel}}Cmd struct {
 	out     io.Writer	
@@ -65,7 +54,7 @@ func main() {
 	cmd.AddCommand(&cobra.Command{
 		Use: "version",
 		Run: func(cmd *cobra.Command, args []string) {
-			fmt.Fprintf(c.out, "%+v\n", ver())
+			fmt.Fprintf(c.out, "%s\n", ver())
 		},
 	})
 
@@ -74,7 +63,7 @@ func main() {
 	}
 }
 
-func (c *fooCmd) run() error {
+func (c *{{.Name|lowerCamel}}Cmd) run() error {
 	// use os.LookupEnv to retrieve the specific value of the environment (e.g. os.LookupEnv("SL_TOKEN"))
 	for _, env := range os.Environ() {
 		if strings.HasPrefix(env, "SL_") {
@@ -85,72 +74,52 @@ func (c *fooCmd) run() error {
 	return nil
 }
 
-func ver() *Version {
-	if version = strings.TrimSpace(version); version == "" {
-		version = unreleased
+func ver() (v string) {
+	if v = strings.TrimSpace(version); v == "" {
+		v = unreleased
 	}
-	if commit = strings.TrimSpace(commit); commit == "" {
-		commit = unknown
-	}
-	if date = strings.TrimSpace(date); date == "" {
-		date = unknown
-	}
-	return &Version{
-		GitVersion: version,
-		GitCommit:  commit,
-		BuildDate:  date,
-	}
+	return
 }
 `
 
-const golangGoReleaser = `before:
-  hooks:
-    - go mod download
-builds:
-  - main: ./cmd/{{.Name|lower}}
-    env:
-      - CGO_ENABLED=0
-    goos:
-      - darwin
-      - linux
-      - windows
-    goarch:
-      - amd64
-dist: _dist
-archive:
-  replacements:
-    darwin: darwin
-    linux: linux
-    window: windows
-  files:
-    - metadata.yaml
-checksum:
-  name_template: 'checksums.txt'
-snapshot:
-  name_template: "{{.Name|lower}}-SNAPSHOT"
-changelog:
-  sort: asc
-  filters:
-    exclude:
-      - '^docs:'
-      - '^test:'`
-
-const golangMakefile = `BUILD := $(CURDIR)/_build
+const golangMakefile = `SL_HOME ?= $(shell slctl home)
+SL_PLUGIN_DIR ?= $(SL_HOME)/plugins/{{.Name}}/
+METADATA := metadata.yaml
+VERSION := $(shell sed -n -e 's/version:[ "]*\([^"]*\).*/\1/p' $(METADATA))
+DIST := $(CURDIR)/_dist
+BUILD := $(CURDIR)/_build
+LDFLAGS := "-X main.version=${VERSION}"
 BINARY := {{.Name}}
 MAIN := ./cmd/{{.Name|lower}}
-BUILD := $(CURDIR)/_build
+
+.PHONY: install
+install: bootstrap test build
+	mkdir -p $(SL_PLUGIN_DIR)
+	cp $(BUILD)/$(BINARY) $(SL_PLUGIN_DIR)
+	cp $(METADATA) $(SL_PLUGIN_DIR)
 
 .PHONY: test
 test:
 	go test ./... -v
 
 .PHONY: build
-build:
+build: clean bootstrap
+	mkdir -p $(BUILD)
+	cp $(METADATA) $(BUILD)
 	go build -o $(BUILD)/$(BINARY) $(MAIN)
 
 .PHONY: dist
-dist: bootstrap
-	goreleaser release --snapshot --rm-dist
+dist:
+	go get -u github.com/inconshreveable/mousetrap
+	mkdir -p $(BUILD)
+	mkdir -p $(DIST)
+	sed -E 's/^(version: )(.+)/\1$(VERSION)/g' $(METADATA) > $(BUILD)/$(METADATA)
+	GOOS=linux GOARCH=amd64 go build -o $(BUILD)/$(BINARY) -ldflags $(LDFLAGS) -a -tags netgo $(MAIN)
+	tar -C $(BUILD) -zcvf $(DIST)/$(BINARY)-linux-$(VERSION).tgz $(BINARY) $(METADATA)
+	GOOS=darwin GOARCH=amd64 go build -o $(BUILD)/$(BINARY) -ldflags $(LDFLAGS) -a -tags netgo $(MAIN)
+	tar -C $(BUILD) -zcvf $(DIST)/$(BINARY)-darwin-$(VERSION).tgz $(BINARY) $(METADATA)
+	GOOS=windows GOARCH=amd64 go build -o $(BUILD)/$(BINARY).exe -ldflags $(LDFLAGS) -a -tags netgo $(MAIN)
+	tar -C $(BUILD) -llzcvf $(DIST)/$(BINARY)-windows-$(VERSION).tgz $(BINARY).exe $(METADATA)
 
 .PHONY: bootstrap
 bootstrap:
@@ -162,7 +131,6 @@ endif
 .PHONY: clean
 clean:
 	rm -rf _*
-	rm -f /usr/local/bin/$(BINARY)
 `
 
 type golang struct{}
@@ -191,11 +159,6 @@ func (c golang) files(plugin *Metadata, pdir string) []file {
 			path:     filepath.Join(pdir, "cmd", cmd, fmt.Sprintf("%s.go", cmd)),
 			in:       plugin,
 			template: golangMain,
-		},
-		tpl{
-			path:     filepath.Join(pdir, ".goreleaser.yml"),
-			in:       plugin,
-			template: golangGoReleaser,
 		},
 		tpl{
 			path:     filepath.Join(pdir, "Makefile"),
