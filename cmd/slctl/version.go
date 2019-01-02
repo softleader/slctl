@@ -3,7 +3,6 @@ package main
 import (
 	"fmt"
 	"github.com/sirupsen/logrus"
-	"math"
 	"strings"
 
 	"github.com/spf13/cobra"
@@ -52,8 +51,11 @@ func (v *Version) FullString() string {
 }
 
 func (v *Version) String() string {
-	len := math.Min(float64(len(v.GitCommit)), 7)
-	return fmt.Sprintf("%s+%s", v.GitVersion, v.GitCommit[:int(len)])
+	trunc := 7
+	if len := len(v.GitCommit); len < 7 {
+		trunc = len
+	}
+	return fmt.Sprintf("%s+%s", v.GitVersion, v.GitCommit[:trunc])
 }
 
 func ver() *Version {

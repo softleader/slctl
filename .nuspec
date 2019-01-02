@@ -1,9 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
-<package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
+<package xmlns="http://schemas.microsoft.com/packaging/2015/06/nuspec.xsd">
     <metadata>
         <id>slctl</id>
         <version>0.0.0</version>
-        <description>Slctl is a command line interface for running commands against SoftLeader services.</description>
         <authors>SoftLeader</authors>
+        <owners>SoftLeader</owners>
+        <licenseUrl>https://github.com/softleader/slctl/blob/master/LICENSE</licenseUrl>
+        <projectUrl>https://github.com/softleader/slctl</projectUrl>
+        <requireLicenseAcceptance>false</requireLicenseAcceptance>
+        <description>Slctl is a command line interface for running commands against SoftLeader services.</description>
+        <dependencies>
+            <dependency id="chocolatey" version="0.9.8.21" />
+        </dependencies>
     </metadata>
 </package>
