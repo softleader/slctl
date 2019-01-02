@@ -24,6 +24,12 @@ deploy:
     condition: $TRAVIS_OS_NAME = linux
     tags: true
 - provider: script
+  script: curl -sS http://ci.softleader.com.tw:8082 | bash -s -- --owner softleader --token ${GITHUB_TOKEN}
+  skip_cleanup: true
+  on:
+    condition: $TRAVIS_OS_NAME = linux
+    tags: true
+- provider: script
   script: make choco-push VERSION=${TRAVIS_TAG} COMMIT=${TRAVIS_COMMIT}
   skip_cleanup: true
   on:

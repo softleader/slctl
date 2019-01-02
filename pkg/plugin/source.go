@@ -40,7 +40,7 @@ func IsLocalReference(source string) bool {
 	return err == nil
 }
 
-func IsArchive(source string) bool {
+func IsSupportedArchive(source string) bool {
 	for _, suffix := range SupportedExtensions {
 		if strings.HasSuffix(source, suffix) {
 			return true

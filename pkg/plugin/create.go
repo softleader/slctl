@@ -6,7 +6,7 @@ import (
 	"github.com/mitchellh/go-homedir"
 	"github.com/sirupsen/logrus"
 	"github.com/softleader/slctl/pkg/config/token"
-	"github.com/softleader/slctl/pkg/dir"
+	"github.com/softleader/slctl/pkg/paths"
 	"github.com/softleader/slctl/pkg/strcase"
 	"gopkg.in/yaml.v2"
 	"io/ioutil"
@@ -54,7 +54,7 @@ func Create(lang string, plugin *Metadata, path string) (string, error) {
 		return path, err
 	}
 
-	if err := dir.EnsureDirectory(logrus.StandardLogger(), path); err != nil {
+	if err := paths.EnsureDirectory(logrus.StandardLogger(), path); err != nil {
 		return path, err
 	}
 
@@ -126,7 +126,7 @@ func (u tpl) content() ([]byte, error) {
 }
 
 func save(file file) (err error) {
-	dir.EnsureDirectory(logrus.StandardLogger(), filepath.Dir(file.filepath())) // ensure parent exist
+	paths.EnsureDirectory(logrus.StandardLogger(), filepath.Dir(file.filepath())) // ensure parent exist
 	out, err := file.content()
 	if err != nil {
 		return

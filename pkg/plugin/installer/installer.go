@@ -17,7 +17,7 @@ func NewInstaller(log *logrus.Logger, source string, tag string, asset int, home
 	if plugin.IsLocalDirReference(source) {
 		return newLocalInstaller(log, source, home, force, soft)
 	}
-	if plugin.IsArchive(source) {
+	if plugin.IsSupportedArchive(source) {
 		return newArchiveInstaller(log, source, home, force, soft)
 	}
 	if plugin.IsGitHubRepo(source) {

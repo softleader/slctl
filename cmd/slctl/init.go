@@ -5,7 +5,6 @@ import (
 	"github.com/sirupsen/logrus"
 	"github.com/softleader/slctl/pkg/config"
 	"github.com/softleader/slctl/pkg/config/token"
-	"github.com/softleader/slctl/pkg/dir"
 	"github.com/softleader/slctl/pkg/environment"
 	"github.com/softleader/slctl/pkg/paths"
 	"github.com/spf13/cobra"
@@ -116,7 +115,7 @@ func ensureDirectories(home paths.Home, log *logrus.Logger) (err error) {
 		home.CacheArchives(),
 		home.Mounts(),
 	}
-	return dir.EnsureDirectories(log, configDirectories...)
+	return paths.EnsureDirectories(log, configDirectories...)
 }
 
 func ensureConfigFile(home paths.Home, log *logrus.Logger) (err error) {

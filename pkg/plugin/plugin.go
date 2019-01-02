@@ -3,8 +3,8 @@ package plugin
 import (
 	"github.com/sirupsen/logrus"
 	"github.com/softleader/slctl/pkg/config"
-	"github.com/softleader/slctl/pkg/dir"
 	"github.com/softleader/slctl/pkg/environment"
+	"github.com/softleader/slctl/pkg/paths"
 	"gopkg.in/yaml.v2"
 	"io/ioutil"
 	"os"
@@ -114,7 +114,7 @@ func SetupPluginEnv(
 		return err
 	}
 	plugMount := filepath.Join(environment.Settings.Home.Mounts(), plugName)
-	dir.EnsureDirectory(logrus.StandardLogger(), plugMount)
+	paths.EnsureDirectory(logrus.StandardLogger(), plugMount)
 
 	for key, val := range pluginEnv(plugName, plugDir, plugMount, cli, version, conf.Token) {
 		os.Setenv(key, val)
