@@ -7,10 +7,11 @@ go:
 - 1.11.x
 env:
 - GO111MODULE=on
-before_script:
-- if [ "$TRAVIS_OS_NAME" == "windows" ]; then choco install make -y; fi
 script:
-- make bootstrap test
+  - if [ "$TRAVIS_OS_NAME" == "windows" ];
+    then echo hi windows;
+    else make bootstrap test;
+    fi
 before_deploy:
 - if [ "$TRAVIS_OS_NAME" == "linux" ]; then make dist VERSION=${TRAVIS_TAG} COMMIT=${TRAVIS_COMMIT}; fi
 deploy:
@@ -30,7 +31,7 @@ deploy:
     condition: $TRAVIS_OS_NAME = linux
     tags: true
 - provider: script
-  script: make choco-push VERSION=${TRAVIS_TAG} COMMIT=${TRAVIS_COMMIT}
+  script: ./choco.bat ${TRAVIS_TAG} ${TRAVIS_COMMIT}
   skip_cleanup: true
   on:
     condition: $TRAVIS_OS_NAME = windows
