@@ -21,7 +21,7 @@ Slctl is a command line interface for running commands against SoftLeader servic
 
     > Linux 使用者建議使用 [Linuxbrew](http://linuxbrew.sh/) - Homebrew 的 Linux 分支
 
-- [Chocolatey](https://chocolatey.org/) 是 Windows 上常見的的套件管理程式, 也被許多 CI 整合 (e.g. [Travis](https://docs.travis-ci.com/user/reference/windows/#chocolatey)), 推薦 Windows 使用者使用:
+- [Chocolatey](https://chocolatey.org/) 是 Windows 上常見的的套件管理程式, 也被許多 CI 整合 (e.g. [Travis CI](https://docs.travis-ci.com/user/reference/windows/#chocolatey)), 推薦 Windows 使用者使用:
 
 	```sh
 	$ choco install slctl -s http://ci.softleader.com.tw:8081/repository/choco/
