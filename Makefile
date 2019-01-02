@@ -73,4 +73,4 @@ endif
 
 .PHONY: choco-push
 choco-push: choco-pack
-	curl -X PUT -F "file=@$(DIST)/$(BINARY).$(VERSION).nupkg" $(CHOCO_SERVER) -u $(CHOCO_USER) -v
+	curl -X PUT -F "file=@$(DIST)/$(BINARY).$(VERSION).nupkg" $(CHOCO_SERVER) -u $(CHOCO_USER)
