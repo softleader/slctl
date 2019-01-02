@@ -8,7 +8,7 @@ go:
 env:
 - GO111MODULE=on
 before_script:
-- if [ "$TRAVIS_OS_NAME" == "windows" ]; then choco install make; fi
+- if [ "$TRAVIS_OS_NAME" == "windows" ]; then choco install make -y; fi
 script:
 - make bootstrap test
 before_deploy:
