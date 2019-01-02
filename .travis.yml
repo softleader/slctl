@@ -31,7 +31,7 @@ deploy:
     condition: $TRAVIS_OS_NAME = linux
     tags: true
 - provider: script
-  script: ./choco.bat ${TRAVIS_TAG} ${TRAVIS_COMMIT}
+  script: choco-pack.bat slctl ${TRAVIS_TAG} ${TRAVIS_COMMIT}
   skip_cleanup: true
   on:
     condition: $TRAVIS_OS_NAME = windows
