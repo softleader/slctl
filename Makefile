@@ -6,6 +6,7 @@ BUILD := $(CURDIR)/_build
 LDFLAGS := "-X main.version=${VERSION} -X main.commit=${COMMIT}"
 BINARY := slctl
 MAIN := ./cmd/slctl
+CHOCO_DIST := $(DIST)/choco
 CHOCO_SERVER := http://ci.softleader.com.tw:8081/repository/choco/
 CHOCO_USER := choco:choco
 
@@ -58,14 +59,18 @@ clean:
 	rm -rf _*
 	rm -f /usr/local/bin/$(BINARY)
 
-#.PHONY: choco-pack
-#choco-pack:
-#	mkdir -p $(BUILD)
-#	mkdir -p $(DIST)
-#	CGO_ENABLED=0 GOOS=windows GOARCH=amd64 go build -o $(BUILD)/$(BINARY).exe -ldflags $(LDFLAGS) -a -tags netgo $(MAIN)
-#	cp README.md $(BUILD) && cp LICENSE $(BUILD) && cp build/.nuspec $(BUILD)
-#	choco pack --version $(VERSION) --outputdirectory $(DIST) $(BUILD)/.nuspec
-#
-#.PHONY: choco-push
-#choco-push: choco-pack
-#	curl -X PUT -F "file=@$(DIST)/slctl.$(VERSION).nupkg" $(CHOCO_SERVER) -u $(CHOCO_USER) -v
+.PHONY: choco-pack
+choco-pack:
+ifndef HAS_DOCKER
+	$(error You must install Docker)
+endif
+	mkdir -p $(CHOCO_DIST)
+	cp $(BUILD)/$(BINARY).exe $(CHOCO_DIST)
+	cp README.md $(CHOCO_DIST)
+	cp LICENSE $(CHOCO_DIST)
+	cp .nuspec $(CHOCO_DIST)
+	docker run -v $(DIST):$(DIST) -w $(DIST) -it patrickhuber/choco-linux choco pack -IgnoreDependencies --version $(VERSION) --outputdirectory $(DIST) $(CHOCO_DIST)/.nuspec
+
+.PHONY: choco-push
+choco-push: choco-pack
+	curl -X PUT -F "file=@$(DIST)/$(BINARY).$(VERSION).nupkg" $(CHOCO_SERVER) -u $(CHOCO_USER) -v
