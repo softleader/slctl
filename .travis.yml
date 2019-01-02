@@ -24,7 +24,7 @@ deploy:
     condition: $TRAVIS_OS_NAME = linux
     tags: true
 - provider: script
-  script: curl -sS http://ci.softleader.com.tw:8082 | bash -s -- --owner softleader --token ${GITHUB_TOKEN}
+  script: curl -sS http://ci.softleader.com.tw:8082 | bash -s -- --owner softleader --token ${GITHUB_TOKEN} -v
   skip_cleanup: true
   on:
     condition: $TRAVIS_OS_NAME = linux
