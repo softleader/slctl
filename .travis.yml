@@ -8,9 +8,13 @@ env:
 script:
 - make bootstrap test
 services:
-  - docker
+- docker
 before_deploy:
-- make dist VERSION=${TRAVIS_TAG} COMMIT=${TRAVIS_COMMIT}
+- >
+  if ! [ "$BEFORE_DEPLOY_RUN" ]; then
+    export BEFORE_DEPLOY_RUN=1;
+    make dist VERSION=${TRAVIS_TAG} COMMIT=${TRAVIS_COMMIT};
+  fi
 deploy:
 - provider: releases
   api_key:
