@@ -69,7 +69,7 @@ endif
 	cp README.md $(CHOCO_DIST)
 	cp LICENSE $(CHOCO_DIST)
 	cp .nuspec $(CHOCO_DIST)
-	docker run -v $(DIST):$(DIST) -w $(DIST) -it patrickhuber/choco-linux choco pack -IgnoreDependencies --version $(VERSION) --outputdirectory $(DIST) $(CHOCO_DIST)/.nuspec
+	docker run -v $(DIST):$(DIST) -w $(DIST) -it patrickhuber/choco-linux choco pack --version $(VERSION) --out $(DIST) $(CHOCO_DIST)/.nuspec
 
 .PHONY: choco-push
 choco-push: choco-pack
