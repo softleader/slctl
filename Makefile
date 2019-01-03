@@ -69,8 +69,8 @@ endif
 	cp README.md $(CHOCO_DIST)
 	cp LICENSE $(CHOCO_DIST)
 	cp .nuspec $(CHOCO_DIST)
-	docker run -v $(DIST):$(DIST) -w $(DIST) -it patrickhuber/choco-linux choco pack --version $(VERSION) --out $(DIST) $(CHOCO_DIST)/.nuspec
+	docker run -v $(CHOCO_DIST):$(CHOCO_DIST) -w $(CHOCO_DIST) -it patrickhuber/choco-linux choco pack --version $(VERSION) --out $(CHOCO_DIST) $(CHOCO_DIST)/.nuspec
 
 .PHONY: choco-push
 choco-push: choco-pack
-	curl -X PUT -F "file=@$(DIST)/$(BINARY).$(VERSION).nupkg" $(CHOCO_SERVER) -u $(CHOCO_USER)
+	curl -X PUT -F "file=@$(CHOCO_DIST)/$(BINARY).$(VERSION).nupkg" $(CHOCO_SERVER) -u $(CHOCO_USER)

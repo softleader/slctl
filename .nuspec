@@ -13,4 +13,7 @@
             <dependency id="chocolatey" version="0.9.8.21" />
         </dependencies>
     </metadata>
+    <files>
+        <file src="*" target="" />
+    </files>
 </package>
