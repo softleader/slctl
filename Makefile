@@ -67,7 +67,8 @@ endif
 	mkdir -p $(CHOCO_DIST)
 	cp $(BUILD)/$(BINARY).exe $(CHOCO_DIST)
 	cp README.md $(CHOCO_DIST)
-	cp LICENSE $(CHOCO_DIST)
+	# nuspec 不支援沒副檔名的檔案
+	cp LICENSE $(CHOCO_DIST)/LICENSE.txt
 	cp .nuspec $(CHOCO_DIST)
 	docker run -v $(CHOCO_DIST):$(CHOCO_DIST) -w $(CHOCO_DIST) -it patrickhuber/choco-linux choco pack --version $(VERSION) --out $(CHOCO_DIST) $(CHOCO_DIST)/.nuspec
 
