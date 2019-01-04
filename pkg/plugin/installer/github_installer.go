@@ -49,6 +49,10 @@ func newGitHubInstaller(log *logrus.Logger, source, tag string, asset int, home 
 		}
 	}
 
+	if body := release.GetBody(); len(body) > 0 {
+		log.Debugln(body)
+	}
+
 	ra, err := pickAsset(log, release, asset)
 	if err != nil {
 		return nil, err

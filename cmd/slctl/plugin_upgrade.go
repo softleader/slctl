@@ -77,33 +77,49 @@ func (c *pluginUpgradeCmd) run() error {
 	if c.opt.DryRun {
 		logrus.Warnln("running in dry-run mode, specify the '-v' flag if you want to turn on verbose output")
 	}
-	plugins, err := findPlugins(environment.Settings.PluginDirs())
+	plugs, err := findPlugins(environment.Settings.PluginDirs())
 	if err != nil {
 		return err
 	}
 	var errors []string
-	for _, p := range plugins {
-		if !plugin.IsGitHubRepo(p.Source) {
-			continue
-		}
-		if len(c.names) == 0 || match(p, c.names) {
-			logrus.Printf("Upgrading %q plugin\n", p.Metadata.Name)
-			if err := install(p.Source, c.tag, c.asset, c.home, c.opt); err != nil {
+	if len(c.names) == 0 { // upgrade every plugins
+		for _, p := range plugs {
+			if err := c.upgrade(p); err != nil {
 				errors = append(errors, err.Error())
 			}
 		}
+	} else {
+		for _, n := range c.names {
+			if p, found := match(n, plugs); found {
+				if err := c.upgrade(p); err != nil {
+					errors = append(errors, err.Error())
+				}
+			} else {
+				logrus.Printf("Skip upgrading %q, it is not a installed plugin", n)
+			}
+		}
 	}
+
 	if len(errors) > 0 {
 		return fmt.Errorf(strings.Join(errors, "\n"))
 	}
 	return nil
 }
 
-func match(p *plugin.Plugin, names []string) bool {
-	for _, n := range names {
-		if strings.ToLower(p.Metadata.Name) == strings.ToLower(n) {
-			return true
+func match(name string, plugs []*plugin.Plugin) (*plugin.Plugin, bool) {
+	for _, p := range plugs {
+		if strings.ToLower(p.Metadata.Name) == strings.ToLower(name) {
+			return p, true
 		}
 	}
-	return false
+	return nil, false
+}
+
+func (c *pluginUpgradeCmd) upgrade(p *plugin.Plugin) error {
+	if !plugin.IsGitHubRepo(p.Source) {
+		logrus.Printf("skip upgrading %q, it is not a GitHub-Repo plugin", p.Metadata.Name)
+		return nil
+	}
+	logrus.Printf("Upgrading %q plugin\n", p.Metadata.Name)
+	return install(p.Source, c.tag, c.asset, c.home, c.opt)
 }

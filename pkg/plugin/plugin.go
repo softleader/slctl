@@ -35,6 +35,7 @@ type Plugin struct {
 	Metadata *Metadata
 	Dir      string
 	Source   string // 在安裝 plugin 時的 source, 只有非本機的 source 才會紀錄, 為了方便之後做 github plugin 的 upgrade
+	Mount    string
 }
 
 func (p *Plugin) FromGitHub() bool {
@@ -74,6 +75,7 @@ func LoadDir(dirname string) (*Plugin, error) {
 		return nil, err
 	}
 	plug.Source = string(b)
+	plug.Mount = filepath.Join(environment.Settings.Home.Mounts(), plug.Metadata.Name)
 	return plug, nil
 }
 
@@ -108,14 +110,12 @@ func LoadAll(basedir string) ([]*Plugin, error) {
 // the plugin subsystem itself needs access to the environment variables
 // created here.
 func SetupPluginEnv(
-	plugName, plugDir, cli, version string) (err error) {
+	plugName, plugDir, plugMount, cli, version string) (err error) {
 	var conf *config.ConfFile
 	if conf, err = config.LoadConfFile(environment.Settings.Home.ConfigFile()); err != nil && err != config.ErrTokenNotExist {
 		return err
 	}
-	plugMount := filepath.Join(environment.Settings.Home.Mounts(), plugName)
 	paths.EnsureDirectory(logrus.StandardLogger(), plugMount)
-
 	for key, val := range pluginEnv(plugName, plugDir, plugMount, cli, version, conf.Token) {
 		os.Setenv(key, val)
 	}

@@ -80,15 +80,6 @@ func newPluginInstallCmd() *cobra.Command {
 	return cmd
 }
 
-//func (c *pluginInstallCmd) complete(args []string) error {
-//	if err := checkArgsLength(len(args), "plugin"); err != nil {
-//		return err
-//	}
-//	c.source = args[0]
-//	c.home = environment.Settings.Home
-//	return nil
-//}
-
 func (c *pluginInstallCmd) run() error {
 	if c.opt.DryRun {
 		logrus.Warnln("running in dry-run mode, specify the '-v' flag if you want to turn on verbose output")
