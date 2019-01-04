@@ -25,12 +25,10 @@ type localInstaller struct {
 	log    *logrus.Logger
 	home   paths.Home
 	source string
-	dryRun bool // 模擬 install, 只會印出相關訊息, 但所有的 install 指令都不會執行
-	force  bool // 表示如果當前已經安裝過, 會強制移除重新安裝
-	soft   bool // soft means remove exist plugin only if version is different
+	opt    *InstallOption
 }
 
-func newLocalInstaller(log *logrus.Logger, source string, home paths.Home, dryRun, force, soft bool) (*localInstaller, error) {
+func newLocalInstaller(log *logrus.Logger, source string, home paths.Home, opt *InstallOption) (*localInstaller, error) {
 	if expanded, err := homedir.Expand(source); err != nil {
 		source = expanded
 	}
@@ -42,9 +40,7 @@ func newLocalInstaller(log *logrus.Logger, source string, home paths.Home, dryRu
 		log:    log,
 		source: src,
 		home:   home,
-		dryRun: dryRun,
-		force:  force,
-		soft:   soft,
+		opt:    opt,
 	}, nil
 }
 
@@ -68,10 +64,10 @@ func (i *localInstaller) Install() (*plugin.Plugin, error) {
 	link := filepath.Join(i.home.Plugins(), plug.Metadata.Name)
 
 	if _, err := os.Stat(link); !os.IsNotExist(err) {
-		if !i.force {
+		if !i.opt.Force {
 			return nil, fmt.Errorf("plugin %q already exists", plug.Metadata.Name)
 		}
-		if i.soft {
+		if i.opt.Soft {
 			exist, err := plugin.LoadDir(link)
 			if err != nil {
 				return nil, err
@@ -81,13 +77,13 @@ func (i *localInstaller) Install() (*plugin.Plugin, error) {
 			}
 		}
 		i.log.Debugf("plugin %q already exists, force to remove it\n", plug.Metadata.Name)
-		if !i.dryRun {
+		if !i.opt.DryRun {
 			os.RemoveAll(link)
 		}
 	}
 
 	i.log.Printf("symbolic linking %s to %s\n", plug.Dir, link)
-	if !i.dryRun {
+	if !i.opt.DryRun {
 		if err := os.Symlink(plug.Dir, link); err != nil {
 			return nil, err
 		}

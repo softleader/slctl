@@ -18,15 +18,13 @@ type archiveInstaller struct {
 	downloader downloader
 }
 
-func newArchiveInstaller(log *logrus.Logger, source string, home paths.Home, dryRun, force, soft bool) (ai *archiveInstaller, err error) {
+func newArchiveInstaller(log *logrus.Logger, source string, home paths.Home, opt *InstallOption) (ai *archiveInstaller, err error) {
 	log.Debugf("downloading the archive: %s\n", source)
 	ai = &archiveInstaller{}
 	ai.log = log
 	ai.source = source
 	ai.home = home
-	ai.dryRun = dryRun
-	ai.force = force
-	ai.soft = soft
+	ai.opt = opt
 	if plugin.IsLocalReference(source) {
 		var r io.Reader
 		if r, err = os.Open(source); err != nil {

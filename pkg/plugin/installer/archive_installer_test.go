@@ -40,7 +40,11 @@ func TestArchiveInstaller_Install(t *testing.T) {
 	}
 
 	log := logrus.New()
-	i, err := newArchiveInstaller(log, arcPath, hh, false, true, false)
+	i, err := newArchiveInstaller(log, arcPath, hh, &InstallOption{
+		DryRun: false,
+		Force:  true,
+		Soft:   false,
+	})
 	if err != nil {
 		t.Error(err)
 		return

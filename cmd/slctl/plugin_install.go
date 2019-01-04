@@ -18,9 +18,7 @@ type pluginInstallCmd struct {
 	asset  int
 	home   paths.Home
 	out    io.Writer
-	dryRun bool
-	force  bool
-	soft   bool
+	opt    *installer.InstallOption
 }
 
 const pluginInstallDesc = `To install a plugin from a local path, a archive, or a GitHub repo
@@ -57,7 +55,9 @@ Plugin 也可以是一個 GitHub repo, 傳入 'github.com/OWNER/REPO', {{.}} 會
 `
 
 func newPluginInstallCmd() *cobra.Command {
-	c := &pluginInstallCmd{}
+	c := &pluginInstallCmd{
+		opt: &installer.InstallOption{},
+	}
 	cmd := &cobra.Command{
 		Use:   "install [options] <SOURCE>...",
 		Short: "install one or more plugins",
@@ -73,9 +73,9 @@ func newPluginInstallCmd() *cobra.Command {
 	f := cmd.Flags()
 	f.StringVar(&c.tag, "tag", "", "specify a tag constraint. If this is not specified, the latest release tag is installed")
 	f.IntVar(&c.asset, "asset", -1, "specify a asset number, start from zero, to download")
-	f.BoolVar(&c.dryRun, "dry-run", false, `simulate an install "for real"`)
-	f.BoolVarP(&c.force, "force", "f", false, "force to re-install if plugin already exists")
-	f.BoolVarP(&c.soft, "soft", "s", false, "force to remove exist plugin only if version is different")
+	f.BoolVar(&c.opt.DryRun, "dry-run", false, `simulate an install "for real"`)
+	f.BoolVarP(&c.opt.Force, "force", "f", false, "force to re-install if plugin already exists")
+	f.BoolVarP(&c.opt.Soft, "soft", "s", false, "force to remove exist plugin only if version is different")
 
 	return cmd
 }
@@ -90,14 +90,14 @@ func newPluginInstallCmd() *cobra.Command {
 //}
 
 func (c *pluginInstallCmd) run() error {
-	if c.dryRun {
+	if c.opt.DryRun {
 		logrus.Warnln("running in dry-run mode, specify the '-v' flag if you want to turn on verbose output")
 	}
-	return install(c.source, c.tag, c.asset, c.home, c.dryRun, c.force, c.soft)
+	return install(c.source, c.tag, c.asset, c.home, c.opt)
 }
 
-func install(source string, tag string, asset int, home paths.Home, dryRun, force, soft bool) error {
-	i, err := installer.NewInstaller(logrus.StandardLogger(), source, tag, asset, home, dryRun, force, soft)
+func install(source string, tag string, asset int, home paths.Home, opt *installer.InstallOption) error {
+	i, err := installer.NewInstaller(logrus.StandardLogger(), source, tag, asset, home, opt)
 	if err != nil {
 		return err
 	}

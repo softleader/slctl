@@ -6,6 +6,7 @@ import (
 	"github.com/softleader/slctl/pkg/environment"
 	"github.com/softleader/slctl/pkg/paths"
 	"github.com/softleader/slctl/pkg/plugin"
+	"github.com/softleader/slctl/pkg/plugin/installer"
 	"github.com/spf13/cobra"
 	"strings"
 )
@@ -34,15 +35,20 @@ NAME 可傳入指定要更新的 Plugin 完整名稱 (一或多個, 以空白區
 `
 
 type pluginUpgradeCmd struct {
-	home   paths.Home
-	names  []string
-	dryRun bool
-	tag    string
-	asset  int
+	home  paths.Home
+	names []string
+	opt   *installer.InstallOption
+	tag   string
+	asset int
 }
 
 func newPluginUpgradeCmd() *cobra.Command {
-	c := &pluginUpgradeCmd{}
+	c := &pluginUpgradeCmd{
+		opt: &installer.InstallOption{
+			Force: true,
+			Soft:  true,
+		},
+	}
 	cmd := &cobra.Command{
 		Use:   "upgrade NAME...",
 		Short: "upgrade plugin  which installed from GitHub",
@@ -60,7 +66,7 @@ func newPluginUpgradeCmd() *cobra.Command {
 	}
 
 	f := cmd.Flags()
-	f.BoolVar(&c.dryRun, "dry-run", false, `simulate an upgrade "for real"`)
+	f.BoolVar(&c.opt.DryRun, "dry-run", false, `simulate an upgrade "for real"`)
 	f.StringVar(&c.tag, "tag", "", "specify a tag constraint. If this is not specified, the latest release tag is installed")
 	f.IntVar(&c.asset, "asset", -1, "specify a asset number, start from zero, to download")
 
@@ -68,7 +74,7 @@ func newPluginUpgradeCmd() *cobra.Command {
 }
 
 func (c *pluginUpgradeCmd) run() error {
-	if c.dryRun {
+	if c.opt.DryRun {
 		logrus.Warnln("running in dry-run mode, specify the '-v' flag if you want to turn on verbose output")
 	}
 	plugins, err := findPlugins(environment.Settings.PluginDirs())
@@ -82,7 +88,7 @@ func (c *pluginUpgradeCmd) run() error {
 		}
 		if len(c.names) == 0 || match(p, c.names) {
 			logrus.Printf("Upgrading %q plugin\n", p.Metadata.Name)
-			if err := install(p.Source, c.tag, c.asset, c.home, c.dryRun, true, true); err != nil {
+			if err := install(p.Source, c.tag, c.asset, c.home, c.opt); err != nil {
 				errors = append(errors, err.Error())
 			}
 		}
