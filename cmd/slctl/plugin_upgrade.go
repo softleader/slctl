@@ -12,25 +12,25 @@ import (
 
 const pluginUpgradeDesc = `Upgrade plugin which installed from GitHub Repo
 
-	$ slctl plugin upgrade NAME...
+	$ {{.}} plugin upgrade NAME...
 
 NAME 可傳入指定要更新的 Plugin 完整名稱 (一或多個, 以空白區隔); 反之更新全部
 
-	$ slctl plugin upgrade
-	$ slctl plugin upgrade whereis
+	$ {{.}} plugin upgrade
+	$ {{.}} plugin upgrade whereis
 
 傳入 '--tag' 可以指定要更新的 release 版本
 
-	$ slctl plugin upgrade whereis --tag 1.0.0
+	$ {{.}} plugin upgrade whereis --tag 1.0.0
 
 傳入 '--tag' 及 '--asset' 可以指定要更新的 release 版本以及要下載第幾個 asset 檔案 (從 0 開始)
 
-	$ slctl plugin upgrade whereis --tag 1.0.0 --asset 2
+	$ {{.}} plugin upgrade whereis --tag 1.0.0 --asset 2
 
 傳入 '--dry-run' 可以模擬真實的 upgrade, 但不會真的影響當前的配置
 通常可以用來檢查 plugin 是否有新版的再決定是否安裝 
 
-	$ slctl plugin upgrade --dry-run
+	$ {{.}} plugin upgrade --dry-run
 `
 
 type pluginUpgradeCmd struct {
