@@ -22,10 +22,11 @@ For more details: https://github.com/softleader/slctl/wiki/Plugins-Guide#mount-v
 func newPluginUnmountCmd() *cobra.Command {
 	c := &pluginUnmountCmd{}
 	cmd := &cobra.Command{
-		Use:   "unmount PLUGIN_NAME....",
-		Short: "unmount one or more plugin volume",
-		Long:  usage(pluginUnmountDesc),
-		Args:  cobra.MinimumNArgs(1),
+		Use:     "umount PLUGIN_NAME....",
+		Short:   "umount one or more plugin volume",
+		Long:    usage(pluginUnmountDesc),
+		Aliases: []string{"unmount"},
+		Args:    cobra.MinimumNArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			c.name = args
 			return c.run()
