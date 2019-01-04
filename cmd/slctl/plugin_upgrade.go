@@ -30,7 +30,7 @@ NAME 可傳入指定要更新的 Plugin 完整名稱 (一或多個, 以空白區
 傳入 '--dry-run' 可以模擬真實的 upgrade, 但不會真的影響當前的配置
 通常可以用來檢查 plugin 是否有新版的再決定是否安裝 
 
-	$ slctl plugin upgrade whereis --dry-run
+	$ slctl plugin upgrade --dry-run
 `
 
 type pluginUpgradeCmd struct {
