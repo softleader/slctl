@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"github.com/google/go-github/github"
+	"github.com/olekukonko/tablewriter"
 	"github.com/sirupsen/logrus"
 	"github.com/softleader/slctl/pkg/config"
 	"github.com/softleader/slctl/pkg/environment"
@@ -50,7 +51,9 @@ func newGitHubInstaller(log *logrus.Logger, source, tag string, asset int, home 
 	}
 
 	if body := release.GetBody(); len(body) > 0 {
-		log.Debugln(body)
+		table := tablewriter.NewWriter(log.Out)
+		table.Append([]string{body})
+		table.Render()
 	}
 
 	ra, err := pickAsset(log, release, asset)
