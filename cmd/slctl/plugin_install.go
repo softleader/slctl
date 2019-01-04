@@ -4,9 +4,9 @@ import (
 	"github.com/sirupsen/logrus"
 	"github.com/softleader/slctl/pkg/config/token"
 	"github.com/softleader/slctl/pkg/environment"
+	"github.com/softleader/slctl/pkg/paths"
 	"github.com/softleader/slctl/pkg/plugin"
 	"github.com/softleader/slctl/pkg/plugin/installer"
-	"github.com/softleader/slctl/pkg/paths"
 	"io"
 
 	"github.com/spf13/cobra"
@@ -18,6 +18,7 @@ type pluginInstallCmd struct {
 	asset  int
 	home   paths.Home
 	out    io.Writer
+	dryRun bool
 	force  bool
 	soft   bool
 }
@@ -49,6 +50,10 @@ Plugin 也可以是一個 GitHub repo, 傳入 'github.com/OWNER/REPO', {{.}} 會
 傳入 '--force' 在 install 時強制刪除已存在的 plugin
 
 	$ slctl plugin install github.com/softleader/slctl-whereis -f
+
+傳入 '--dry-run' 可以模擬真實的 install, 但不會真的影響當前的配置 
+
+	$ slctl plugin install github.com/softleader/slctl-whereis -f --dry-run
 `
 
 func newPluginInstallCmd() *cobra.Command {
@@ -68,6 +73,7 @@ func newPluginInstallCmd() *cobra.Command {
 	f := cmd.Flags()
 	f.StringVar(&c.tag, "tag", "", "specify a tag constraint. If this is not specified, the latest release tag is installed")
 	f.IntVar(&c.asset, "asset", -1, "specify a asset number, start from zero, to download")
+	f.BoolVar(&c.dryRun, "dry-run", false, `simulate an install "for real"`)
 	f.BoolVarP(&c.force, "force", "f", false, "force to re-install if plugin already exists")
 	f.BoolVarP(&c.soft, "soft", "s", false, "force to remove exist plugin only if version is different")
 
@@ -84,11 +90,14 @@ func newPluginInstallCmd() *cobra.Command {
 //}
 
 func (c *pluginInstallCmd) run() error {
-	return install(c.source, c.tag, c.asset, c.home, c.force, c.soft)
+	if c.dryRun {
+		logrus.Warnln("running in dry-run mode, specify the '-v' flag if you want to turn on verbose output")
+	}
+	return install(c.source, c.tag, c.asset, c.home, c.dryRun, c.force, c.soft)
 }
 
-func install(source string, tag string, asset int, home paths.Home, force, soft bool) error {
-	i, err := installer.NewInstaller(logrus.StandardLogger(), source, tag, asset, home, force, soft)
+func install(source string, tag string, asset int, home paths.Home, dryRun, force, soft bool) error {
+	i, err := installer.NewInstaller(logrus.StandardLogger(), source, tag, asset, home, dryRun, force, soft)
 	if err != nil {
 		return err
 	}

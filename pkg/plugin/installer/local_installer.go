@@ -6,8 +6,8 @@ import (
 	"github.com/Masterminds/semver"
 	"github.com/mitchellh/go-homedir"
 	"github.com/sirupsen/logrus"
-	"github.com/softleader/slctl/pkg/plugin"
 	"github.com/softleader/slctl/pkg/paths"
+	"github.com/softleader/slctl/pkg/plugin"
 	"os"
 	"path/filepath"
 	"regexp"
@@ -25,11 +25,12 @@ type localInstaller struct {
 	log    *logrus.Logger
 	home   paths.Home
 	source string
-	force  bool
+	dryRun bool // 模擬 install, 只會印出相關訊息, 但所有的 install 指令都不會執行
+	force  bool // 表示如果當前已經安裝過, 會強制移除重新安裝
 	soft   bool // soft means remove exist plugin only if version is different
 }
 
-func newLocalInstaller(log *logrus.Logger, source string, home paths.Home, force, soft bool) (*localInstaller, error) {
+func newLocalInstaller(log *logrus.Logger, source string, home paths.Home, dryRun, force, soft bool) (*localInstaller, error) {
 	if expanded, err := homedir.Expand(source); err != nil {
 		source = expanded
 	}
@@ -41,6 +42,7 @@ func newLocalInstaller(log *logrus.Logger, source string, home paths.Home, force
 		log:    log,
 		source: src,
 		home:   home,
+		dryRun: dryRun,
 		force:  force,
 		soft:   soft,
 	}, nil
@@ -79,12 +81,16 @@ func (i *localInstaller) Install() (*plugin.Plugin, error) {
 			}
 		}
 		i.log.Debugf("plugin %q already exists, force to remove it\n", plug.Metadata.Name)
-		os.RemoveAll(link)
+		if !i.dryRun {
+			os.RemoveAll(link)
+		}
 	}
 
-	i.log.Printf("symlinking %s to %s\n", plug.Dir, link)
-	if err := os.Symlink(plug.Dir, link); err != nil {
-		return nil, err
+	i.log.Printf("symbolic linking %s to %s\n", plug.Dir, link)
+	if !i.dryRun {
+		if err := os.Symlink(plug.Dir, link); err != nil {
+			return nil, err
+		}
 	}
 
 	return plugin.LoadDir(link)

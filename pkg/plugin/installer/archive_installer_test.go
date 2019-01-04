@@ -4,8 +4,8 @@ import (
 	"compress/flate"
 	"github.com/mholt/archiver"
 	"github.com/sirupsen/logrus"
-	"github.com/softleader/slctl/pkg/plugin"
 	"github.com/softleader/slctl/pkg/paths"
+	"github.com/softleader/slctl/pkg/plugin"
 	"io/ioutil"
 	"os"
 	"path/filepath"
@@ -40,7 +40,7 @@ func TestArchiveInstaller_Install(t *testing.T) {
 	}
 
 	log := logrus.New()
-	i, err := newArchiveInstaller(log, arcPath, hh, true, false)
+	i, err := newArchiveInstaller(log, arcPath, hh, false, true, false)
 	if err != nil {
 		t.Error(err)
 		return
