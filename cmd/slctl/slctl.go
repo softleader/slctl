@@ -23,7 +23,7 @@ Common actions from this point include:
 
 Environment:
   $SL_HOME           set an alternative location for slctl files. By default, these are stored in ~/.sl
-  $SL_PLUGINS_OFF     disable plugins. Set $SL_PLUGINS_OFF=true to disable plugins.
+  $SL_PLUGINS_OFF    disable plugins. Set $SL_PLUGINS_OFF=true to disable plugins.
   $SL_OFFLINE        work offline. Set $SL_OFFLINE=true to work offline.
 `
 )
