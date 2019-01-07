@@ -28,11 +28,14 @@ Environment:
 `
 )
 
-var (
+const (
 	organization = "softleader"
-	version      string
-	commit       string
-	metadata     *ver.BuildMetadata
+)
+
+var (
+	version  string
+	commit   string
+	metadata *ver.BuildMetadata
 )
 
 func main() {
