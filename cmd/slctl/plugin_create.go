@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"github.com/sirupsen/logrus"
 	"github.com/softleader/slctl/pkg/environment"
-	"github.com/softleader/slctl/pkg/plugin"
 	"github.com/softleader/slctl/pkg/paths"
+	"github.com/softleader/slctl/pkg/plugin"
 	"github.com/spf13/cobra"
 	"path/filepath"
 )
@@ -24,16 +24,16 @@ Plugin 本身沒有撰寫的語言限制, {{.}} 推薦並預設產生 golang 的
 選擇不同撰寫語言時, 需注意該語言本身的限制: 如執行 java plugin 的 runtime 必須有 JVM
 {{.}} 已內含了幾種語言的範本, 使用 '--lang' 來指定產生語言範本
 	
-	$ {{.}} plugin create foo --lang java
+	$ slctl plugin create foo --lang java
 
 使用 'plugin create langs' 來列出所有內含的範本語言
 
-	$ {{.}} plugin create langs
+	$ slctl plugin create langs
 
 {{.|title}} 預設會在當前目錄下, 建立一個名為 Plugin 名稱的目錄, 並將範本產生在該目錄中
 可以傳入 '--output' 來指定 Plugin 的產生目錄
 
-	$ {{.}} plugin create foo -o /path/to/plugin-dir
+	$ slctl plugin create foo -o /path/to/plugin-dir
 `
 
 type pluginCreateCmd struct {
@@ -48,7 +48,7 @@ func newPluginCreateCmd() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "create NAME",
 		Short: "create a new plugin with the given name",
-		Long:  usage(pluginCreateDesc),
+		Long:  pluginCreateDesc,
 		Args:  cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			pcc.home = environment.Settings.Home

@@ -13,20 +13,20 @@ import (
 
 const pluginSearchDesc = `Search SoftLeader official plugin
 
-	$ {{.}} plugin search FILTER...
+	$ slctl plugin search FILTER...
 
 使用空白分隔傳入多個 FILTER, 會以 Or 且模糊條件來過濾 SOURCE; 反之列出全部
 
-	$ {{.}} plugin search
-	$ {{.}} plugin search whereis contacts
+	$ slctl plugin search
+	$ slctl plugin search whereis contacts
 
 傳入 '--installed' 只列出已安裝的 Plugin
 
-	$ {{.}} plugin search -i
+	$ slctl plugin search -i
 
 查詢的結果將會被 cache 並留存一天, 傳入 '--force' 可以強制更新 cache
 
-	$ {{.}} plugin search -f
+	$ slctl plugin search -f
 `
 
 type pluginSearchCmd struct {
@@ -41,7 +41,7 @@ func newPluginSearchCmd() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "search <FILTER...>",
 		Short: "search SoftLeader official plugin",
-		Long:  usage(pluginSearchDesc),
+		Long:  pluginSearchDesc,
 		Args:  cobra.MaximumNArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			if environment.Settings.Offline {

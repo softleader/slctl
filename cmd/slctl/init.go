@@ -17,18 +17,18 @@ const (
 執行 '{{.}} init' 透過互動式的問答產生並儲存 GitHub Personal Access Token (https://github.com/settings/tokens)
 也可以傳入 '--username' 或 '--password' 來整合非互動式的情境 (e.g. DevOps pipeline):
 
-	$ {{.}} init
-	$ {{.}} init -u GITHUB_USERNAME -p GITHUB-PASSWORD
+	$ slctl init
+	$ slctl init -u GITHUB_USERNAME -p GITHUB-PASSWORD
 
 使用 '--force' 在發現有重複的 Token 時, 會強制刪除並產生一個全新的 Access Token
 
-	$ {{.}} init -f
+	$ slctl init -f
 
 若你想自己維護 Access Token (請務必確保有足夠的權限), 可以使用 '--token' 讓 slctl 驗證後直接儲存起來
 執行 'scopes'' 可以列出所有 slctl 需要的 Access Token 權限
 
-	$ {{.}} init --token GITHUB_TOKEN
-	$ {{.}} init scopes
+	$ slctl init --token GITHUB_TOKEN
+	$ slctl init scopes
 
 使用 '--offline' 則 {{.}} 不會跟 GitHub API 有任何互動, 只會配置 $SL_HOME 環境目錄.
 
@@ -49,8 +49,8 @@ func newInitCmd() *cobra.Command {
 
 	cmd := &cobra.Command{
 		Use:   "init",
-		Short: "initialize " + name,
-		Long:  usage(initDesc),
+		Short: "initialize slctl",
+		Long:  initDesc,
 		Args:  cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			i.home = environment.Settings.Home

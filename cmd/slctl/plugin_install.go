@@ -25,33 +25,33 @@ const pluginInstallDesc = `To install a plugin from a local path, a archive, or 
 
 Plugin 可以是本機上的任何目錄, 透過給予絕對或相對路徑來安裝
 
-	$ {{.}} plugin install /path/to/plugin-dir/
+	$ slctl plugin install /path/to/plugin-dir/
 
 Plugin 也可以是來自於網路上或在本機中壓縮檔, 透過給予網址或路徑來安裝
 
-	$ {{.}} plugin install /path/to/plugin-archive.zip
-	$ {{.}} plugin install http://host/plugin-archive.zip
+	$ slctl plugin install /path/to/plugin-archive.zip
+	$ slctl plugin install http://host/plugin-archive.zip
 
 Plugin 也可以是一個 GitHub repo, 傳入 'github.com/OWNER/REPO', {{.}} 會自動收尋最新一版的 release
 並從該 release 的所有下載檔中, 嘗試找出含有當前 OS 名稱的壓縮檔來安裝, 當找不到時會改下載第一個壓縮檔來安裝
 
-	$ {{.}} plugin install github.com/softleader/slctl-whereis
+	$ slctl plugin install github.com/softleader/slctl-whereis
 
 傳入 '--tag' 可以指定 release 版本
 
-	$ {{.}} plugin install github.com/softleader/slctl-whereis --tag 1.0.0
+	$ slctl plugin install github.com/softleader/slctl-whereis --tag 1.0.0
 
 傳入 '--tag' 及 '--asset' 可以指定 release 版本以及要下載第幾個 asset 檔案 (從 0 開始) 來安裝
 
-	$ {{.}} plugin install github.com/softleader/slctl-whereis --tag 1.0.0 --asset 2
+	$ slctl plugin install github.com/softleader/slctl-whereis --tag 1.0.0 --asset 2
 
 傳入 '--force' 在 install 時強制刪除已存在的 plugin
 
-	$ {{.}} plugin install github.com/softleader/slctl-whereis -f
+	$ slctl plugin install github.com/softleader/slctl-whereis -f
 
 傳入 '--dry-run' 可以模擬真實的 install, 但不會真的影響當前的配置 
 
-	$ {{.}} plugin install github.com/softleader/slctl-whereis -f --dry-run
+	$ slctl plugin install github.com/softleader/slctl-whereis -f --dry-run
 `
 
 func newPluginInstallCmd() *cobra.Command {
@@ -61,7 +61,7 @@ func newPluginInstallCmd() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "install [options] <SOURCE>...",
 		Short: "install one or more plugins",
-		Long:  usage(pluginInstallDesc),
+		Long:  pluginInstallDesc,
 		Args:  cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			c.source = args[0]

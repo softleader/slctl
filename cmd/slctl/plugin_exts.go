@@ -9,7 +9,7 @@ import (
 const (
 	pluginExtsDesc = `列出所有安裝 plugin 時支援的壓縮檔案 
 
-	$ {{.}} plugin exts
+	$ slctl plugin exts
 `
 )
 
@@ -17,7 +17,7 @@ func newPluginExtsCmd() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "exts",
 		Short: "list supported plugin archive extension to install",
-		Long:  usage(pluginExtsDesc),
+		Long:  pluginExtsDesc,
 		Args:  cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			for _, ext := range plugin.SupportedExtensions {

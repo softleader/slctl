@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/sirupsen/logrus"
 	"github.com/softleader/slctl/pkg/environment"
+	"github.com/softleader/slctl/pkg/version"
 	"github.com/spf13/cobra"
 	"gopkg.in/yaml.v2"
 	"io/ioutil"
@@ -19,7 +20,7 @@ type ExitError struct {
 }
 
 // 將 plugin 載入後轉換成 command
-func LoadPluginCommands(paths, parentName, version string) ([]*cobra.Command, error) {
+func LoadPluginCommands(env *environment.EnvSettings, metadata *version.BuildMetadata) ([]*cobra.Command, error) {
 	var commands []*cobra.Command
 	if os.Getenv("SL_NO_PLUGINS") == "1" {
 		return commands, nil
@@ -31,17 +32,19 @@ func LoadPluginCommands(paths, parentName, version string) ([]*cobra.Command, er
 		}
 		return u, nil
 	}
-	found, err := LoadPaths(paths)
+	found, err := LoadPaths(env.PluginDirs())
 	if err != nil {
 		return commands, fmt.Errorf("failed to load plugins: %s", err)
 	}
 	for _, plug := range found {
-		commands = append(commands, plug.transformToCommand(parentName, version, processParentFlags))
+		commands = append(commands, plug.transformToCommand(env, metadata, processParentFlags))
 	}
 	return commands, nil
 }
 
-func (p *Plugin) transformToCommand(parentName, version string, processParentFlags func(cmd *cobra.Command, args []string) ([]string, error)) *cobra.Command {
+func (p *Plugin) transformToCommand(env *environment.EnvSettings,
+	metadata *version.BuildMetadata,
+	processParentFlags func(cmd *cobra.Command, args []string) ([]string, error)) *cobra.Command {
 	md := p.Metadata
 	if md.Usage == "" {
 		md.Usage = fmt.Sprintf("The %q plugin", md.Name)
@@ -56,7 +59,7 @@ func (p *Plugin) transformToCommand(parentName, version string, processParentFla
 			if err != nil {
 				return err
 			}
-			if err = SetupPluginEnv(md.Name, p.Dir, p.Mount, parentName, version); err != nil {
+			if err = p.SetupEnv(env, metadata); err != nil {
 				return err
 			}
 			command, err := p.Metadata.Exec.GetCommand()
@@ -90,6 +93,23 @@ func (p *Plugin) transformToCommand(parentName, version string, processParentFla
 		DisableFlagParsing: true,
 	}
 }
+
+// SetupPluginEnv prepares os.Env for plugins. It operates on os.Env because
+// the plugin subsystem itself needs access to the environment variables
+// created here.
+//func SetupPluginEnv(
+//	plugName, plugDir, plugMount, cli, version string) (err error) {
+//	var conf *config.ConfFile
+//	if conf, err = config.LoadConfFile(environment.Settings.Home.ConfigFile()); err != nil && err != config.ErrTokenNotExist {
+//		return err
+//	}
+//	paths.EnsureDirectory(logrus.StandardLogger(), plugMount)
+//	for key, val := range pluginEnv(plugName, plugDir, plugMount, cli, version, conf.Token) {
+//		os.Setenv(key, val)
+//	}
+//
+//	return nil
+//}
 
 // 將當前的 flag 依照 environment.IsGlobalFlag 分類成 global 及 local flags
 func processFlags(args []string) (global []string, local []string) {

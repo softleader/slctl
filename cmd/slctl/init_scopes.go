@@ -9,15 +9,15 @@ import (
 const (
 	initScopesDesc = `列出所有 {{.}} 需要的 GitHub Personal Access Token 權限 (https://github.com/settings/tokens)
 
-	$ {{.}} init scopes
+	$ slctl init scopes
 `
 )
 
 func newInitScopesCmd() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "scopes",
-		Short: "list scopes of token that " + name + " required",
-		Long:  usage(initScopesDesc),
+		Short: "list scopes of token that slctl required",
+		Long:  initScopesDesc,
 		Args:  cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			for _, scope := range token.Scopes {

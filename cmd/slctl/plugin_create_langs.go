@@ -10,7 +10,7 @@ import (
 const (
 	pluginCreateLangsDesc = `列出所有 plugin 範本的語言 
 
-	$ {{.}} plugin create langs
+	$ slctl plugin create langs
 `
 )
 
@@ -18,7 +18,7 @@ func newPluginCreateLangsCmd() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "langs",
 		Short: "list languages of plugin template",
-		Long:  usage(pluginCreateLangsDesc),
+		Long:  pluginCreateLangsDesc,
 		Args:  cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			for _, c := range plugin.Creators {

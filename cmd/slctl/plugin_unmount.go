@@ -24,7 +24,7 @@ func newPluginUnmountCmd() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:     "umount PLUGIN_NAME....",
 		Short:   "umount one or more plugin volume",
-		Long:    usage(pluginUnmountDesc),
+		Long:    pluginUnmountDesc,
 		Aliases: []string{"unmount"},
 		Args:    cobra.MinimumNArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {

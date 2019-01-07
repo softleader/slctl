@@ -1,25 +1,21 @@
 package main
 
 import (
-	"bytes"
-	"fmt"
 	"github.com/sirupsen/logrus"
 	"github.com/softleader/slctl/pkg/environment"
 	"github.com/softleader/slctl/pkg/formatter"
 	"github.com/softleader/slctl/pkg/plugin"
+	ver "github.com/softleader/slctl/pkg/version"
 	"github.com/spf13/cobra"
 	"os"
-	"strings"
-	"text/template"
 )
 
 const (
-	name        = "slctl"
 	globalUsage = `{{.|title}} is a command line interface for running commands against SoftLeader services.
 
 To begin working with {{.}}, run the '{{.}} init' command:
 
-	$ {{.}} init
+	$ slctl init
 
 It will set up any necessary local configuration.
 
@@ -32,9 +28,15 @@ Environment:
 `
 )
 
-var organization = "softleader"
+var (
+	organization = "softleader"
+	version      string
+	commit       string
+	metadata     *ver.BuildMetadata
+)
 
 func main() {
+	metadata = ver.NewBuildMetadata(version, commit)
 	if cmd, err := newRootCmd(os.Args[1:]); err != nil {
 		exit(err)
 	} else if err = cmd.Execute(); err != nil {
@@ -53,9 +55,9 @@ func exit(err error) {
 
 func newRootCmd(args []string) (*cobra.Command, error) {
 	cmd := &cobra.Command{
-		Use:          name,
-		Short:        name + " against SoftLeader services.",
-		Long:         usage(globalUsage),
+		Use:          "slctl",
+		Short:        "slctl against SoftLeader services.",
+		Long:         globalUsage,
 		SilenceUsage: true,
 		PersistentPreRun: func(cmd *cobra.Command, args []string) {
 			logrus.SetOutput(cmd.OutOrStdout())
@@ -82,7 +84,7 @@ func newRootCmd(args []string) (*cobra.Command, error) {
 
 	environment.Settings.AddGlobalFlags(flags)
 
-	plugCommands, err := plugin.LoadPluginCommands(environment.Settings.PluginDirs(), name, ver().String())
+	plugCommands, err := plugin.LoadPluginCommands(environment.Settings, metadata)
 	if err != nil {
 		return nil, err
 	}
@@ -91,16 +93,17 @@ func newRootCmd(args []string) (*cobra.Command, error) {
 	return cmd, nil
 }
 
-func usage(tpl string) string {
-	funcMap := template.FuncMap{
-		"title": strings.Title,
-	}
-	var buf bytes.Buffer
-	parsed := template.Must(template.New("").Funcs(funcMap).Parse(tpl))
-	err := parsed.Execute(&buf, name)
-	if err != nil {
-		fmt.Println(err)
-		os.Exit(1)
-	}
-	return buf.String()
-}
+//
+//func usage(tpl string) string {
+//	funcMap := template.FuncMap{
+//		"title": strings.Title,
+//	}
+//	var buf bytes.Buffer
+//	parsed := template.Must(template.New("").Funcs(funcMap).Parse(tpl))
+//	err := parsed.Execute(&buf, name)
+//	if err != nil {
+//		fmt.Println(err)
+//		os.Exit(1)
+//	}
+//	return buf.String()
+//}
