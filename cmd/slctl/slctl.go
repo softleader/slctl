@@ -85,7 +85,7 @@ func newRootCmd(args []string) (*cobra.Command, error) {
 	env := environment.Settings
 	env.AddGlobalFlags(flags)
 
-	plugCommands, err := plugin.LoadPluginCommands(env, metadata)
+	plugCommands, err := plugin.LoadPluginCommands(metadata)
 	if err != nil {
 		return nil, err
 	}

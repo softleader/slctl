@@ -15,16 +15,11 @@ var (
 	// expose 一個 plugin envs 範例讓 command 可以輸出給使用者參考
 	Envs = func() (m map[string]string) {
 		plugName := "foo"
-		e := environment.Settings
 		return envsMap(
 			plugName,
-			filepath.Join(e.Home.Plugins(), plugName),
-			filepath.Join(e.Home.Mounts(), plugName),
+			filepath.Join(environment.Settings.Home.Plugins(), plugName),
+			filepath.Join(environment.Settings.Home.Mounts(), plugName),
 			"<version.of.slctl>",
-			e.PluginDirs(),
-			e.Home.String(),
-			e.Verbose,
-			e.Offline,
 			"<github.token>")
 	}()
 )
@@ -41,10 +36,6 @@ func (p *Plugin) SetupEnv(metadata *version.BuildMetadata) (err error) {
 		p.Dir,
 		p.Mount,
 		metadata.String(),
-		environment.Settings.PluginDirs(),
-		environment.Settings.Home.String(),
-		environment.Settings.Verbose,
-		environment.Settings.Offline,
 		conf.Token)
 	for key, val := range m {
 		os.Setenv(key, val)
@@ -53,7 +44,7 @@ func (p *Plugin) SetupEnv(metadata *version.BuildMetadata) (err error) {
 }
 
 // 抽一層 func 只是為了 Envs 可以拿到一樣的 map 而已
-func envsMap(pluginName, pluginDir, pluginMount, version, plugin, home string, verbose, offline bool, token string) (e map[string]string) {
+func envsMap(pluginName, pluginDir, pluginMount, version, token string) (e map[string]string) {
 	e = map[string]string{
 		"SL_BIN":          os.Args[0],
 		"SL_CLI":          "slctl",
@@ -61,10 +52,10 @@ func envsMap(pluginName, pluginDir, pluginMount, version, plugin, home string, v
 		"SL_PLUGIN_DIR":   pluginDir,
 		"SL_PLUGIN_MOUNT": pluginMount,
 		"SL_VERSION":      version,
-		"SL_PLUGIN":       plugin,
-		"SL_HOME":         home,
-		"SL_VERBOSE":      strconv.FormatBool(verbose),
-		"SL_OFFLINE":      strconv.FormatBool(offline),
+		"SL_PLUGIN":       environment.Settings.PluginDirs(),
+		"SL_HOME":         environment.Settings.Home.String(),
+		"SL_VERBOSE":      strconv.FormatBool(environment.Settings.Verbose),
+		"SL_OFFLINE":      strconv.FormatBool(environment.Settings.Offline),
 		"SL_TOKEN":        token,
 	}
 	return
