@@ -23,7 +23,7 @@ type ExitError struct {
 // 將 plugin 載入後轉換成 command
 func LoadPluginCommands(metadata *version.BuildMetadata) ([]*cobra.Command, error) {
 	var commands []*cobra.Command
-	if pluginOff, _ := strconv.ParseBool(os.Getenv("SL_NO_PLUGINS")); pluginOff {
+	if off, _ := strconv.ParseBool(os.Getenv("SL_PLUGINS_OFF")); off {
 		return commands, nil
 	}
 	processParentFlags := func(cmd *cobra.Command, args []string) ([]string, error) {
