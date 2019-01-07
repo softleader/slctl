@@ -30,9 +30,9 @@ var (
 )
 
 // 載入 plugin env
-func (p *Plugin) SetupEnv(env *environment.EnvSettings, metadata *version.BuildMetadata) (err error) {
+func (p *Plugin) SetupEnv(metadata *version.BuildMetadata) (err error) {
 	var conf *config.ConfFile
-	if conf, err = config.LoadConfFile(env.Home.ConfigFile()); err != nil && err != config.ErrTokenNotExist {
+	if conf, err = config.LoadConfFile(environment.Settings.Home.ConfigFile()); err != nil && err != config.ErrTokenNotExist {
 		return err
 	}
 	paths.EnsureDirectory(logrus.StandardLogger(), p.Mount)
@@ -41,10 +41,10 @@ func (p *Plugin) SetupEnv(env *environment.EnvSettings, metadata *version.BuildM
 		p.Dir,
 		p.Mount,
 		metadata.String(),
-		env.PluginDirs(),
-		env.Home.String(),
-		env.Verbose,
-		env.Offline,
+		environment.Settings.PluginDirs(),
+		environment.Settings.Home.String(),
+		environment.Settings.Verbose,
+		environment.Settings.Offline,
 		conf.Token)
 	for key, val := range m {
 		os.Setenv(key, val)

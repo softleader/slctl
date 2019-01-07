@@ -21,7 +21,7 @@ type ExitError struct {
 }
 
 // 將 plugin 載入後轉換成 command
-func LoadPluginCommands(env *environment.EnvSettings, metadata *version.BuildMetadata) ([]*cobra.Command, error) {
+func LoadPluginCommands(metadata *version.BuildMetadata) ([]*cobra.Command, error) {
 	var commands []*cobra.Command
 	if pluginOff, _ := strconv.ParseBool(os.Getenv("SL_NO_PLUGINS")); pluginOff {
 		return commands, nil
@@ -33,18 +33,17 @@ func LoadPluginCommands(env *environment.EnvSettings, metadata *version.BuildMet
 		}
 		return u, nil
 	}
-	found, err := LoadPaths(env.PluginDirs())
+	found, err := LoadPaths(environment.Settings.PluginDirs())
 	if err != nil {
 		return commands, fmt.Errorf("failed to load plugins: %s", err)
 	}
 	for _, plug := range found {
-		commands = append(commands, plug.transformToCommand(env, metadata, processParentFlags))
+		commands = append(commands, plug.transformToCommand(metadata, processParentFlags))
 	}
 	return commands, nil
 }
 
-func (p *Plugin) transformToCommand(env *environment.EnvSettings,
-	metadata *version.BuildMetadata,
+func (p *Plugin) transformToCommand(metadata *version.BuildMetadata,
 	processParentFlags func(cmd *cobra.Command, args []string) ([]string, error)) *cobra.Command {
 	md := p.Metadata
 	if md.Usage == "" {
@@ -60,7 +59,7 @@ func (p *Plugin) transformToCommand(env *environment.EnvSettings,
 			if err != nil {
 				return err
 			}
-			if err = p.SetupEnv(env, metadata); err != nil {
+			if err = p.SetupEnv(metadata); err != nil {
 				return err
 			}
 			command, err := p.Metadata.Exec.GetCommand()

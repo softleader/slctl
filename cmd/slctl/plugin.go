@@ -3,7 +3,6 @@ package main
 import (
 	"fmt"
 	"github.com/sirupsen/logrus"
-	"github.com/softleader/slctl/pkg/environment"
 	"github.com/softleader/slctl/pkg/plugin"
 	"github.com/spf13/cobra"
 	"os"
@@ -36,7 +35,7 @@ func newPluginCmd() *cobra.Command {
 }
 
 func runHook(p *plugin.Plugin) error {
-	if err := p.SetupEnv(environment.Settings, metadata); err != nil {
+	if err := p.SetupEnv(metadata); err != nil {
 		return err
 	}
 	command, err := p.Metadata.Hook.GetCommand()
