@@ -12,7 +12,21 @@ import (
 )
 
 var (
-	Envs = envs()
+	// expose 一個 plugin envs 範例讓 command 可以輸出給使用者參考
+	Envs = func() (m map[string]string) {
+		plugName := "foo"
+		e := environment.Settings
+		return envsMap(
+			plugName,
+			filepath.Join(e.Home.Plugins(), plugName),
+			filepath.Join(e.Home.Mounts(), plugName),
+			"<version.of.slctl>",
+			e.PluginDirs(),
+			e.Home.String(),
+			e.Verbose,
+			e.Offline,
+			"<github.token>")
+	}()
 )
 
 // 載入 plugin env
@@ -22,36 +36,36 @@ func (p *Plugin) SetupEnv(env *environment.EnvSettings, metadata *version.BuildM
 		return err
 	}
 	paths.EnsureDirectory(logrus.StandardLogger(), p.Mount)
-	for key, val := range envsMap(p.Metadata.Name, p.Dir, p.Mount, metadata.String(), conf.Token) {
+	m := envsMap(
+		p.Metadata.Name,
+		p.Dir,
+		p.Mount,
+		metadata.String(),
+		env.PluginDirs(),
+		env.Home.String(),
+		env.Verbose,
+		env.Offline,
+		conf.Token)
+	for key, val := range m {
 		os.Setenv(key, val)
 	}
 	return nil
 }
 
-func envsMap(pluginName, pluginDir, pluginMount, version, token string) (e map[string]string) {
+// 抽一層 func 只是為了 Envs 可以拿到一樣的 map 而已
+func envsMap(pluginName, pluginDir, pluginMount, version, plugin, home string, verbose, offline bool, token string) (e map[string]string) {
 	e = map[string]string{
+		"SL_BIN":          os.Args[0],
 		"SL_CLI":          "slctl",
-		"SL_VERSION":      version,
 		"SL_PLUGIN_NAME":  pluginName,
 		"SL_PLUGIN_DIR":   pluginDir,
 		"SL_PLUGIN_MOUNT": pluginMount,
-		"SL_BIN":          os.Args[0],
-		"SL_PLUGIN":       environment.Settings.PluginDirs(),
-		"SL_HOME":         environment.Settings.Home.String(),
-		"SL_VERBOSE":      strconv.FormatBool(environment.Settings.Verbose),
-		"SL_OFFLINE":      strconv.FormatBool(environment.Settings.Offline),
+		"SL_VERSION":      version,
+		"SL_PLUGIN":       plugin,
+		"SL_HOME":         home,
+		"SL_VERBOSE":      strconv.FormatBool(verbose),
+		"SL_OFFLINE":      strconv.FormatBool(offline),
 		"SL_TOKEN":        token,
 	}
 	return
-}
-
-func envs() (m map[string]string) {
-	plug := "foo"
-	h := environment.Settings.Home
-	return envsMap(
-		plug,
-		filepath.Join(h.Plugins(), plug),
-		filepath.Join(h.Mounts(), plug),
-		"<version.of.slctl>",
-		"<github.token>")
 }
