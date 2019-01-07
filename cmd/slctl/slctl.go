@@ -82,9 +82,10 @@ func newRootCmd(args []string) (*cobra.Command, error) {
 
 	flags.Parse(args)
 
-	environment.Settings.AddGlobalFlags(flags)
+	env := environment.Settings
+	env.AddGlobalFlags(flags)
 
-	plugCommands, err := plugin.LoadPluginCommands(environment.Settings, metadata)
+	plugCommands, err := plugin.LoadPluginCommands(env, metadata)
 	if err != nil {
 		return nil, err
 	}
@@ -92,18 +93,3 @@ func newRootCmd(args []string) (*cobra.Command, error) {
 
 	return cmd, nil
 }
-
-//
-//func usage(tpl string) string {
-//	funcMap := template.FuncMap{
-//		"title": strings.Title,
-//	}
-//	var buf bytes.Buffer
-//	parsed := template.Must(template.New("").Funcs(funcMap).Parse(tpl))
-//	err := parsed.Execute(&buf, name)
-//	if err != nil {
-//		fmt.Println(err)
-//		os.Exit(1)
-//	}
-//	return buf.String()
-//}

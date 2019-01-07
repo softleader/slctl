@@ -11,6 +11,7 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
+	"strconv"
 	"syscall"
 )
 
@@ -22,7 +23,7 @@ type ExitError struct {
 // 將 plugin 載入後轉換成 command
 func LoadPluginCommands(env *environment.EnvSettings, metadata *version.BuildMetadata) ([]*cobra.Command, error) {
 	var commands []*cobra.Command
-	if os.Getenv("SL_NO_PLUGINS") == "1" {
+	if pluginOff, _ := strconv.ParseBool(os.Getenv("SL_NO_PLUGINS")); pluginOff {
 		return commands, nil
 	}
 	processParentFlags := func(cmd *cobra.Command, args []string) ([]string, error) {
@@ -93,23 +94,6 @@ func (p *Plugin) transformToCommand(env *environment.EnvSettings,
 		DisableFlagParsing: true,
 	}
 }
-
-// SetupPluginEnv prepares os.Env for plugins. It operates on os.Env because
-// the plugin subsystem itself needs access to the environment variables
-// created here.
-//func SetupPluginEnv(
-//	plugName, plugDir, plugMount, cli, version string) (err error) {
-//	var conf *config.ConfFile
-//	if conf, err = config.LoadConfFile(environment.Settings.Home.ConfigFile()); err != nil && err != config.ErrTokenNotExist {
-//		return err
-//	}
-//	paths.EnsureDirectory(logrus.StandardLogger(), plugMount)
-//	for key, val := range pluginEnv(plugName, plugDir, plugMount, cli, version, conf.Token) {
-//		os.Setenv(key, val)
-//	}
-//
-//	return nil
-//}
 
 // 將當前的 flag 依照 environment.IsGlobalFlag 分類成 global 及 local flags
 func processFlags(args []string) (global []string, local []string) {
