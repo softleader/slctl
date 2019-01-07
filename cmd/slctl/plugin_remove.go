@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"github.com/sirupsen/logrus"
 	"github.com/softleader/slctl/pkg/environment"
-	"github.com/softleader/slctl/pkg/plugin"
 	"github.com/softleader/slctl/pkg/paths"
+	"github.com/softleader/slctl/pkg/plugin"
 	"os"
 	"strings"
 
@@ -43,7 +43,7 @@ func newPluginRemoveCmd() *cobra.Command {
 
 func (c *pluginRemoveCmd) run() error {
 	logrus.Debugf("loading installed plugins from %s\n", environment.Settings.PluginDirs())
-	plugins, err := findPlugins(environment.Settings.PluginDirs())
+	plugins, err := plugin.LoadPaths(environment.Settings.PluginDirs())
 	if err != nil {
 		return err
 	}

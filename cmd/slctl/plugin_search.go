@@ -71,7 +71,7 @@ func (c *pluginSearchCmd) run() (err error) {
 		logrus.Println("No search results")
 		return
 	}
-	plugins, err := findPlugins(environment.Settings.PluginDirs())
+	plugins, err := plugin.LoadPaths(environment.Settings.PluginDirs())
 	if err != nil {
 		return err
 	}

@@ -5,6 +5,7 @@ import (
 	"github.com/sirupsen/logrus"
 	"github.com/softleader/slctl/pkg/environment"
 	"github.com/softleader/slctl/pkg/paths"
+	"github.com/softleader/slctl/pkg/plugin"
 	"github.com/spf13/cobra"
 )
 
@@ -28,7 +29,7 @@ func newPluginListCmd() *cobra.Command {
 
 func (c *pluginListCmd) run() error {
 	logrus.Debugf("search in plugin dirs: %s", environment.Settings.PluginDirs())
-	plugins, err := findPlugins(environment.Settings.PluginDirs())
+	plugins, err := plugin.LoadPaths(environment.Settings.PluginDirs())
 	if err != nil {
 		return err
 	}

@@ -50,7 +50,7 @@ func DefaultHome(base string) string {
 	return filepath.Join(base, ".sl")
 }
 
-func (s *EnvSettings) Init(fs *pflag.FlagSet) {
+func (s *EnvSettings) AddGlobalFlags(fs *pflag.FlagSet) {
 	for name, envar := range envMap {
 		setFlagFromEnv(name, envar, fs)
 	}

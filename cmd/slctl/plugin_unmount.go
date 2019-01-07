@@ -37,7 +37,7 @@ func newPluginUnmountCmd() *cobra.Command {
 }
 
 func (c *pluginUnmountCmd) run() error {
-	plugs, err := findPlugins(environment.Settings.PluginDirs())
+	plugs, err := plugin.LoadPaths(environment.Settings.PluginDirs())
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "failed to load plugins: %s", err)
 		return err

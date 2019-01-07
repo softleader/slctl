@@ -5,8 +5,6 @@ import (
 	"github.com/softleader/slctl/pkg/config"
 	"github.com/softleader/slctl/pkg/environment"
 	"github.com/softleader/slctl/pkg/paths"
-	"gopkg.in/yaml.v2"
-	"io/ioutil"
 	"os"
 	"path/filepath"
 	"strconv"
@@ -58,52 +56,6 @@ func (p *Plugin) PrepareCommand(command string, extraArgs []string) (main string
 		argv = append(argv, extraArgs...)
 	}
 	return
-}
-
-// LoadDir loads a plugin from the given directory.
-func LoadDir(dirname string) (*Plugin, error) {
-	data, err := ioutil.ReadFile(filepath.Join(dirname, MetadataFileName))
-	if err != nil {
-		return nil, err
-	}
-	plug := &Plugin{Dir: dirname}
-	if err := yaml.Unmarshal(data, &plug.Metadata); err != nil {
-		return nil, err
-	}
-	b, err := ioutil.ReadFile(filepath.Join(dirname, SourceFileName))
-	if err != nil && !os.IsNotExist(err) {
-		return nil, err
-	}
-	plug.Source = string(b)
-	plug.Mount = filepath.Join(environment.Settings.Home.Mounts(), plug.Metadata.Name)
-	return plug, nil
-}
-
-// LoadAll loads all plugins found beneath the base directory.
-//
-// This scans only one directory level.
-func LoadAll(basedir string) ([]*Plugin, error) {
-	var plugins []*Plugin
-	// We want basedir/*/plugin.yaml
-	scanpath := filepath.Join(basedir, "*", MetadataFileName)
-	matches, err := filepath.Glob(scanpath)
-	if err != nil {
-		return plugins, err
-	}
-
-	if matches == nil {
-		return plugins, nil
-	}
-
-	for _, yaml := range matches {
-		dir := filepath.Dir(yaml)
-		p, err := LoadDir(dir)
-		if err != nil {
-			return plugins, err
-		}
-		plugins = append(plugins, p)
-	}
-	return plugins, nil
 }
 
 // SetupPluginEnv prepares os.Env for plugins. It operates on os.Env because

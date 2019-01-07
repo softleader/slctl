@@ -2,9 +2,11 @@ package main
 
 import (
 	"bytes"
+	"fmt"
 	"github.com/sirupsen/logrus"
 	"github.com/softleader/slctl/pkg/environment"
 	"github.com/softleader/slctl/pkg/formatter"
+	"github.com/softleader/slctl/pkg/plugin"
 	"github.com/spf13/cobra"
 	"os"
 	"strings"
@@ -42,8 +44,8 @@ func main() {
 
 func exit(err error) {
 	switch e := err.(type) {
-	case PluginError:
-		os.Exit(e.Code)
+	case plugin.ExitError:
+		os.Exit(e.ExitStatus)
 	default:
 		os.Exit(1)
 	}
@@ -78,9 +80,13 @@ func newRootCmd(args []string) (*cobra.Command, error) {
 
 	flags.Parse(args)
 
-	environment.Settings.Init(flags)
+	environment.Settings.AddGlobalFlags(flags)
 
-	loadPlugins(cmd)
+	plugCommands, err := plugin.LoadPluginCommands(environment.Settings.PluginDirs(), name, ver().String())
+	if err != nil {
+		return nil, err
+	}
+	cmd.AddCommand(plugCommands...)
 
 	return cmd, nil
 }
@@ -93,7 +99,8 @@ func usage(tpl string) string {
 	parsed := template.Must(template.New("").Funcs(funcMap).Parse(tpl))
 	err := parsed.Execute(&buf, name)
 	if err != nil {
-		panic(err)
+		fmt.Println(err)
+		os.Exit(1)
 	}
 	return buf.String()
 }

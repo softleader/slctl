@@ -77,7 +77,7 @@ func (c *pluginUpgradeCmd) run() error {
 	if c.opt.DryRun {
 		logrus.Warnln("running in dry-run mode, specify the '-v' flag if you want to turn on verbose output")
 	}
-	plugs, err := findPlugins(environment.Settings.PluginDirs())
+	plugs, err := plugin.LoadPaths(environment.Settings.PluginDirs())
 	if err != nil {
 		return err
 	}
