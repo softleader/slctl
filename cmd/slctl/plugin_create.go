@@ -10,7 +10,7 @@ import (
 	"path/filepath"
 )
 
-const pluginCreateDesc = `產生 Plugin 範本, 如: '{{.}} plugin create foo' 將會產生 golang plugin 範本, 目錄結構大致如下:
+const pluginCreateDesc = `產生 Plugin 範本, 如: 'slctl plugin create foo' 將會產生 golang plugin 範本, 目錄結構大致如下:
 
 	foo/
 	  |
@@ -20,9 +20,9 @@ const pluginCreateDesc = `產生 Plugin 範本, 如: '{{.}} plugin create foo' �
 	  |
 	  |- Makefile
 
-Plugin 本身沒有撰寫的語言限制, {{.}} 推薦並預設產生 golang 的範本
+Plugin 本身沒有撰寫的語言限制, slctl 推薦並預設產生 golang 的範本
 選擇不同撰寫語言時, 需注意該語言本身的限制: 如執行 java plugin 的 runtime 必須有 JVM
-{{.}} 已內含了幾種語言的範本, 使用 '--lang' 來指定產生語言範本
+slctl 已內含了幾種語言的範本, 使用 '--lang' 來指定產生語言範本
 	
 	$ slctl plugin create foo --lang java
 
@@ -30,7 +30,7 @@ Plugin 本身沒有撰寫的語言限制, {{.}} 推薦並預設產生 golang 的
 
 	$ slctl plugin create langs
 
-{{.|title}} 預設會在當前目錄下, 建立一個名為 Plugin 名稱的目錄, 並將範本產生在該目錄中
+Slctl 預設會在當前目錄下, 建立一個名為 Plugin 名稱的目錄, 並將範本產生在該目錄中
 可以傳入 '--output' 來指定 Plugin 的產生目錄
 
 	$ slctl plugin create foo -o /path/to/plugin-dir

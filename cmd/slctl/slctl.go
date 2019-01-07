@@ -11,9 +11,9 @@ import (
 )
 
 const (
-	globalUsage = `{{.|title}} is a command line interface for running commands against SoftLeader services.
+	globalUsage = `Slctl is a command line interface for running commands against SoftLeader services.
 
-To begin working with {{.}}, run the '{{.}} init' command:
+To begin working with slctl, run the 'slctl init' command:
 
 	$ slctl init
 
@@ -22,7 +22,7 @@ It will set up any necessary local configuration.
 Common actions from this point include:
 
 Environment:
-  $SL_HOME           set an alternative location for {{.}} files. By default, these are stored in ~/.sl
+  $SL_HOME           set an alternative location for slctl files. By default, these are stored in ~/.sl
   $SL_PLUGINS_OFF     disable plugins. Set $SL_PLUGINS_OFF=true to disable plugins.
   $SL_OFFLINE        work offline. Set $SL_OFFLINE=true to work offline.
 `

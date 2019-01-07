@@ -32,15 +32,6 @@ func newPluginRemoveCmd() *cobra.Command {
 	return cmd
 }
 
-//func (pcmd *pluginRemoveCmd) complete(args []string) error {
-//	if len(args) == 0 {
-//		return errors.New("please provide plugin name to remove")
-//	}
-//	pcmd.names = args
-//	pcmd.home = environment.Settings.Home
-//	return nil
-//}
-
 func (c *pluginRemoveCmd) run() error {
 	logrus.Debugf("loading installed plugins from %s\n", environment.Settings.PluginDirs())
 	plugins, err := plugin.LoadPaths(environment.Settings.PluginDirs())

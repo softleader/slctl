@@ -9,7 +9,7 @@ import (
 	"os/exec"
 )
 
-const pluginHelp = `Manage {{.}} plugins.
+const pluginHelp = `Manage slctl plugins.
 `
 
 func newPluginCmd() *cobra.Command {

@@ -14,7 +14,7 @@ import (
 const (
 	initDesc = `This command grants Github access token and sets up local configuration in $SL_HOME (default ~/.sl/).
 
-執行 '{{.}} init' 透過互動式的問答產生並儲存 GitHub Personal Access Token (https://github.com/settings/tokens)
+執行 'slctl init' 透過互動式的問答產生並儲存 GitHub Personal Access Token (https://github.com/settings/tokens)
 也可以傳入 '--username' 或 '--password' 來整合非互動式的情境 (e.g. DevOps pipeline):
 
 	$ slctl init
@@ -30,7 +30,7 @@ const (
 	$ slctl init --token GITHUB_TOKEN
 	$ slctl init scopes
 
-使用 '--offline' 則 {{.}} 不會跟 GitHub API 有任何互動, 只會配置 $SL_HOME 環境目錄.
+使用 '--offline' 則 slctl 不會跟 GitHub API 有任何互動, 只會配置 $SL_HOME 環境目錄.
 
 同時使用 '--offline' 及 '--token' 可跳過 Token 驗證直接儲存起來 (e.g. 沒網路環境下)
 `
