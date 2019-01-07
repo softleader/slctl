@@ -6,6 +6,7 @@ import (
 	"github.com/softleader/slctl/pkg/environment"
 	"github.com/softleader/slctl/pkg/paths"
 	"os"
+	"strings"
 	"testing"
 )
 
@@ -21,6 +22,9 @@ func TestFetchOnline(t *testing.T) {
 	hh := paths.Home(h)
 	r, err := fetchOnline(logrus.StandardLogger(), hh, "softleader")
 	if err != nil {
+		if strings.Contains(err.Error(), "401 Bad credentials") {
+			t.Skipf("maybe just token not set")
+		}
 		t.Error(err)
 	}
 	if l := len(r.Repos); l < 3 {

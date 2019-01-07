@@ -42,17 +42,17 @@ func EnsureScopes(log *logrus.Logger, scopes []github.Scope) (err error) {
 		return
 	}
 
-	log.Printf("Checking authorization scopes %q for the GitHub access token\n", scopes)
+	fmt.Fprintf(log.Out, "Checking authorization scopes %q for the GitHub access token\n", scopes)
 
 	r := bufio.NewReader(os.Stdin)
 
-	log.Print("GitHub username: ")
+	fmt.Fprint(log.Out, "GitHub username: ")
 	username, _ := r.ReadString('\n')
 
-	log.Print( "GitHub password: ")
+	fmt.Fprint(log.Out, "GitHub password: ")
 	bytePassword, _ := terminal.ReadPassword(int(syscall.Stdin))
 	password := string(bytePassword)
-	log.Print( "")
+	fmt.Fprintln(log.Out,  "")
 
 	tp := github.BasicAuthTransport{
 		Username: strings.TrimSpace(username),
@@ -64,7 +64,7 @@ func EnsureScopes(log *logrus.Logger, scopes []github.Scope) (err error) {
 
 	auths, _, err := client.Authorizations.List(ctx, &github.ListOptions{})
 	if _, ok := err.(*github.TwoFactorAuthError); ok {
-		log.Print("GitHub two-factor authentication code: ")
+		fmt.Fprint(log.Out, "GitHub two-factor authentication code: ")
 		otp, _ := r.ReadString('\n')
 		tp.OTP = strings.TrimSpace(otp)
 		if auths, _, err = client.Authorizations.List(ctx, &github.ListOptions{}); err != nil {
@@ -85,7 +85,7 @@ func EnsureScopes(log *logrus.Logger, scopes []github.Scope) (err error) {
 		return
 	}
 
-	log.Printf("granting scopes: %q\n", addScopes)
+	fmt.Fprintf(log.Out, "granting scopes: %q\n", addScopes)
 
 	_, _, err = client.Authorizations.Edit(ctx, auth.GetID(), newAuthorizationUpdateRequest(addScopes))
 	return
@@ -136,14 +136,14 @@ func contains(base []github.Scope, target github.Scope) bool {
 func Grant(username, password string, log *logrus.Logger, force bool) (token string, err error) {
 	r := bufio.NewReader(os.Stdin)
 	if username == "" {
-		log.Println("GitHub username: ")
+		fmt.Fprint(log.Out, "GitHub username: ")
 		username, _ = r.ReadString('\n')
 	}
 	if password == "" {
-		log.Println("GitHub password: ")
+		fmt.Fprint(log.Out, "GitHub password: ")
 		bytePassword, _ := terminal.ReadPassword(int(syscall.Stdin))
 		password = string(bytePassword)
-		log.Println("")
+		fmt.Fprintln(log.Out, "")
 	}
 
 	tp := github.BasicAuthTransport{
@@ -156,7 +156,7 @@ func Grant(username, password string, log *logrus.Logger, force bool) (token str
 
 	auths, _, err := client.Authorizations.List(ctx, &github.ListOptions{})
 	if _, ok := err.(*github.TwoFactorAuthError); ok {
-		log.Print("GitHub two-factor authentication code: ")
+		fmt.Fprint(log.Out, "GitHub two-factor authentication code: ")
 		otp, _ := r.ReadString('\n')
 		tp.OTP = strings.TrimSpace(otp)
 		if auths, _, err = client.Authorizations.List(ctx, &github.ListOptions{}); err != nil {
