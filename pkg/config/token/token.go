@@ -52,7 +52,7 @@ func EnsureScopes(log *logrus.Logger, scopes []github.Scope) (err error) {
 	fmt.Fprint(log.Out, "GitHub password: ")
 	bytePassword, _ := terminal.ReadPassword(int(syscall.Stdin))
 	password := string(bytePassword)
-	fmt.Fprintln(log.Out,  "")
+	fmt.Fprintln(log.Out, "")
 
 	tp := github.BasicAuthTransport{
 		Username: strings.TrimSpace(username),

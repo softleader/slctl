@@ -30,7 +30,7 @@ test: golint
 
 .PHONY: gofmt
 gofmt:
-	gofmt -w $(MAIN)
+	gofmt -s -w .
 
 .PHONY: golint
 golint: gofmt

@@ -2,8 +2,8 @@ package formatter
 
 import (
 	"bytes"
-	"github.com/sirupsen/logrus"
 	"fmt"
+	"github.com/sirupsen/logrus"
 	"strings"
 )
 

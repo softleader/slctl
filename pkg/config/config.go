@@ -14,14 +14,17 @@ import (
 var ErrTokenNotExist = errors.New(`token not exist.
 You might need to run 'slctl init'`)
 
+// ConfFile 內容等於 $SL_HOME/config/configs.yaml
 type ConfFile struct {
 	Token string `json:"token"`
 }
 
+// NewConfFile return a pointer of a blank ConfFile
 func NewConfFile() *ConfFile {
 	return &ConfFile{}
 }
 
+// LoadConfFile return a pointer of a ConfFile which read from path
 func LoadConfFile(path string) (*ConfFile, error) {
 	b, err := ioutil.ReadFile(path)
 	if err != nil {
@@ -46,6 +49,7 @@ func LoadConfFile(path string) (*ConfFile, error) {
 	return conf, nil
 }
 
+// WriteFile 將當前的 ConfFile 內容寫入 path
 func (c *ConfFile) WriteFile(path string, perm os.FileMode) error {
 	data, err := yaml.Marshal(c)
 	if err != nil {
@@ -54,6 +58,7 @@ func (c *ConfFile) WriteFile(path string, perm os.FileMode) error {
 	return ioutil.WriteFile(path, data, perm)
 }
 
+// Refresh 將傳入的 token 寫回檔案中
 func Refresh(home paths.Home, token string, _ *logrus.Logger) (err error) {
 	conf, err := LoadConfFile(home.ConfigFile())
 	if err != nil && err != ErrTokenNotExist {

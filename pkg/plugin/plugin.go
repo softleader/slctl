@@ -47,4 +47,3 @@ func (p *Plugin) PrepareCommand(command string, extraArgs []string) (main string
 	}
 	return
 }
-

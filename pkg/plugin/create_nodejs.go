@@ -120,8 +120,8 @@ func (c nodejs) exec(plugin *Metadata) Commands {
 	return Commands{
 		Command: command,
 		Platform: []Platform{
-			{Os: "darwin", Command: command,},
-			{Os: "windows", Command: command,},
+			{Os: "darwin", Command: command},
+			{Os: "windows", Command: command},
 		},
 	}
 }
