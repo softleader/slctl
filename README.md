@@ -1,3 +1,4 @@
+[![Go Report Card](https://goreportcard.com/badge/github.com/softleader/slctl)](https://goreportcard.com/report/github.com/softleader/slctl)
 ![beta](https://img.shields.io/badge/stability-beta-darkorange.svg)
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://github.com/softleader/slctl/blob/master/LICENSE)
 [![Build Status](https://travis-ci.com/softleader/slctl.svg?branch=master)](https://travis-ci.com/softleader/slctl)
