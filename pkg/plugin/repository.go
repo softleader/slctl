@@ -100,17 +100,25 @@ func fetchOnline(log *logrus.Logger, home paths.Home, org string) (r *Repository
 	client := github.NewClient(tc)
 	query := fmt.Sprintf("org:%s+topic:%s", org, officialPluginTopic)
 	log.Debugf("specifying searching qualifiers: %s\n", query)
-	resp, _, err := client.Search.Repositories(ctx, query, &github.SearchOptions{
-		ListOptions: github.ListOptions{
-			PerPage: 999,
-		},
-	})
+	var allRepos []github.Repository
+	opt := &github.SearchOptions{}
+	for {
+		result, resp, err := client.Search.Repositories(ctx, query, opt)
+		if err != nil {
+			break
+		}
+		allRepos = append(allRepos, result.Repositories...)
+		if resp.NextPage == 0 {
+			break
+		}
+		opt.Page = resp.NextPage
+	}
 	if err != nil {
 		return
 	}
 	r = &Repository{}
 	r.Expires = time.Now().AddDate(0, 0, 1)
-	for _, repo := range resp.Repositories {
+	for _, repo := range allRepos {
 		source := fmt.Sprintf("github.com/%s", repo.GetFullName())
 		r.Repos = append(r.Repos, Repo{
 			Source:      source,
