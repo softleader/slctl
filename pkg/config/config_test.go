@@ -17,7 +17,7 @@ func TestWriteFile(t *testing.T) {
 	}
 	defer os.Remove(repoFile.Name())
 
-	if err := cf.WriteFile(repoFile.Name(), ReadWrite); err != nil {
+	if err := cf.WriteFile(repoFile.Name(), 0644); err != nil {
 		t.Errorf("failed to write file (%v)", err)
 	}
 

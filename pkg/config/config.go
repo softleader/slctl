@@ -10,11 +10,9 @@ import (
 	"os"
 )
 
-const ReadWrite = 0644
-
+// ErrTokenNotExist 代表了 GitHub Token 在不存在於 config 中
 var ErrTokenNotExist = errors.New(`token not exist.
-You might need to run 'slctl init'
-`)
+You might need to run 'slctl init'`)
 
 type ConfFile struct {
 	Token string `json:"token"`
@@ -63,5 +61,5 @@ func Refresh(home paths.Home, token string, _ *logrus.Logger) (err error) {
 	}
 	conf.Token = token
 
-	return conf.WriteFile(home.ConfigFile(), ReadWrite)
+	return conf.WriteFile(home.ConfigFile(), 0644)
 }

@@ -1,4 +1,5 @@
 HAS_DOCKER := $(shell command -v docker;)
+HAS_GOLINT := $(shell command -v golint;)
 VERSION := ""
 COMMIT := ""
 DIST := $(CURDIR)/_dist
@@ -24,8 +25,19 @@ link: bootstrap test build
 	ln -sf $(BUILD)/$(BINARY) /usr/local/bin
 
 .PHONY: test
-test:
+test: golint
 	go test ./... -v
+
+.PHONY: gofmt
+gofmt:
+	gofmt -w $(MAIN)
+
+.PHONY: golint
+golint: gofmt
+ifndef HAS_GOLINT
+	go get -u golang.org/x/lint/golint
+endif
+	golint ./...
 
 .PHONY: build
 build:

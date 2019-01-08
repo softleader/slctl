@@ -3,8 +3,8 @@ package main
 import (
 	"github.com/sirupsen/logrus"
 	"github.com/softleader/slctl/pkg/environment"
-	"github.com/softleader/slctl/pkg/plugin"
 	"github.com/softleader/slctl/pkg/paths"
+	"github.com/softleader/slctl/pkg/plugin"
 	"github.com/spf13/cobra"
 )
 

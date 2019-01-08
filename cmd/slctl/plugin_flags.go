@@ -3,8 +3,8 @@ package main
 import (
 	"github.com/sirupsen/logrus"
 	"github.com/softleader/slctl/pkg/environment"
-	"github.com/softleader/slctl/pkg/plugin"
 	"github.com/softleader/slctl/pkg/paths"
+	"github.com/softleader/slctl/pkg/plugin"
 	"github.com/spf13/cobra"
 )
 
@@ -19,7 +19,7 @@ func newPluginFlagsCmd() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "flags",
 		Short: "list all global flags",
-		Long: pluginFlagsDesc,
+		Long:  pluginFlagsDesc,
 		Args:  cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			c.home = environment.Settings.Home
