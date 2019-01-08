@@ -3,7 +3,7 @@ package installer
 import (
 	"context"
 	"fmt"
-	"github.com/google/go-github/github"
+	"github.com/google/go-github/v21/github"
 	"github.com/olekukonko/tablewriter"
 	"github.com/sirupsen/logrus"
 	"github.com/softleader/slctl/pkg/config"

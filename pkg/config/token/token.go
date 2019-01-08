@@ -5,7 +5,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"github.com/google/go-github/github"
+	"github.com/google/go-github/v21/github"
 	"github.com/sirupsen/logrus"
 	"github.com/softleader/slctl/pkg/environment"
 	"golang.org/x/crypto/ssh/terminal"
