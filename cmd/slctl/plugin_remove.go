@@ -41,7 +41,7 @@ func (c *pluginRemoveCmd) run() error {
 	var errorPlugins []string
 	for _, name := range c.names {
 		if found := findPlugin(plugins, name); found != nil {
-			if err := removePlugin(found); err != nil {
+			if err := os.RemoveAll(found.Dir); err != nil {
 				errorPlugins = append(errorPlugins, fmt.Sprintf("Failed to remove plugin %s, got error (%v)", name, err))
 			} else {
 				logrus.Printf("Removed plugin: %s\n", name)
@@ -52,13 +52,6 @@ func (c *pluginRemoveCmd) run() error {
 	}
 	if len(errorPlugins) > 0 {
 		return fmt.Errorf(strings.Join(errorPlugins, "\n"))
-	}
-	return nil
-}
-
-func removePlugin(p *plugin.Plugin) error {
-	if err := os.RemoveAll(p.Dir); err != nil {
-		return err
 	}
 	return nil
 }
