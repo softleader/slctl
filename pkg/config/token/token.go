@@ -20,13 +20,16 @@ const (
 )
 
 var (
-	Scopes                      = []github.Scope{github.ScopeReadOrg, github.ScopeUser}
-	ErrOauthAccessAlreadyExists = errors.New(`access token already exists.
-To store a token on https://github.com/settings/tokens, use '--token' flag.  
-To re-generate a new token, use '--force' flag.
-Use 'init --help' for more information about the command.`)
+	// Scopes 表示此 app 預設需要的 scopes
+	Scopes = []github.Scope{github.ScopeReadOrg, github.ScopeUser}
+	// ErrOauthAccessAlreadyExists 表示 token 已存在
+	ErrOauthAccessAlreadyExists = errors.New(`access token already exists
+To store a token on https://github.com/settings/tokens, use '--token' flag  
+To re-generate a new token, use '--force' flag
+Use 'init --help' for more information about the command`)
 )
 
+// EnsureScopes 確保當前的 token 有傳入的所有 scopes
 func EnsureScopes(log *logrus.Logger, scopes []github.Scope) (err error) {
 	if environment.Settings.Offline {
 		return
@@ -133,6 +136,7 @@ func contains(base []github.Scope, target github.Scope) bool {
 	return false
 }
 
+// Grant 產生傳入的 username/password 的 token
 func Grant(username, password string, log *logrus.Logger, force bool) (token string, err error) {
 	r := bufio.NewReader(os.Stdin)
 	if username == "" {
@@ -189,6 +193,7 @@ func Grant(username, password string, log *logrus.Logger, force bool) (token str
 	return auth.GetToken(), nil
 }
 
+// Confirm 確保 token 的使用者存在於傳入的 org 中
 func Confirm(org, token string, _ *logrus.Logger) (name string, err error) {
 	if token == "" {
 		return "", fmt.Errorf("required flag(s) \"token\" not set")

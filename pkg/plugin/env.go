@@ -12,7 +12,7 @@ import (
 )
 
 var (
-	// expose 一個 plugin envs 範例讓 command 可以輸出給使用者參考
+	// Envs expose plugin envs 範例讓 command 可以輸出給使用者參考
 	Envs = func() (m map[string]string) {
 		plugName := "foo"
 		return envsMap(
@@ -24,7 +24,7 @@ var (
 	}()
 )
 
-// 載入 plugin env
+// SetupEnv 載入 plugin env
 func (p *Plugin) SetupEnv(metadata *version.BuildMetadata) (err error) {
 	var conf *config.ConfFile
 	if conf, err = config.LoadConfFile(environment.Settings.Home.ConfigFile()); err != nil && err != config.ErrTokenNotExist {

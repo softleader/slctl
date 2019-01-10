@@ -15,12 +15,13 @@ import (
 	"syscall"
 )
 
+// ExitError 代表有指定 exit status 的 error
 type ExitError struct {
 	error
 	ExitStatus int
 }
 
-// 將 plugin 載入後轉換成 command
+// LoadPluginCommands 將 plugin 載入後轉換成 command
 func LoadPluginCommands(metadata *version.BuildMetadata) ([]*cobra.Command, error) {
 	var commands []*cobra.Command
 	if off, _ := strconv.ParseBool(os.Getenv("SL_PLUGINS_OFF")); off {
@@ -106,7 +107,7 @@ func processFlags(args []string) (global []string, local []string) {
 	return
 }
 
-// 將傳入的 paths 以 filepath.SplitList 切割後, 依序呼叫 LoadAll 載入所有 plugin
+// LoadPaths 將傳入的 paths 以 filepath.SplitList 切割後, 依序呼叫 LoadAll 載入所有 plugin
 func LoadPaths(paths string) ([]*Plugin, error) {
 	var found []*Plugin
 	// Let's get all UNIXy and allow path separators
@@ -120,7 +121,7 @@ func LoadPaths(paths string) ([]*Plugin, error) {
 	return found, nil
 }
 
-// 載入 basedir 中的所有子目錄 plugin (子目錄只會收尋一層)
+// LoadAll 載入 basedir 中的所有子目錄 plugin (子目錄只會收尋一層)
 func LoadAll(basedir string) ([]*Plugin, error) {
 	var plugins []*Plugin
 	// We want basedir/*/plugin.yaml
@@ -145,7 +146,7 @@ func LoadAll(basedir string) ([]*Plugin, error) {
 	return plugins, nil
 }
 
-// 載入 plugin 資料夾
+// LoadDir 載入 plugin 資料夾
 func LoadDir(dirname string) (*Plugin, error) {
 	data, err := ioutil.ReadFile(filepath.Join(dirname, MetadataFileName))
 	if err != nil {

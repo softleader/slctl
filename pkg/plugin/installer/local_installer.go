@@ -14,11 +14,12 @@ import (
 )
 
 var (
-	ErrMissingMetadata      = errors.New("plugin metadata (" + plugin.MetadataFileName + ") missing")
+	errMissingMetadata      = errors.New("plugin metadata (" + plugin.MetadataFileName + ") missing")
 	legalPluginName         = regexp.MustCompile(`^[\w\d_-]+$`)
-	ErrIllegalPluginName    = errors.New("plugin name must match " + legalPluginName.String())
-	ErrIllegalPluginVersion = errors.New("require a Semantic 2 version: https://semver.org/")
-	ErrAlreadyUpToDate      = errors.New("already up-to-date")
+	errIllegalPluginName    = errors.New("plugin name must match " + legalPluginName.String())
+	errIllegalPluginVersion = errors.New("require a Semantic 2 version: https://semver.org/")
+	// ErrAlreadyUpToDate 表示 plugin 版本已經最新
+	ErrAlreadyUpToDate = errors.New("already up-to-date")
 )
 
 type localInstaller struct {
@@ -46,7 +47,7 @@ func newLocalInstaller(log *logrus.Logger, source string, home paths.Home, opt *
 
 func (i *localInstaller) Install() (*plugin.Plugin, error) {
 	if !isPlugin(i.source) {
-		return nil, ErrMissingMetadata
+		return nil, errMissingMetadata
 	}
 	plug, err := plugin.LoadDir(i.source)
 	if err != nil {
@@ -54,11 +55,11 @@ func (i *localInstaller) Install() (*plugin.Plugin, error) {
 	}
 
 	if !isPluginNameLegal(plug.Metadata.Name) {
-		return nil, ErrIllegalPluginName
+		return nil, errIllegalPluginName
 	}
 
 	if !isVersionLegel(plug.Metadata.Version) {
-		return nil, ErrIllegalPluginVersion
+		return nil, errIllegalPluginVersion
 	}
 
 	link := filepath.Join(i.home.Plugins(), plug.Metadata.Name)

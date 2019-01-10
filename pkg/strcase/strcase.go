@@ -8,6 +8,7 @@ import (
 var wordAfterDelimiter = regexp.MustCompile("[_-]([\\w])")
 var delimiter = regexp.MustCompile("(.*?)[_-]([\\w])")
 
+// ToLowerCamel 將傳入的 string 轉換成小寫的駱駝 string
 func ToLowerCamel(str string) (camel string) {
 	if str == "" {
 		return
@@ -18,6 +19,7 @@ func ToLowerCamel(str string) (camel string) {
 	return ToCamel(str)
 }
 
+// ToCamel 將傳入的 string 轉換成駱駝 string
 func ToCamel(str string) (camel string) {
 	if str == "" {
 		return

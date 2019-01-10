@@ -22,6 +22,8 @@ var registeredCreators = []creator{
 	java{},
 	nodejs{},
 }
+
+// Creators expose creators 讓 command 可以輸出給使用者參考
 var Creators = func() (m map[string]creator) {
 	m = make(map[string]creator, len(registeredCreators))
 	for _, c := range registeredCreators {
@@ -36,17 +38,18 @@ type creator interface {
 	files(plugin *Metadata, pluginDir string) []file
 }
 
+// Create 產生 plugin template
 func Create(lang string, plugin *Metadata, path string) (string, error) {
 	if path = strings.TrimSpace(path); path != "" {
 		if expanded, err := homedir.Expand(path); err != nil {
 			path = expanded
 		}
 	} else {
-		if wd, err := os.Getwd(); err != nil {
+		wd, err := os.Getwd()
+		if err != nil {
 			return "", err
-		} else {
-			path = filepath.Join(wd, plugin.Name)
 		}
+		path = filepath.Join(wd, plugin.Name)
 	}
 
 	path, err := filepath.Abs(path)

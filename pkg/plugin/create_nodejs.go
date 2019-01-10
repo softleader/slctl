@@ -29,7 +29,7 @@ class {{.Name|title}}Command extends Command {
 module.exports = {{.Name|title}}Command
 `
 
-const nodejsPackageJson = `{
+const nodejsPackageJSON = `{
   "name": "{{.Name}}",
   "version": "{{.Version}}",
   "author": "@softleader",
@@ -142,7 +142,7 @@ func (c nodejs) files(plugin *Metadata, pdir string) []file {
 		tpl{
 			path:     filepath.Join(pdir, "package.json"),
 			in:       plugin,
-			template: nodejsPackageJson,
+			template: nodejsPackageJSON,
 		},
 		tpl{
 			path:     filepath.Join(pdir, "bin", "run"),

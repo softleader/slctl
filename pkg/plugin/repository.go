@@ -20,11 +20,13 @@ const (
 	officialPluginTopic = "slctl-plugin"
 )
 
+// Repo 代表 Plugin 的 GitHub-Repo 的來源跟描述
 type Repo struct {
 	Source      string
 	Description string
 }
 
+// Contains 回傳此 Repo 是否包含任何傳入的 filters 文字
 func (r *Repo) Contains(filters ...string) bool {
 	for _, filter := range filters {
 		if strings.Contains(r.Source, filter) || strings.Contains(r.Description, filter) {
@@ -34,11 +36,13 @@ func (r *Repo) Contains(filters ...string) bool {
 	return false
 }
 
+// Repository 代表 GitHub-Repo plugin 的匯總
 type Repository struct {
 	Repos   []Repo
 	Expires time.Time
 }
 
+// LoadRepository 載入 Repository
 func LoadRepository(log *logrus.Logger, home paths.Home, org string, force bool) (r *Repository, err error) {
 	cached := home.CacheRepositoryFile()
 	if force {

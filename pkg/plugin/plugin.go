@@ -5,9 +5,13 @@ import (
 	"strings"
 )
 
+// MetadataFileName 定義了 metadata 的檔案名稱
 const MetadataFileName = "metadata.yaml"
+
+// SourceFileName 定義了 source 的檔案名稱
 const SourceFileName = ".source"
 
+// Metadata 描述了 Plugin 相關的資訊
 type Metadata struct {
 	Name              string   `json:"name"`
 	Version           string   `json:"version"`
@@ -19,6 +23,7 @@ type Metadata struct {
 	GitHub            GitHub   `json:"github"`
 }
 
+// Plugin 代表此 app 可以使用的插件
 type Plugin struct {
 	Metadata *Metadata
 	Dir      string
@@ -26,6 +31,7 @@ type Plugin struct {
 	Mount    string
 }
 
+// FromGitHub 代表 plugin 的來源為 GitHub
 func (p *Plugin) FromGitHub() bool {
 	return strings.HasPrefix(p.Source, "github.com/")
 }

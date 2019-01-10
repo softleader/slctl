@@ -12,7 +12,7 @@ type downloader interface {
 	download() (string, error)
 }
 
-func newUrlDownloader(url string, home paths.Home, dstDir string) *urlDownloader {
+func newURLDownloader(url string, home paths.Home, dstDir string) *urlDownloader {
 	return &urlDownloader{
 		dst: filepath.Join(home.CacheArchives(), dstDir),
 		url: url,

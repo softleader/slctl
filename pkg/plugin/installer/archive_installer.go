@@ -33,9 +33,9 @@ func newArchiveInstaller(log *logrus.Logger, source string, home paths.Home, opt
 		ai.downloader = newReaderDownloader(&r, home, filepath.Base(source))
 	} else {
 		if environment.Settings.Offline {
-			return nil, ErrNonResolvableInOfflineMode
+			return nil, errNonResolvableInOfflineMode
 		}
-		ai.downloader = newUrlDownloader(source, home, filepath.Base(source))
+		ai.downloader = newURLDownloader(source, home, filepath.Base(source))
 	}
 	return ai, nil
 }

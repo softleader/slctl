@@ -6,6 +6,7 @@ import (
 	"os"
 )
 
+// EnsureDirectories 確保傳入資料夾路徑存在, 不存在會主動建立之
 func EnsureDirectories(log *logrus.Logger, dirs ...string) (err error) {
 	for _, dir := range dirs {
 		if err = EnsureDirectory(log, dir); err != nil {
@@ -15,6 +16,7 @@ func EnsureDirectories(log *logrus.Logger, dirs ...string) (err error) {
 	return
 }
 
+// EnsureDirectory 確保傳入資料夾路徑存在, 不存在會主動建立之
 func EnsureDirectory(log *logrus.Logger, dir string) error {
 	if fi, err := os.Stat(dir); err != nil {
 		log.Printf("Creating %s \n", dir)

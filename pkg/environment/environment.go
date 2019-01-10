@@ -10,23 +10,26 @@ import (
 )
 
 var (
-	Settings = new(EnvSettings)
+	// Settings 代表此 app 的環境變數
+	Settings = new(settings)
 	envMap   = map[string]string{
 		"home":    "SL_HOME",
 		"offline": "SL_OFFLINE",
 		"verbose": "SL_VERBOSE",
 	}
+	// Flags 代表此 app 的 global flags
 	Flags       = flags()
 	leadingDash = regexp.MustCompile(`^[-]{1,2}(.+)`)
 )
 
-type EnvSettings struct {
+type settings struct {
 	Home    paths.Home
 	Verbose bool
 	Offline bool
 }
 
-func (s *EnvSettings) AddFlags(fs *pflag.FlagSet) error {
+// AddFlags 設定 Settings 會用到的環境變數到 flag 中
+func (s *settings) AddFlags(fs *pflag.FlagSet) error {
 	var found bool
 	var defaultHome string
 	if defaultHome, found = os.LookupEnv("SL_HOME"); found {
@@ -34,11 +37,11 @@ func (s *EnvSettings) AddFlags(fs *pflag.FlagSet) error {
 			defaultHome = expanded
 		}
 	} else {
-		if h, err := homedir.Dir(); err != nil {
+		h, err := homedir.Dir()
+		if err != nil {
 			return err
-		} else {
-			defaultHome = DefaultHome(h)
 		}
+		defaultHome = DefaultHome(h)
 	}
 	fs.StringVar((*string)(&s.Home), "home", defaultHome, "location of your config. Overrides $SL_HOME")
 	fs.BoolVarP(&s.Verbose, "verbose", "v", false, "enable verbose output")
@@ -46,11 +49,13 @@ func (s *EnvSettings) AddFlags(fs *pflag.FlagSet) error {
 	return nil
 }
 
+// DefaultHome 回傳此 app 的預設 home 目錄名稱
 func DefaultHome(base string) string {
 	return filepath.Join(base, ".sl")
 }
 
-func (s *EnvSettings) ExpandEnvToFlags(fs *pflag.FlagSet) {
+// ExpandEnvToFlags 將當前系統參數中已經設的值複寫掉 flags 的設定
+func (s *settings) ExpandEnvToFlags(fs *pflag.FlagSet) {
 	for name, envar := range envMap {
 		setFlagFromEnv(name, envar, fs)
 	}
@@ -64,6 +69,7 @@ func flags() (flags []string) {
 	return
 }
 
+// IsGlobalFlag 回傳此 flag 是否為 global flag
 func IsGlobalFlag(flag string) (global bool) {
 	for _, f := range Flags {
 		if f == flag {
@@ -73,7 +79,8 @@ func IsGlobalFlag(flag string) (global bool) {
 	return false
 }
 
-func (s EnvSettings) PluginDirs() string {
+// PluginDirs 回傳 plugin 目錄, 若環境變數中已經有 SL_PLUGIN 設定則會以環境參數為主
+func (s settings) PluginDirs() string {
 	if d, ok := os.LookupEnv("SL_PLUGIN"); ok {
 		return d
 	}

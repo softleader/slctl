@@ -22,7 +22,7 @@ type gitHubInstaller struct {
 
 func newGitHubInstaller(log *logrus.Logger, source, tag string, asset int, home paths.Home, opt *InstallOption) (*gitHubInstaller, error) {
 	if environment.Settings.Offline {
-		return nil, ErrNonResolvableInOfflineMode
+		return nil, errNonResolvableInOfflineMode
 	}
 	conf, err := config.LoadConfFile(home.ConfigFile())
 	if err != nil {
@@ -76,7 +76,7 @@ func newGitHubInstaller(log *logrus.Logger, source, tag string, asset int, home 
 	log.Debugf("downloading the binary content: %s\n", binary)
 
 	if url != "" {
-		ghi.downloader = newUrlDownloader(url, home, filepath.Base(binary))
+		ghi.downloader = newURLDownloader(url, home, filepath.Base(binary))
 	} else {
 		ghi.downloader = newReadCloserDownloader(&rc, home, filepath.Base(binary))
 	}
