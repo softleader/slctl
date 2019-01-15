@@ -1,6 +1,7 @@
 package plugin
 
 import (
+	"fmt"
 	"github.com/mitchellh/go-homedir"
 	"github.com/sirupsen/logrus"
 	"github.com/softleader/slctl/pkg/environment"
@@ -29,5 +30,8 @@ func TestFetchOnline(t *testing.T) {
 	}
 	if l := len(r.Repos); l < 3 {
 		t.Errorf("should be a least 3 official plugins, but got %v", l)
+	}
+	for _, repo := range r.Repos {
+		fmt.Println(repo)
 	}
 }
