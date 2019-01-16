@@ -44,7 +44,7 @@ func (d *urlDownloader) download() (string, error) {
 	defer resp.Body.Close()
 	bar := pb.New64(resp.ContentLength).
 		SetUnits(pb.U_BYTES).
-		SetMaxWidth(80).
+		SetMaxWidth(90).
 		Start()
 	defer bar.Finish()
 	if _, err = io.Copy(out, bar.NewProxyReader(resp.Body)); err != nil {
