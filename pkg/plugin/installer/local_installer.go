@@ -83,7 +83,7 @@ func (i *localInstaller) Install() (*plugin.Plugin, error) {
 		}
 	}
 
-	i.log.Printf("symbolic linking %s to %s\n", plug.Dir, link)
+	i.log.Debugf("symbolic linking %s to %s\n", plug.Dir, link)
 	if !i.opt.DryRun {
 		if err := os.Symlink(plug.Dir, link); err != nil {
 			return nil, err
