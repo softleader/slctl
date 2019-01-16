@@ -2,6 +2,7 @@ package installer
 
 import (
 	"github.com/softleader/slctl/pkg/paths"
+	"gopkg.in/cheggaaa/pb.v1"
 	"io"
 	"net/http"
 	"os"
@@ -41,7 +42,10 @@ func (d *urlDownloader) download() (string, error) {
 		return "", err
 	}
 	defer resp.Body.Close()
-	if _, err = io.Copy(out, resp.Body); err != nil {
+
+	bar := pb.New64(resp.ContentLength).SetUnits(pb.U_BYTES).Start()
+	defer bar.Finish()
+	if _, err = io.Copy(out, bar.NewProxyReader(resp.Body)); err != nil {
 		return "", err
 	}
 	return d.dst, nil

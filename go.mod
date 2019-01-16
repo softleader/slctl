@@ -3,10 +3,13 @@ module github.com/softleader/slctl
 require (
 	github.com/Masterminds/semver v1.4.2
 	github.com/dsnet/compress v0.0.0-20171208185109-cc9eb1d7ad76 // indirect
+	github.com/fatih/color v1.7.0 // indirect
 	github.com/golang/snappy v0.0.0-20180518054509-2e65f85255db // indirect
 	github.com/google/go-github/v21 v21.0.0
 	github.com/gosuri/uitable v0.0.0-20160404203958-36ee7e946282
 	github.com/inconshreveable/mousetrap v1.0.0 // indirect
+	github.com/mattn/go-colorable v0.0.9 // indirect
+	github.com/mattn/go-isatty v0.0.4 // indirect
 	github.com/mattn/go-runewidth v0.0.4 // indirect
 	github.com/mholt/archiver v3.1.1+incompatible
 	github.com/mitchellh/go-homedir v1.0.0
@@ -24,5 +27,6 @@ require (
 	golang.org/x/sync v0.0.0-20181221193216-37e7f081c4d4 // indirect
 	golang.org/x/sys v0.0.0-20181221143128-b4a75ba826a6 // indirect
 	google.golang.org/appengine v1.4.0 // indirect
+	gopkg.in/cheggaaa/pb.v1 v1.0.27
 	gopkg.in/yaml.v2 v2.2.2
 )

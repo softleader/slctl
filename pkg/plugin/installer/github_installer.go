@@ -73,9 +73,10 @@ func newGitHubInstaller(log *logrus.Logger, source, tag string, asset int, home 
 	ghi.opt = opt
 
 	binary := ra.GetBrowserDownloadURL()
-	log.Debugf("downloading the binary content: %s\n", binary)
+	log.Debugf("downloading %s\n", binary)
 
 	if url != "" {
+		log.Debugf("downloading from %s\n", url)
 		ghi.downloader = newURLDownloader(url, home, filepath.Base(binary))
 	} else {
 		ghi.downloader = newReadCloserDownloader(&rc, home, filepath.Base(binary))
