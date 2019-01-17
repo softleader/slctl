@@ -79,7 +79,7 @@ func newGitHubInstaller(log *logrus.Logger, source, tag string, asset int, home 
 		log.Debugf("downloading from %s\n", url)
 		ghi.downloader = newURLDownloader(url, home, filepath.Base(binary))
 	} else {
-		ghi.downloader = newReadCloserDownloader(&rc, home, filepath.Base(binary))
+		ghi.downloader = newReadCloserDownloader(&rc, ra.GetSize(), home, filepath.Base(binary))
 	}
 
 	return &ghi, nil

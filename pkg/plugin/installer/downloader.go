@@ -9,6 +9,8 @@ import (
 	"path/filepath"
 )
 
+const barWidth = 90
+
 type downloader interface {
 	download() (string, error)
 }
@@ -44,7 +46,7 @@ func (d *urlDownloader) download() (string, error) {
 	defer resp.Body.Close()
 	bar := pb.New64(resp.ContentLength).
 		SetUnits(pb.U_BYTES).
-		SetMaxWidth(90).
+		SetMaxWidth(barWidth).
 		Start()
 	defer bar.Finish()
 	if _, err = io.Copy(out, bar.NewProxyReader(resp.Body)); err != nil {
@@ -83,16 +85,18 @@ func (d *readerDownloader) download() (string, error) {
 	return d.dst, nil
 }
 
-func newReadCloserDownloader(rc *io.ReadCloser, home paths.Home, dstDir string) *readCloserDownloader {
+func newReadCloserDownloader(rc *io.ReadCloser, size int, home paths.Home, dstDir string) *readCloserDownloader {
 	return &readCloserDownloader{
-		dst: filepath.Join(home.CacheArchives(), dstDir),
-		rc:  rc,
+		dst:  filepath.Join(home.CacheArchives(), dstDir),
+		rc:   rc,
+		size: size,
 	}
 }
 
 type readCloserDownloader struct {
-	dst string
-	rc  *io.ReadCloser
+	dst  string
+	rc   *io.ReadCloser
+	size int
 }
 
 func (d *readCloserDownloader) download() (string, error) {
@@ -108,7 +112,12 @@ func (d *readCloserDownloader) download() (string, error) {
 		return "", err
 	}
 	defer out.Close()
-	if _, err = io.Copy(out, *d.rc); err != nil {
+	bar := pb.New(d.size).
+		SetUnits(pb.U_BYTES).
+		SetMaxWidth(barWidth).
+		Start()
+	defer bar.Finish()
+	if _, err = io.Copy(out, bar.NewProxyReader(*d.rc)); err != nil {
 		return "", err
 	}
 	return d.dst, nil
