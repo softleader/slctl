@@ -3,7 +3,6 @@ package installer
 import (
 	"errors"
 	"fmt"
-	"github.com/Masterminds/semver"
 	"github.com/mitchellh/go-homedir"
 	"github.com/sirupsen/logrus"
 	"github.com/softleader/slctl/pkg/paths"
@@ -58,7 +57,7 @@ func (i *localInstaller) Install() (*plugin.Plugin, error) {
 		return nil, errIllegalPluginName
 	}
 
-	if !isVersionLegel(plug.Metadata.Version) {
+	if !plug.Metadata.IsVersionLegal() {
 		return nil, errIllegalPluginVersion
 	}
 
@@ -73,7 +72,9 @@ func (i *localInstaller) Install() (*plugin.Plugin, error) {
 			if err != nil {
 				return nil, err
 			}
-			if exist.Metadata.Version == plug.Metadata.Version {
+			if needUpgrade, err := exist.Metadata.IsVersionGreaterThan(plug.Metadata); err != nil {
+				return nil, err
+			} else if !needUpgrade {
 				return exist, ErrAlreadyUpToDate
 			}
 		}
@@ -100,11 +101,4 @@ func isPlugin(dirname string) bool {
 
 func isPluginNameLegal(name string) bool {
 	return legalPluginName.MatchString(name)
-}
-
-func isVersionLegel(version string) bool {
-	if _, err := semver.NewVersion(version); err != nil {
-		return false
-	}
-	return true
 }
