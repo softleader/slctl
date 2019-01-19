@@ -32,6 +32,13 @@ Slctl is a command line interface for running commands against SoftLeader servic
 
 你可以參考 [Compiling Source](https://github.com/softleader/slctl/wiki/Compiling-Source) 章節, 從原始碼編譯後使用, Happy Hacking :cat::computer:
 
+### Upgrade
+
+透過套件管理程式安裝的, 可以使用以下命令來更新:
+
+- [Homebrew](https://brew.sh) - `brew upgrade slctl`
+- [Chocolatey](https://chocolatey.org/) - `choco upgrade slctl -s http://ci.softleader.com.tw:8081/repository/choco/`
+
 ## Getting Started
 
 執行 `slctl init` 透過互動式的問答產生並儲存 [GitHub Personal Access Token](https://github.com/settings/tokens), 也可以傳入 `--username` 或 `--password` 來整合非互動式的情境 (e.g. DevOps pipeline):
