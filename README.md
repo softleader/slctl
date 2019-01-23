@@ -1,8 +1,8 @@
 [![Go Report Card](https://goreportcard.com/badge/github.com/softleader/slctl)](https://goreportcard.com/report/github.com/softleader/slctl)
-![beta](https://img.shields.io/badge/stability-beta-darkorange.svg)
-[![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://github.com/softleader/slctl/blob/master/LICENSE)
-[![Build Status](https://travis-ci.com/softleader/slctl.svg?branch=master)](https://travis-ci.com/softleader/slctl)
-[![Build Status](https://github-basic-badges.herokuapp.com/release/softleader/slctl.svg)](https://github.com/softleader/slctl/releases)
+![stability-stable](https://img.shields.io/badge/stability-stable-green.svg)
+![license](https://img.shields.io/github/license/softleader/slctl.svg)
+![Build Status](https://img.shields.io/travis/com/softleader/slctl.svg)
+![release](https://img.shields.io/github/release/softleader/slctl.svg)
 
 # slctl
 
