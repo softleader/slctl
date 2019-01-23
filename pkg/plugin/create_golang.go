@@ -88,26 +88,35 @@ import (
 	"github.com/spf13/cobra"
 )
 
+type versionCmd struct {
+	full bool
+}
+
 func newVersionCmd() *cobra.Command {
-	var full bool
+	c := &versionCmd{}
 	cmd := &cobra.Command{
 		Use:   "version",
 		Short: "print {{.Name}} version",
 		Long:  "print {{.Name}} version",
+		Args:  cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
-			if full {
-				logrus.Infoln(metadata.FullString())
-			} else {
-				logrus.Infoln(metadata.String())
-			}
-			return nil
+			return c.run()
 		},
 	}
 
 	f := cmd.Flags()
-	f.BoolVar(&full, "full", false, "print full version number and commit hash")
+	f.BoolVar(&c.full, "full", false, "print full version number and commit hash")
 
 	return cmd
+}
+
+func (c *versionCmd) run() error {
+	if c.full {
+		logrus.Infoln(metadata.FullString())
+	} else {
+		logrus.Infoln(metadata.String())
+	}
+	return nil
 }
 `
 
