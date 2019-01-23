@@ -30,7 +30,6 @@ func main() {
 	cobra.OnInitialize(
 		initMetadata,
 		initGlobalFlags,
-		initFlags,
 	)
 
 	cmd := &cobra.Command{
