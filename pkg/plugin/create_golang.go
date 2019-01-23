@@ -10,79 +10,236 @@ const golangMain = `package main
 
 import (
 	"fmt"
+	"github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
 	"os"
 	"strconv"
-	"strings"
-	"io"
 )
 
-const (
-	unreleased  = "unreleased"
+var (
+	// 在包版時會動態指定 version 及 commit
+	version, commit string
+	metadata        *release.Metadata
+
+	// flags
+	verbose, offline bool
+	token            string
 )
-
-var version string
-
-type {{.Name|lowerCamel}}Cmd struct {
-	out     io.Writer	
-	offline bool
-	verbose bool
-	token   string
-}
 
 func main() {
-	c := {{.Name|lowerCamel}}Cmd{}
+	cobra.OnInitialize(
+		initMetadata,
+		initGlobalFlags,
+		initFlags,
+	)
+
 	cmd := &cobra.Command{
 		Use:   "{{.Name}}",
 		Short: "{{.Usage}}",
 		Long:  "{{.Description}}",
-		RunE: func(cmd *cobra.Command, args []string) error {
-			c.token = os.ExpandEnv(c.token)
-			return c.run()
+		PersistentPreRunE: func(cmd *cobra.Command, args []string) error {
+			// remove the check if the plugin can run in offline mode
+			if offline {
+				return fmt.Errorf("can not run the command in offline mode")
+			}
+			logrus.SetOutput(cmd.OutOrStdout())
+			logrus.SetFormatter(&formatter.PlainFormatter{})
+
+			// use os.LookupEnv to retrieve the specific value of the environment (e.g. os.LookupEnv("SL_TOKEN"))
+			for _, env := range os.Environ() {
+				if strings.HasPrefix(env, "SL_") {
+					logrus.Println(env)
+				}
+			}
+			return nil
 		},
 	}
-	
-	c.out = cmd.OutOrStdout()
-	c.offline, _ = strconv.ParseBool(os.Getenv("SL_OFFLINE"))
-	c.verbose, _ = strconv.ParseBool(os.Getenv("SL_VERBOSE"))
+
+	pf := cmd.PersistentFlags()
+	pf.BoolVar(&offline, "offline", offline, "work offline, Overrides $SL_OFFLINE")
+	pf.BoolVarP(&verbose, "verbose", "v", verbose, "enable verbose output, Overrides $SL_VERBOSE")
 
 	f := cmd.Flags()
-	f.BoolVarP(&c.offline, "offline", "o", c.offline, "work offline, Overrides $SL_OFFLINE")
-	f.BoolVarP(&c.verbose, "verbose", "v", c.verbose, "enable verbose output, Overrides $SL_VERBOSE")
-	f.StringVar(&c.token, "token", "$SL_TOKEN", "github access token. Overrides $SL_TOKEN")
+	f.StringVar(&token, "token", token, "github access token. Overrides $SL_TOKEN")
 
-	cmd.AddCommand(&cobra.Command{
-		Use: "version",
-		Run: func(cmd *cobra.Command, args []string) {
-			fmt.Fprintf(c.out, "%s\n", ver())
-		},
-	})
+	cmd.AddCommand(
+		newVersionCmd(),
+	)
 
 	if err := cmd.Execute(); err != nil {
 		os.Exit(1)
 	}
 }
 
-func (c *{{.Name|lowerCamel}}Cmd) run() error {
-	// use os.LookupEnv to retrieve the specific value of the environment (e.g. os.LookupEnv("SL_TOKEN"))
-	for _, env := range os.Environ() {
-		if strings.HasPrefix(env, "SL_") {
-			fmt.Fprintln(c.out, env)
-		}
-	}
-	fmt.Fprintf(c.out, "%+v\n", c)
-	return nil
+// initMetadata 準備 app 的 release 資訊
+func initMetadata() {
+	metadata = release.NewMetadata(version, commit)
 }
 
-func ver() (v string) {
-	if v = strings.TrimSpace(version); v == "" {
-		v = unreleased
-	}
-	return
+// initGlobalFlags 準備 app 的 global flags 預設值
+func initGlobalFlags() {
+	offline, _ = strconv.ParseBool(os.Getenv("SL_OFFLINE"))
+	verbose, _ = strconv.ParseBool(os.Getenv("SL_VERBOSE"))
+}
+
+// initFlags 準備 app 的 flags 預設值
+func initFlags() {
+	token = os.Getenv("SL_TOKEN")
 }
 `
 
-const golangMakefile = `SL_HOME ?= $(shell slctl home)
+const golangVersion = `package main
+
+import (
+	"github.com/sirupsen/logrus"
+	"github.com/spf13/cobra"
+)
+
+func newVersionCmd() *cobra.Command {
+	var full bool
+	cmd := &cobra.Command{
+		Use:   "version",
+		Short: "print {{.Name}} version",
+		Long:  "print {{.Name}} version",
+		RunE: func(cmd *cobra.Command, args []string) error {
+			if full {
+				logrus.Infoln(metadata.FullString())
+			} else {
+				logrus.Infoln(metadata.String())
+			}
+			return nil
+		},
+	}
+
+	f := cmd.Flags()
+	f.BoolVar(&full, "full", false, "print full version number and commit hash")
+
+	return cmd
+}
+`
+
+const golangPkgFormatter = `package formatter
+
+import (
+	"bytes"
+	"fmt"
+	"github.com/sirupsen/logrus"
+	"strings"
+)
+
+var ln = fmt.Sprintln()
+
+// PlainFormatter 代表什麼都不 format 的 formatter
+type PlainFormatter struct {
+}
+
+// Format 將傳入的 entry 轉換成要寫 log 的文字
+func (f *PlainFormatter) Format(entry *logrus.Entry) ([]byte, error) {
+	var buf *bytes.Buffer
+	if entry.Buffer != nil {
+		buf = entry.Buffer
+	} else {
+		buf = &bytes.Buffer{}
+	}
+	if entry.Message != "" {
+		buf.WriteString(entry.Message)
+	}
+	if !strings.HasSuffix(entry.Message, ln) {
+		buf.WriteString(ln)
+	}
+	return buf.Bytes(), nil
+}
+`
+
+const golangPkgFormatterTest = `package formatter
+
+import (
+	"bytes"
+	"github.com/sirupsen/logrus"
+	"testing"
+)
+
+func TestPlainFormatter_Format(t *testing.T) {
+	log := logrus.New()
+	log.SetFormatter(&PlainFormatter{})
+	b := bytes.NewBuffer(nil)
+	log.SetOutput(b)
+	log.Println("123456789")
+	if b.String() != "123456789\n" {
+		t.Error("out should be 123456789\n")
+	}
+}
+`
+const golangPkgRelease = `package release
+
+import (
+	"fmt"
+	"strings"
+)
+
+const (
+	unreleased = "unreleased"
+	unknown    = "unknown"
+)
+
+// Metadata 代表此 app 的 release 資訊
+type Metadata struct {
+	GitVersion string
+	GitCommit  string
+}
+
+// NewMetadata 產生一個 app 的 release 資訊
+func NewMetadata(version, commit string) (b *Metadata) {
+	b = &Metadata{
+		GitVersion: unreleased,
+		GitCommit:  unknown,
+	}
+	if version = strings.TrimSpace(version); version != "" {
+		b.GitVersion = version
+	}
+	if commit = strings.TrimSpace(commit); commit != "" {
+		b.GitCommit = commit
+	}
+	return
+}
+
+func (b *Metadata) String() string {
+	trunc := 7
+	if len := len(b.GitCommit); len < 7 {
+		trunc = len
+	}
+	return fmt.Sprintf("%s+%s", b.GitVersion, b.GitCommit[:trunc])
+}
+
+// FullString 回傳完整的 release 資訊
+func (b *Metadata) FullString() string {
+	return fmt.Sprintf("%#v", b)
+}
+`
+
+const golangPkgReleaseTest = `package release
+
+import (
+	"fmt"
+	"testing"
+)
+
+func TestMetadata_String(t *testing.T) {
+	commit := "none"
+	expected := fmt.Sprintf("%s+%s", unreleased, commit)
+	if v := NewMetadata(unreleased, commit).String(); v != expected {
+		t.Errorf("expected to see %q, but got %q", expected, v)
+	}
+	commit = "asdfbngfdseqw2314rtygfsda"
+	expected = fmt.Sprintf("%s+%s", unreleased, commit[:7])
+	if v := NewMetadata(unreleased, commit).String(); v != expected {
+		t.Errorf("expected to see %q, but got %q", expected, v)
+	}
+}
+`
+
+const golangMakefile = `HAS_GOLINT := $(shell command -v golint;)
+SL_HOME ?= $(shell slctl home)
 SL_PLUGIN_DIR ?= $(SL_HOME)/plugins/{{.Name}}/
 METADATA := metadata.yaml
 VERSION := $(shell sed -n -e 's/version:[ "]*\([^"]*\).*/\1/p' $(METADATA))
@@ -99,8 +256,20 @@ install: bootstrap test build
 	cp $(METADATA) $(SL_PLUGIN_DIR)
 
 .PHONY: test
-test:
+test: golint
 	go test ./... -v
+
+.PHONY: gofmt
+gofmt:
+	gofmt -s -w .
+
+.PHONY: golint
+golint: gofmt
+ifndef HAS_GOLINT
+	go get -u golang.org/x/lint/golint
+endif
+	golint -set_exit_status ./cmd/...
+	golint -set_exit_status ./pkg/...
 
 .PHONY: build
 build: clean bootstrap
@@ -159,6 +328,31 @@ func (c golang) files(plugin *Metadata, pdir string) []file {
 			path:     filepath.Join(pdir, "cmd", cmd, fmt.Sprintf("%s.go", cmd)),
 			in:       plugin,
 			template: golangMain,
+		},
+		tpl{
+			path:     filepath.Join(pdir, "cmd", cmd, "version.go"),
+			in:       plugin,
+			template: golangVersion,
+		},
+		tpl{
+			path:     filepath.Join(pdir, "pkg", "formatter", "formatter.go"),
+			in:       plugin,
+			template: golangPkgFormatter,
+		},
+		tpl{
+			path:     filepath.Join(pdir, "pkg", "formatter", "formatter_test.go"),
+			in:       plugin,
+			template: golangPkgFormatterTest,
+		},
+		tpl{
+			path:     filepath.Join(pdir, "pkg", "release", "release.go"),
+			in:       plugin,
+			template: golangPkgRelease,
+		},
+		tpl{
+			path:     filepath.Join(pdir, "pkg", "release", "release_test.go"),
+			in:       plugin,
+			template: golangPkgReleaseTest,
 		},
 		tpl{
 			path:     filepath.Join(pdir, "Makefile"),
