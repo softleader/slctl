@@ -1,7 +1,7 @@
 HAS_DOCKER := $(shell command -v docker;)
 HAS_GOLINT := $(shell command -v golint;)
-VERSION := ""
-COMMIT := ""
+VERSION :=
+COMMIT :=
 DIST := $(CURDIR)/_dist
 BUILD := $(CURDIR)/_build
 LDFLAGS := "-X main.version=${VERSION} -X main.commit=${COMMIT}"

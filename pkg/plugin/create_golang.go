@@ -244,10 +244,11 @@ const golangMakefile = `HAS_GOLINT := $(shell command -v golint;)
 SL_HOME ?= $(shell slctl home)
 SL_PLUGIN_DIR ?= $(SL_HOME)/plugins/{{.Name}}/
 METADATA := metadata.yaml
-VERSION := $(shell sed -n -e 's/version:[ "]*\([^"]*\).*/\1/p' $(METADATA))
+VERSION :=
+COMMIT :=
 DIST := $(CURDIR)/_dist
 BUILD := $(CURDIR)/_build
-LDFLAGS := "-X main.version=${VERSION}"
+LDFLAGS := "-X main.version=${VERSION} -X main.commit=${COMMIT}"
 BINARY := {{.Name}}
 MAIN := ./cmd/{{.Name|lower}}
 
@@ -281,6 +282,12 @@ build: clean bootstrap
 
 .PHONY: dist
 dist:
+ifeq ($(strip $(VERSION)),)
+	$(error VERSION is not set)
+endif
+ifeq ($(strip $(COMMIT)),)
+	$(error COMMIT is not set)
+endif
 	go get -u github.com/inconshreveable/mousetrap
 	mkdir -p $(BUILD)
 	mkdir -p $(DIST)
