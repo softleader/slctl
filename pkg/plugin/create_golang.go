@@ -21,7 +21,7 @@ var (
 	version, commit string
 	metadata        *release.Metadata
 
-	// flags
+	// global flags
 	verbose, offline bool
 	token            string
 )
@@ -55,11 +55,9 @@ func main() {
 		},
 	}
 
-	pf := cmd.PersistentFlags()
-	pf.BoolVar(&offline, "offline", offline, "work offline, Overrides $SL_OFFLINE")
-	pf.BoolVarP(&verbose, "verbose", "v", verbose, "enable verbose output, Overrides $SL_VERBOSE")
-
-	f := cmd.Flags()
+	f := cmd.PersistentFlags()
+	f.BoolVar(&offline, "offline", offline, "work offline, Overrides $SL_OFFLINE")
+	f.BoolVarP(&verbose, "verbose", "v", verbose, "enable verbose output, Overrides $SL_VERBOSE")
 	f.StringVar(&token, "token", token, "github access token. Overrides $SL_TOKEN")
 
 	cmd.AddCommand(
@@ -80,10 +78,6 @@ func initMetadata() {
 func initGlobalFlags() {
 	offline, _ = strconv.ParseBool(os.Getenv("SL_OFFLINE"))
 	verbose, _ = strconv.ParseBool(os.Getenv("SL_VERBOSE"))
-}
-
-// initFlags 準備 app 的 flags 預設值
-func initFlags() {
 	token = os.Getenv("SL_TOKEN")
 }
 `
