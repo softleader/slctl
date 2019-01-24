@@ -72,7 +72,7 @@ func (i *localInstaller) Install() (*plugin.Plugin, error) {
 			if err != nil {
 				return nil, err
 			}
-			if needUpgrade, err := exist.Metadata.IsVersionGreaterThan(plug.Metadata); err != nil {
+			if needUpgrade, err := plug.Metadata.IsVersionGreaterThan(exist.Metadata); err != nil {
 				return nil, err
 			} else if !needUpgrade {
 				return exist, ErrAlreadyUpToDate

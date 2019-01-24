@@ -29,6 +29,21 @@ func TestMetadata_IsVersionGreaterThan(t *testing.T) {
 	if isGreater {
 		t.Error("b should not greater than a")
 	}
+
+	a = Metadata{
+		Version: "2.5.1",
+	}
+	b = Metadata{
+		Version: "2.6.4",
+	}
+	isGreater, err = a.IsVersionGreaterThan(&b)
+	if err != nil {
+		t.Error(err)
+		t.FailNow()
+	}
+	if isGreater {
+		t.Error("a should not greater than b")
+	}
 }
 
 func TestMetadata_IsVersionLegal(t *testing.T) {
