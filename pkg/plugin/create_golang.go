@@ -22,16 +22,21 @@ var (
 	metadata        *release.Metadata
 
 	// global flags
-	verbose, offline bool
-	token            string
+	offline, _ = strconv.ParseBool(os.Getenv("SL_OFFLINE"))
+	verbose, _ = strconv.ParseBool(os.Getenv("SL_VERBOSE"))
+	token      = os.Getenv("SL_TOKEN")
 )
 
 func main() {
 	cobra.OnInitialize(
 		initMetadata,
-		initGlobalFlags,
 	)
+	if err := newRootCmd(os.Args[1:]).Execute(); err != nil {
+		os.Exit(1)
+	}
+}
 
+func newRootCmd(args []string) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "{{.Name}}",
 		Short: "{{.Usage}}",
@@ -54,30 +59,22 @@ func main() {
 		},
 	}
 
-	f := cmd.PersistentFlags()
-	f.BoolVar(&offline, "offline", offline, "work offline, Overrides $SL_OFFLINE")
-	f.BoolVarP(&verbose, "verbose", "v", verbose, "enable verbose output, Overrides $SL_VERBOSE")
-	f.StringVar(&token, "token", token, "github access token. Overrides $SL_TOKEN")
-
 	cmd.AddCommand(
 		newVersionCmd(),
 	)
 
-	if err := cmd.Execute(); err != nil {
-		os.Exit(1)
-	}
+	f := cmd.PersistentFlags()
+	f.BoolVar(&offline, "offline", offline, "work offline, Overrides $SL_OFFLINE")
+	f.BoolVarP(&verbose, "verbose", "v", verbose, "enable verbose output, Overrides $SL_VERBOSE")
+	f.StringVar(&token, "token", token, "github access token. Overrides $SL_TOKEN")
+	f.Parse(args)
+
+	return cmd
 }
 
 // initMetadata 準備 app 的 release 資訊
 func initMetadata() {
 	metadata = release.NewMetadata(version, commit)
-}
-
-// initGlobalFlags 準備 app 的 global flags 預設值
-func initGlobalFlags() {
-	offline, _ = strconv.ParseBool(os.Getenv("SL_OFFLINE"))
-	verbose, _ = strconv.ParseBool(os.Getenv("SL_VERBOSE"))
-	token = os.Getenv("SL_TOKEN")
 }
 `
 
