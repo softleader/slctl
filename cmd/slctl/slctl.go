@@ -5,7 +5,7 @@ import (
 	"github.com/softleader/slctl/pkg/environment"
 	"github.com/softleader/slctl/pkg/formatter"
 	"github.com/softleader/slctl/pkg/plugin"
-	ver "github.com/softleader/slctl/pkg/version"
+	"github.com/softleader/slctl/pkg/release"
 	"github.com/spf13/cobra"
 	"os"
 )
@@ -35,11 +35,13 @@ const (
 var (
 	version  string
 	commit   string
-	metadata *ver.BuildMetadata
+	metadata *release.Metadata
 )
 
 func main() {
-	metadata = ver.NewBuildMetadata(version, commit)
+	cobra.OnInitialize(
+		initMetadata,
+	)
 	if cmd, err := newRootCmd(os.Args[1:]); err != nil {
 		exit(err)
 	} else if err = cmd.Execute(); err != nil {
@@ -93,4 +95,9 @@ func newRootCmd(args []string) (*cobra.Command, error) {
 	cmd.AddCommand(plugCommands...)
 
 	return cmd, nil
+}
+
+// initMetadata 準備 app 的 release 資訊
+func initMetadata() {
+	metadata = release.NewMetadata(version, commit)
 }

@@ -5,7 +5,7 @@ import (
 	"github.com/softleader/slctl/pkg/config"
 	"github.com/softleader/slctl/pkg/environment"
 	"github.com/softleader/slctl/pkg/paths"
-	"github.com/softleader/slctl/pkg/version"
+	"github.com/softleader/slctl/pkg/release"
 	"os"
 	"path/filepath"
 	"strconv"
@@ -25,7 +25,7 @@ var (
 )
 
 // SetupEnv 載入 plugin env
-func (p *Plugin) SetupEnv(metadata *version.BuildMetadata) (err error) {
+func (p *Plugin) SetupEnv(metadata *release.Metadata) (err error) {
 	var conf *config.ConfFile
 	if conf, err = config.LoadConfFile(environment.Settings.Home.ConfigFile()); err != nil && err != config.ErrTokenNotExist {
 		return err

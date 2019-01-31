@@ -1,4 +1,4 @@
-package version
+package release
 
 import (
 	"fmt"
@@ -10,15 +10,15 @@ const (
 	unknown    = "unknown"
 )
 
-// BuildMetadata 代表此 app 的 release 資訊
-type BuildMetadata struct {
+// Metadata 代表此 app 的 release 資訊
+type Metadata struct {
 	GitVersion string
 	GitCommit  string
 }
 
-// NewBuildMetadata 產生一個 app 的 release 資訊
-func NewBuildMetadata(version, commit string) (b *BuildMetadata) {
-	b = &BuildMetadata{
+// NewMetadata 產生一個 app 的 release 資訊
+func NewMetadata(version, commit string) (b *Metadata) {
+	b = &Metadata{
 		GitVersion: unreleased,
 		GitCommit:  unknown,
 	}
@@ -31,7 +31,7 @@ func NewBuildMetadata(version, commit string) (b *BuildMetadata) {
 	return
 }
 
-func (b *BuildMetadata) String() string {
+func (b *Metadata) String() string {
 	trunc := 7
 	if len := len(b.GitCommit); len < 7 {
 		trunc = len
@@ -40,6 +40,6 @@ func (b *BuildMetadata) String() string {
 }
 
 // FullString 回傳完整的 release 資訊
-func (b *BuildMetadata) FullString() string {
+func (b *Metadata) FullString() string {
 	return fmt.Sprintf("%#v", b)
 }

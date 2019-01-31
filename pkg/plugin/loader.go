@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"github.com/sirupsen/logrus"
 	"github.com/softleader/slctl/pkg/environment"
-	"github.com/softleader/slctl/pkg/version"
+	"github.com/softleader/slctl/pkg/release"
 	"github.com/spf13/cobra"
 	"gopkg.in/yaml.v2"
 	"io/ioutil"
@@ -22,7 +22,7 @@ type ExitError struct {
 }
 
 // LoadPluginCommands 將 plugin 載入後轉換成 command
-func LoadPluginCommands(metadata *version.BuildMetadata) ([]*cobra.Command, error) {
+func LoadPluginCommands(metadata *release.Metadata) ([]*cobra.Command, error) {
 	var commands []*cobra.Command
 	if off, _ := strconv.ParseBool(os.Getenv("SL_PLUGINS_OFF")); off {
 		return commands, nil
@@ -44,7 +44,7 @@ func LoadPluginCommands(metadata *version.BuildMetadata) ([]*cobra.Command, erro
 	return commands, nil
 }
 
-func (p *Plugin) transformToCommand(metadata *version.BuildMetadata,
+func (p *Plugin) transformToCommand(metadata *release.Metadata,
 	processParentFlags func(cmd *cobra.Command, args []string) ([]string, error)) *cobra.Command {
 	md := p.Metadata
 	if md.Usage == "" {
