@@ -33,9 +33,8 @@ const (
 )
 
 var (
-	version  string
-	commit   string
-	metadata *release.Metadata
+	version, commit string
+	metadata        *release.Metadata
 )
 
 func main() {
