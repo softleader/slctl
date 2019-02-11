@@ -41,11 +41,11 @@ Slctl is a command line interface for running commands against SoftLeader servic
 
 ## Getting Started
 
-執行 `slctl init` 透過互動式的問答產生並儲存 [GitHub Personal Access Token](https://github.com/settings/tokens), 也可以傳入 `--username` 或 `--password` 來整合非互動式的情境 (e.g. DevOps pipeline):
+執行 `slctl init` 透過互動式的問答產生並儲存 [GitHub Personal Access Token](https://github.com/settings/tokens), 也可以傳入 `--username` 或 `--password` 及 `--yes` 來整合非互動式的情境 (e.g. DevOps pipeline):
 
 ```sh
 $ slctl init
-$ slctl init -u GITHUB_USERNAME -p GITHUB_PASSWORD
+$ slctl init -u GITHUB_USERNAME -p GITHUB_PASSWORD -y
 ```
 
 使用 `--force` 在發現有重複的 Token 時, 會強制刪除並產生一個全新的 Access Token
