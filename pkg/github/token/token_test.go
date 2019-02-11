@@ -1,10 +1,12 @@
 package token
 
 import (
+	"context"
 	"fmt"
 	"github.com/google/go-github/v21/github"
 	"github.com/sirupsen/logrus"
 	"github.com/softleader/slctl/pkg/environment"
+	gh "github.com/softleader/slctl/pkg/github"
 	"os"
 	"testing"
 )
@@ -16,9 +18,13 @@ func TestConfirm(t *testing.T) {
 	if !found {
 		t.Skipf("provide $GITHUB_TOKEN_TEST to run the test")
 	}
-	var err error
 	var name string
-	if name, err = Confirm("test", token, logrus.StandardLogger()); err != nil {
+	client, err := gh.NewTokenClient(context.Background(), token)
+	if err != nil {
+		t.Error(err)
+		t.FailNow()
+	}
+	if name, err = Confirm(context.Background(), client, "text", logrus.StandardLogger()); err != nil {
 		t.Error(err)
 	}
 	if name == "" {

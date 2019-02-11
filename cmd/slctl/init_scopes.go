@@ -2,7 +2,7 @@ package main
 
 import (
 	"github.com/sirupsen/logrus"
-	"github.com/softleader/slctl/pkg/config/token"
+	"github.com/softleader/slctl/pkg/github/token"
 	"github.com/spf13/cobra"
 )
 

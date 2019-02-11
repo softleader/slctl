@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"github.com/mitchellh/go-homedir"
 	"github.com/sirupsen/logrus"
-	"github.com/softleader/slctl/pkg/config/token"
+	"github.com/softleader/slctl/pkg/github/token"
 	"github.com/softleader/slctl/pkg/paths"
 	"github.com/softleader/slctl/pkg/strcase"
 	"gopkg.in/yaml.v2"

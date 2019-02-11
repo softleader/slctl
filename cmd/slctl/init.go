@@ -1,12 +1,17 @@
 package main
 
 import (
+	"context"
 	"fmt"
+	"github.com/google/go-github/v21/github"
 	"github.com/sirupsen/logrus"
 	"github.com/softleader/slctl/pkg/config"
-	"github.com/softleader/slctl/pkg/config/token"
 	"github.com/softleader/slctl/pkg/environment"
+	gh "github.com/softleader/slctl/pkg/github"
+	"github.com/softleader/slctl/pkg/github/member"
+	"github.com/softleader/slctl/pkg/github/token"
 	"github.com/softleader/slctl/pkg/paths"
+	"github.com/softleader/slctl/pkg/prompt"
 	"github.com/spf13/cobra"
 	"os"
 )
@@ -15,10 +20,10 @@ const (
 	initDesc = `This command grants Github access token and sets up local configuration in $SL_HOME (default ~/.sl/).
 
 執行 'slctl init' 透過互動式的問答產生並儲存 GitHub Personal Access Token (https://github.com/settings/tokens)
-也可以傳入 '--username' 或 '--password' 來整合非互動式的情境 (e.g. DevOps pipeline):
+也可以傳入 '--username' 或 '--password' 及 '--yes' 來整合非互動式的情境 (e.g. DevOps pipeline):
 
 	$ slctl init
-	$ slctl init -u GITHUB_USERNAME -p GITHUB-PASSWORD
+	$ slctl init -u GITHUB_USERNAME -p GITHUB-PASSWORD -y
 
 使用 '--force' 在發現有重複的 Token 時, 會強制刪除並產生一個全新的 Access Token
 
@@ -34,6 +39,7 @@ const (
 
 同時使用 '--offline' 及 '--token' 可跳過 Token 驗證直接儲存起來 (e.g. 沒網路環境下)
 `
+	askForPublicizeOrg = `Do you want to publicize the membership in SoftLeader?`
 )
 
 type initCmd struct {
@@ -42,10 +48,11 @@ type initCmd struct {
 	password string
 	token    string
 	force    bool
+	yes      bool
 }
 
 func newInitCmd() *cobra.Command {
-	i := &initCmd{}
+	c := &initCmd{}
 
 	cmd := &cobra.Command{
 		Use:   "init",
@@ -53,16 +60,17 @@ func newInitCmd() *cobra.Command {
 		Long:  initDesc,
 		Args:  cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
-			i.home = environment.Settings.Home
-			return i.run()
+			c.home = environment.Settings.Home
+			return c.run()
 		},
 	}
 
 	f := cmd.Flags()
-	f.BoolVarP(&i.force, "force", "f", false, "force to re-generate a new one if token already exists")
-	f.StringVar(&i.token, "token", "", "github access token")
-	f.StringVarP(&i.username, "username", "u", "", "github username")
-	f.StringVarP(&i.password, "password", "p", "", "github password")
+	f.BoolVarP(&c.force, "force", "f", false, "force to re-generate a new one if token already exists")
+	f.StringVar(&c.token, "token", "", "github access token")
+	f.StringVarP(&c.username, "username", "u", "", "github username")
+	f.StringVarP(&c.password, "password", "p", "", "github password")
+	f.BoolVarP(&c.yes, "yes", "y", false, "automatic 'yes' to prompts. Assume 'yes' as answer to all prompts and run non-interactively")
 
 	cmd.AddCommand(
 		newInitScopesCmd(),
@@ -77,7 +85,6 @@ func (c *initCmd) run() (err error) {
 You might need to specify another SL_HOME without space and set to system variable.
 For more details: https://github.com/softleader/slctl/wiki/Home-Path`, c.home.String())
 	}
-
 	if err = ensureDirectories(c.home, logrus.StandardLogger()); err != nil {
 		return err
 	}
@@ -87,18 +94,30 @@ For more details: https://github.com/softleader/slctl/wiki/Home-Path`, c.home.St
 		return err
 	}
 	var username string
+	var client *github.Client
+	ctx := context.Background()
 	if !environment.Settings.Offline {
 		if c.token == "" {
-			if c.token, err = token.Grant(c.username, c.password, logrus.StandardLogger(), c.force); err != nil {
+			if client, err = gh.NewBasicAuthClient(ctx, logrus.StandardLogger(), c.username, c.password); err != nil {
 				return err
 			}
+			if c.token, err = token.Grant(ctx, client, logrus.StandardLogger(), c.force); err != nil {
+				return err
+			}
+		} else if client, err = gh.NewTokenClient(ctx, c.token); err != nil {
+			return err
 		}
-		if username, err = token.Confirm(organization, c.token, logrus.StandardLogger()); err != nil {
+		if username, err = token.Confirm(ctx, client, organization, logrus.StandardLogger()); err != nil {
 			return err
 		}
 	}
 	if err = config.Refresh(c.home, c.token, logrus.StandardLogger()); err != nil {
 		return err
+	}
+	if c.yes || prompt.YesNoQuestion(logrus.StandardLogger().Out, askForPublicizeOrg) {
+		if err = member.PublicizeOrganization(ctx, client, organization); err != nil {
+			return err
+		}
 	}
 	logrus.Printf("Welcome aboard %s!\n", username)
 	return
