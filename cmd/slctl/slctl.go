@@ -38,9 +38,7 @@ var (
 )
 
 func main() {
-	cobra.OnInitialize(
-		initMetadata,
-	)
+	initMetadata()
 	if cmd, err := newRootCmd(os.Args[1:]); err != nil {
 		exit(err)
 	} else if err = cmd.Execute(); err != nil {
