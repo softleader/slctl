@@ -4,7 +4,6 @@ import (
 	"context"
 	"fmt"
 	"github.com/google/go-github/v21/github"
-	"github.com/olekukonko/tablewriter"
 	"github.com/sirupsen/logrus"
 	"github.com/softleader/slctl/pkg/config"
 	"github.com/softleader/slctl/pkg/environment"
@@ -43,6 +42,7 @@ func newGitHubInstaller(log *logrus.Logger, source, tag string, asset int, home 
 		if release, _, err = client.Repositories.GetLatestRelease(ctx, owner, repo); err != nil {
 			return nil, err
 		}
+		log.Printf("fetched latest published release %q", release.GetName())
 	} else {
 		log.Debugf("fetching the release from github.com/%s/%s with tag %q\n", owner, repo, tag)
 		if release, _, err = client.Repositories.GetReleaseByTag(ctx, owner, repo, tag); err != nil {
@@ -51,9 +51,9 @@ func newGitHubInstaller(log *logrus.Logger, source, tag string, asset int, home 
 	}
 
 	if body := release.GetBody(); len(body) > 0 {
-		table := tablewriter.NewWriter(log.Out)
-		table.Append([]string{body})
-		table.Render()
+		for _, line := range strings.Split(body, "\n") {
+			log.Println(line)
+		}
 	}
 
 	ra, err := pickAsset(log, release, asset)
@@ -104,7 +104,7 @@ func pickAsset(log *logrus.Logger, release *github.RepositoryRelease, asset int)
 		ra = &release.Assets[asset]
 		return
 	}
-	log.Debugf("trying to find asset name contains %q from release %q\n", runtime.GOOS, release.GetName())
+	log.Debugf("trying to find asset for %q\n", runtime.GOOS)
 	if ra = findRuntimeOsAsset(log, release.Assets); ra == nil {
 		log.Debugf("%s asset not found, using first asset\n", runtime.GOOS)
 		ra = &release.Assets[0]
