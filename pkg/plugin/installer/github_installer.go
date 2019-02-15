@@ -42,7 +42,7 @@ func newGitHubInstaller(log *logrus.Logger, source, tag string, asset int, home 
 		if release, _, err = client.Repositories.GetLatestRelease(ctx, owner, repo); err != nil {
 			return nil, err
 		}
-		log.Printf("fetched latest published release %q", release.GetName())
+		log.Printf("fetching latest published release %q", release.GetName())
 	} else {
 		log.Debugf("fetching the release from github.com/%s/%s with tag %q\n", owner, repo, tag)
 		if release, _, err = client.Repositories.GetReleaseByTag(ctx, owner, repo, tag); err != nil {
