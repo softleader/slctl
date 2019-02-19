@@ -42,7 +42,7 @@ func newGitHubInstaller(log *logrus.Logger, source, tag string, asset int, home 
 		if release, _, err = client.Repositories.GetLatestRelease(ctx, owner, repo); err != nil {
 			return nil, err
 		}
-		log.Printf("fetching latest published release %q", release.GetName())
+		log.Printf("fetching latest published release %q", release.GetTagName())
 	} else {
 		log.Debugf("fetching the release from github.com/%s/%s with tag %q\n", owner, repo, tag)
 		if release, _, err = client.Repositories.GetReleaseByTag(ctx, owner, repo, tag); err != nil {
@@ -94,7 +94,7 @@ func dismantle(url string) (owner, repo string) {
 
 func pickAsset(log *logrus.Logger, release *github.RepositoryRelease, asset int) (ra *github.ReleaseAsset, err error) {
 	if len(release.Assets) < 1 {
-		err = fmt.Errorf("no assets found on release %q", release.GetName())
+		err = fmt.Errorf("no assets found on release %q", release.GetTagName())
 		return
 	}
 	if asset > 0 {
