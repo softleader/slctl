@@ -69,6 +69,7 @@ func (c *pluginSearchCmd) run() (err error) {
 	}
 	if len(r.Repos) == 0 {
 		logrus.Println("No search results")
+		logrus.Debug("You might need to run 'slctl init -f' to refresh a new access token.")
 		return
 	}
 	plugins, err := plugin.LoadPaths(environment.Settings.PluginDirs())
