@@ -6,7 +6,9 @@ import (
 )
 
 const (
-	versionHelp = `print slctl version.`
+	versionHelp = `
+print slctl version.
+`
 )
 
 func newVersionCmd() *cobra.Command {

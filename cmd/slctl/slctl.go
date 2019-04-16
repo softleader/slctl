@@ -80,6 +80,7 @@ func newRootCmd(args []string) (*cobra.Command, error) {
 		newInitCmd(),
 		newPluginCmd(),
 		newVersionCmd(),
+		newCompletionCmd(),
 	)
 
 	flags.Parse(args)

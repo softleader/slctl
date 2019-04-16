@@ -13,7 +13,8 @@ type pluginUnmountCmd struct {
 	name []string
 }
 
-const pluginUnmountDesc = `To unmount a plugin volume
+const pluginUnmountDesc = `
+To unmount a plugin volume
 
 將 Plugin 的 Mount Volume 完整移除 
 For more details: https://github.com/softleader/slctl/wiki/Plugins-Guide#mount-volume

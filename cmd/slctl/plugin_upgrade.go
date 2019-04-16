@@ -11,7 +11,8 @@ import (
 	"strings"
 )
 
-const pluginUpgradeDesc = `Upgrade plugin which installed from GitHub Repo
+const pluginUpgradeDesc = `
+Upgrade plugin which installed from GitHub Repo
 
 	$ slctl plugin upgrade NAME...
 

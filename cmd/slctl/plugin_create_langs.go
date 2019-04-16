@@ -8,7 +8,8 @@ import (
 )
 
 const (
-	pluginCreateLangsDesc = `列出所有 plugin 範本的語言 
+	pluginCreateLangsDesc = `
+列出所有 plugin 範本的語言 
 
 	$ slctl plugin create langs
 `
