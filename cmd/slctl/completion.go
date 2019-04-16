@@ -12,7 +12,8 @@ const (
 	completionDesc = `
 產生 bash 或 zsh 的 auto completion script
 
-	$ slctl completion bash
+	$ slctl completion bash  # for bash users
+	$ slctl completion zsh   # for zsh users
 
 可以增加在 '.bashrc' 或是 '.zshrc' 中:
 
