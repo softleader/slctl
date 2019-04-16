@@ -9,8 +9,7 @@ import (
 )
 
 const (
-	completionDesc = `
-產生 bash 或 zsh 的 auto completion script
+	completionDesc = `產生 bash 或 zsh 的 auto completion script
 
 	$ slctl completion bash  # for bash users
 	$ slctl completion zsh   # for zsh users

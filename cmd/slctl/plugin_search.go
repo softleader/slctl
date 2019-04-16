@@ -11,8 +11,7 @@ import (
 	"strings"
 )
 
-const pluginSearchDesc = `
-Search SoftLeader official plugin
+const pluginSearchDesc = `Search SoftLeader official plugin
 
 	$ slctl plugin search FILTER...
 

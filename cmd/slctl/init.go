@@ -17,8 +17,7 @@ import (
 )
 
 const (
-	initDesc = `
-This command grants Github access token and sets up local configuration in $SL_HOME (default ~/.sl/).
+	initDesc = `This command grants Github access token and sets up local configuration in $SL_HOME (default ~/.sl/).
 
 執行 'slctl init' 透過互動式的問答產生並儲存 GitHub Personal Access Token (https://github.com/settings/tokens)
 也可以傳入 '--username', '--password' 及 '--yes' 來整合非互動式的情境 (e.g. DevOps pipeline):

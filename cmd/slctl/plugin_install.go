@@ -21,8 +21,7 @@ type pluginInstallCmd struct {
 	opt    *installer.InstallOption
 }
 
-const pluginInstallDesc = `
-To install a plugin from a local path, a archive, or a GitHub repo
+const pluginInstallDesc = `To install a plugin from a local path, a archive, or a GitHub repo
 
 Plugin 可以是本機上的任何目錄, 透過給予絕對或相對路徑來安裝
 

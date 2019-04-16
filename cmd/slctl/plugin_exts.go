@@ -7,8 +7,7 @@ import (
 )
 
 const (
-	pluginExtsDesc = `
-列出所有安裝 plugin 時支援的壓縮檔案 
+	pluginExtsDesc = `列出所有安裝 plugin 時支援的壓縮檔案 
 
 	$ slctl plugin exts
 `
