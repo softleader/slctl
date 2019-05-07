@@ -37,6 +37,13 @@ var (
 	metadata        *release.Metadata
 )
 
+func init() {
+	cobra.OnInitialize(func() {
+		logrus.SetFormatter(&formatter.PlainFormatter{})
+		plugin.Cleanup(logrus.StandardLogger(), environment.Settings.Home, false, false)
+	})
+}
+
 func main() {
 	initMetadata()
 	if cmd, err := newRootCmd(os.Args[1:]); err != nil {
@@ -63,7 +70,6 @@ func newRootCmd(args []string) (*cobra.Command, error) {
 		SilenceUsage: true,
 		PersistentPreRun: func(cmd *cobra.Command, args []string) {
 			logrus.SetOutput(cmd.OutOrStdout())
-			logrus.SetFormatter(&formatter.PlainFormatter{})
 			if environment.Settings.Verbose {
 				logrus.SetLevel(logrus.DebugLevel)
 			}
@@ -81,6 +87,7 @@ func newRootCmd(args []string) (*cobra.Command, error) {
 		newPluginCmd(),
 		newVersionCmd(),
 		newCompletionCmd(),
+		newCleanupCmd(),
 	)
 
 	flags.Parse(args)
