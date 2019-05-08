@@ -9,7 +9,7 @@ import (
 )
 
 const (
-	cleanupDesc = `Remove outdated downloads of plugin
+	cleanupDesc = `Remove outdated downloads
 `
 )
 
@@ -39,5 +39,8 @@ func newCleanupCmd() *cobra.Command {
 }
 
 func (c *cleanupCmd) run() (err error) {
+	if c.dryRun {
+		logrus.Warnln("running in dry-run mode, specify the '-v' flag if you want to turn on verbose output")
+	}
 	return plugin.Cleanup(logrus.StandardLogger(), c.home, true, c.dryRun)
 }

@@ -10,9 +10,6 @@ import (
 	"time"
 )
 
-const (
-	dueDays = 30
-)
 
 // Cleanup remove outdated downloads of plugin
 func Cleanup(log *logrus.Logger, home paths.Home, force bool, dryRun bool) error {
@@ -24,7 +21,7 @@ func Cleanup(log *logrus.Logger, home paths.Home, force bool, dryRun bool) error
 		if !needsToCleanup(conf.Cleanup) {
 			return nil
 		}
-		log.Printf(`'slctl cleanup' has not been run in %v days, running now...`, dueDays)
+		log.Printf(`'slctl cleanup' has not been run in %v days, running now...`, config.CleanupDueDays)
 	}
 
 	installs := make(map[string]interface{})
@@ -38,14 +35,17 @@ func Cleanup(log *logrus.Logger, home paths.Home, force bool, dryRun bool) error
 		}
 	}
 
+	log.Debugf("cleaning up %s", home.CachePlugins())
 	if err := remove(log, home.CachePlugins(), installs, dryRun); err != nil {
 		return nil
 	}
+
+	log.Debugf("cleaning up %s", home.CacheArchives())
 	if err := remove(log, home.CacheArchives(), installs, dryRun); err != nil {
 		return nil
 	}
 
-	conf.Cleanup = time.Now().AddDate(0, 0, dueDays)
+	conf.UpdateCleanupTime()
 	return conf.WriteFile(home.ConfigFile(), 0644)
 }
 
@@ -57,7 +57,7 @@ func remove(log *logrus.Logger, root string, installs map[string]interface{}, dr
 	for _, f := range files {
 		if _, installed := installs[f.Name()]; !installed {
 			wd := filepath.Join(root, f.Name())
-			log.Printf(`Removing: %s...`, wd)
+			log.Printf(`removing: %s...`, wd)
 			if !dryRun {
 				os.RemoveAll(wd)
 			}

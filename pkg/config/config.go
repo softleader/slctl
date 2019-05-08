@@ -11,6 +11,11 @@ import (
 	"time"
 )
 
+const (
+	// CleanupDueDays 代表每次自動執行 cleanup 的間隔天數
+	CleanupDueDays = 30
+)
+
 // ErrTokenNotExist 代表了 GitHub Token 在不存在於 config 中
 var ErrTokenNotExist = errors.New(`token not exist.
 You might need to run 'slctl init'`)
@@ -22,8 +27,15 @@ type ConfFile struct {
 }
 
 // NewConfFile return a pointer of a blank ConfFile
-func NewConfFile() *ConfFile {
-	return &ConfFile{}
+func NewConfFile() (c *ConfFile) {
+	c = &ConfFile{}
+	c.UpdateCleanupTime()
+	return
+}
+
+// UpdateCleanupTime updates cleanup time
+func (c *ConfFile) UpdateCleanupTime() {
+	c.Cleanup = time.Now().AddDate(0, 0, CleanupDueDays)
 }
 
 // LoadConfFile return a pointer of a ConfFile which read from path
