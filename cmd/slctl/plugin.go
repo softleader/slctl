@@ -20,6 +20,7 @@ func newPluginCmd() *cobra.Command {
 		Long:    pluginHelp,
 		Aliases: []string{"p"},
 		PersistentPreRun: func(cmd *cobra.Command, args []string) {
+			cmd.Root().PersistentPreRun(cmd, args)
 			plugin.Cleanup(logrus.StandardLogger(), environment.Settings.Home, false, false)
 		},
 	}

@@ -62,8 +62,8 @@ func newRootCmd(args []string) (*cobra.Command, error) {
 		Long:         globalUsage,
 		SilenceUsage: true,
 		PersistentPreRun: func(cmd *cobra.Command, args []string) {
-			logrus.SetFormatter(&formatter.PlainFormatter{})
 			logrus.SetOutput(cmd.OutOrStdout())
+			logrus.SetFormatter(&formatter.PlainFormatter{})
 			if environment.Settings.Verbose {
 				logrus.SetLevel(logrus.DebugLevel)
 			}
