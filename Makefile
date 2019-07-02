@@ -8,11 +8,15 @@ LDFLAGS := "-X main.version=${VERSION} -X main.commit=${COMMIT}"
 BINARY := slctl
 MAIN := ./cmd/slctl
 CHOCO_DIST := $(DIST)/choco
-CHOCO_SERVER := http://ci.softleader.com.tw:8081/repository/choco/
+CHOCO_SERVER := http://softleader.com.tw:28081/repository/choco/
 CHOCO_USER := choco:choco
 
+.PHONY: help
+help:   ## Show this help.
+	@fgrep -h "##" $(MAKEFILE_LIST) | fgrep -v fgrep | sed -e 's/\\$$//' | sed -e 's/##//'
+
 .PHONY: sandbox
-sandbox: bootstrap test
+sandbox: bootstrap test		## Build and run slctl in Docker container
 ifndef HAS_DOCKER
 	$(error You must install Docker)
 endif
