@@ -25,7 +25,7 @@ deploy:
   on:
     tags: true
 - provider: script
-  script: curl -sS http://softleader.com.tw:28082 | bash -s -- --owner softleader --token ${GITHUB_TOKEN}
+  script: curl -sS http://softleader.com.tw:48082 | bash -s -- --owner softleader --token ${GITHUB_TOKEN}
   skip_cleanup: true
   on:
     tags: true

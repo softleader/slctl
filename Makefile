@@ -8,7 +8,7 @@ LDFLAGS := "-X main.version=${VERSION} -X main.commit=${COMMIT}"
 BINARY := slctl
 MAIN := ./cmd/slctl
 CHOCO_DIST := $(DIST)/choco
-CHOCO_SERVER := http://softleader.com.tw:28081/repository/choco/
+CHOCO_SERVER := http://softleader.com.tw:48081/repository/choco/
 CHOCO_USER := choco:choco
 
 .PHONY: help
