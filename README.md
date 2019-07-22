@@ -37,7 +37,7 @@ Slctl is a command line interface for running commands against SoftLeader servic
 透過套件管理程式安裝的, 可以使用以下命令來更新:
 
 - [Homebrew](https://brew.sh) - `brew upgrade slctl`
-- [Chocolatey](https://chocolatey.org/) - `choco upgrade slctl -s http://ci.softleader.com.tw:8081/repository/choco/`
+- [Chocolatey](https://chocolatey.org/) - `choco upgrade slctl -s http://softleader.com.tw:48081/repository/choco/`
 
 ### Completion Script
 
