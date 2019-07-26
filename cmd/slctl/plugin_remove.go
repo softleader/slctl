@@ -6,15 +6,15 @@ import (
 	"github.com/softleader/slctl/pkg/environment"
 	"github.com/softleader/slctl/pkg/paths"
 	"github.com/softleader/slctl/pkg/plugin"
+	"github.com/spf13/cobra"
 	"os"
 	"strings"
-
-	"github.com/spf13/cobra"
 )
 
 type pluginRemoveCmd struct {
 	names []string
 	home  paths.Home
+	force bool
 }
 
 func newPluginRemoveCmd() *cobra.Command {
@@ -29,6 +29,10 @@ func newPluginRemoveCmd() *cobra.Command {
 			return pcmd.run()
 		},
 	}
+
+	f := cmd.Flags()
+	f.BoolVarP(&pcmd.force, "force", "f", false, "do not display a diagnostic message or modify the exit status to reflect an error if plugin does not exist")
+
 	return cmd
 }
 
@@ -46,7 +50,7 @@ func (c *pluginRemoveCmd) run() error {
 			} else {
 				logrus.Printf("Removed plugin: %s\n", name)
 			}
-		} else {
+		} else if !c.force {
 			errorPlugins = append(errorPlugins, fmt.Sprintf("Plugin: %s not found", name))
 		}
 	}

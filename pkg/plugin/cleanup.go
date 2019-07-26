@@ -10,7 +10,6 @@ import (
 	"time"
 )
 
-
 // Cleanup remove outdated downloads of plugin
 func Cleanup(log *logrus.Logger, home paths.Home, force bool, dryRun bool) error {
 	conf, err := config.LoadConfFile(home.ConfigFile())
