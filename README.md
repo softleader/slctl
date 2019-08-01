@@ -71,7 +71,7 @@ $ slctl init scopes
 
 ## Plugins
 
-Slctl 有完整的 Plugin 系統, 你可以從收尋[松凌官方的 Plugin](https://github.com/softleader/slctl/wiki/Plugins-Guide) 開始:
+Slctl 有完整的 Plugin 系統, 你可以從收尋[松凌官方 Plugin](https://github.com/softleader/slctl/wiki/Official-Plugins) 開始:
 
 ```sh
 $ slctl plugin search FILTER...
