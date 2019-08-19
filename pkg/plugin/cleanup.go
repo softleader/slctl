@@ -73,9 +73,10 @@ func needsToCleanup(dueDate time.Time) bool {
 
 // 這邊處理特殊的 clean up 檔案, 例如要比對 due date 之類的, 而一般(非特殊)的處理方式就是把檔案刪掉
 func needsToRemove(log *logrus.Logger, home paths.Home, file string) bool {
-	cachedRepositoryFile := home.CacheRepositoryFile()
-	if cachedRepositoryFile == file && paths.IsExistFile(file) {
-		if r, err := loadLocal(log, cachedRepositoryFile); err == nil && !expired(r) {
+	crf := home.CacheRepositoryFile()
+	if crf == file && paths.IsExistFile(file) {
+		if r, err := loadLocal(log, crf); err == nil && !expired(r) {
+			log.Debugf("skip '%s' which is still up to date", file)
 			return false
 		}
 	}
