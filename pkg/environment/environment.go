@@ -20,6 +20,10 @@ var (
 	// Flags 代表此 app 的 global flags
 	Flags       = flags()
 	leadingDash = regexp.MustCompile(`^[-]{1,2}(.+)`)
+	// oldHome 代表了在 3.6.x 版本之前的預設 Home 位置
+	oldHome = ".sl"
+	// newHome 代表了在 3.7.x 版本5之後的預設 Home 位置
+	newHome = filepath.Join(".config", "slctl")
 )
 
 type settings struct {
@@ -51,7 +55,14 @@ func (s *settings) AddFlags(fs *pflag.FlagSet) error {
 
 // DefaultHome 回傳此 app 的預設 home 目錄名稱
 func DefaultHome(base string) string {
-	return filepath.Join(base, ".sl")
+	oh := filepath.Join(base, oldHome)
+	nh := filepath.Join(base, newHome)
+	if paths.IsExistDirectory(oh) {
+		if err := os.Rename(oh, nh); err != nil {
+			return oh
+		}
+	}
+	return nh
 }
 
 // ExpandEnvToFlags 將當前系統參數中已經設的值複寫掉 flags 的設定

@@ -28,3 +28,13 @@ func EnsureDirectory(log *logrus.Logger, dir string) error {
 	}
 	return nil
 }
+
+// IsExistDirectory 判斷傳入的資料夾路徑存在, 且是目錄
+func IsExistDirectory(dir string) bool {
+	if fi, err := os.Stat(dir); os.IsNotExist(err) {
+		return false
+	} else if !fi.IsDir() {
+		return false
+	}
+	return true
+}
