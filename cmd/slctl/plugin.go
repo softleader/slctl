@@ -3,7 +3,6 @@ package main
 import (
 	"fmt"
 	"github.com/sirupsen/logrus"
-	"github.com/softleader/slctl/pkg/environment"
 	"github.com/softleader/slctl/pkg/plugin"
 	"github.com/spf13/cobra"
 	"os"
@@ -19,10 +18,6 @@ func newPluginCmd() *cobra.Command {
 		Short:   "add, list, remove, or create plugins",
 		Long:    pluginHelp,
 		Aliases: []string{"p"},
-		PersistentPreRun: func(cmd *cobra.Command, args []string) {
-			cmd.Root().PersistentPreRun(cmd, args)
-			plugin.Cleanup(logrus.StandardLogger(), environment.Settings.Home, false, false)
-		},
 	}
 	cmd.AddCommand(
 		newPluginListCmd(),

@@ -68,6 +68,9 @@ func newRootCmd(args []string) (*cobra.Command, error) {
 				logrus.SetLevel(logrus.DebugLevel)
 			}
 		},
+		PersistentPostRun: func(cmd *cobra.Command, args []string) {
+			plugin.Cleanup(logrus.StandardLogger(), environment.Settings.Home, false, false)
+		},
 	}
 	flags := cmd.PersistentFlags()
 
