@@ -23,24 +23,24 @@ func Cleanup(log *logrus.Logger, home paths.Home, force bool, dryRun bool) error
 		log.Printf(`'slctl cleanup' has not been run in %v days, running now...`, config.CleanupDueDays)
 	}
 
-	installs := make(map[string]interface{})
+	installedPlugins := make(map[string]interface{})
 	plugins, err := LoadPaths(home.Plugins())
 	if err != nil {
 		return err
 	}
 	for _, p := range plugins {
 		if link, err := os.Readlink(p.Dir); err == nil {
-			installs[filepath.Base(link)] = nil
+			installedPlugins[filepath.Base(link)] = nil
 		}
 	}
 
 	log.Debugf("cleaning up %s", home.CachePlugins())
-	if err := remove(log, home.CachePlugins(), installs, dryRun); err != nil {
+	if err := remove(log, home, home.CachePlugins(), installedPlugins, dryRun); err != nil {
 		return nil
 	}
 
 	log.Debugf("cleaning up %s", home.CacheArchives())
-	if err := remove(log, home.CacheArchives(), installs, dryRun); err != nil {
+	if err := remove(log, home, home.CacheArchives(), installedPlugins, dryRun); err != nil {
 		return nil
 	}
 
@@ -48,17 +48,19 @@ func Cleanup(log *logrus.Logger, home paths.Home, force bool, dryRun bool) error
 	return conf.WriteFile(home.ConfigFile(), 0644)
 }
 
-func remove(log *logrus.Logger, root string, installs map[string]interface{}, dryRun bool) error {
+func remove(log *logrus.Logger, home paths.Home, root string, installedPlugins map[string]interface{}, dryRun bool) error {
 	files, err := ioutil.ReadDir(root)
 	if err != nil {
 		return err
 	}
 	for _, f := range files {
-		if _, installed := installs[f.Name()]; !installed {
+		if _, installed := installedPlugins[f.Name()]; !installed {
 			wd := filepath.Join(root, f.Name())
-			log.Printf(`removing: %s...`, wd)
-			if !dryRun {
-				os.RemoveAll(wd)
+			if needsToRemove(log, home, wd) {
+				log.Printf(`removing: %s...`, wd)
+				if !dryRun {
+					os.RemoveAll(wd)
+				}
 			}
 		}
 	}
@@ -67,4 +69,15 @@ func remove(log *logrus.Logger, root string, installs map[string]interface{}, dr
 
 func needsToCleanup(dueDate time.Time) bool {
 	return dueDate.Before(time.Now())
+}
+
+// 這邊處理非特殊的 clean up 檔案, 例如要比對 due date 之類的, 而一般的處理方式就是把檔案刪掉
+func needsToRemove(log *logrus.Logger, home paths.Home, file string) bool {
+	cachedRepositoryFile := home.CacheRepositoryFile()
+	if cachedRepositoryFile == file && paths.IsExistFile(file) {
+		if r, err := loadLocal(log, cachedRepositoryFile); err == nil && !expired(r) {
+			return false
+		}
+	}
+	return true
 }

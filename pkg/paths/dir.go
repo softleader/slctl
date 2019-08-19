@@ -38,3 +38,13 @@ func IsExistDirectory(dir string) bool {
 	}
 	return true
 }
+
+// IsExistFile 判斷傳入的資料夾路徑存在, 且是檔案
+func IsExistFile(dir string) bool {
+	if fi, err := os.Stat(dir); os.IsNotExist(err) {
+		return false
+	} else if fi.IsDir() {
+		return false
+	}
+	return true
+}
