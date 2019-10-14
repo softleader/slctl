@@ -11,10 +11,17 @@ import (
 
 const pluginOpenDesc = `Open plugin
 
+當 Plugin Source 來自於 GitHub, 則以預設瀏覽器開啟 GitHub Repo 網址; 反之開啟 plugin 所在目錄
+
 	$ slctl plugin open PLUGIN
 
-如果 Source 是 GitHub, 則會以預設瀏覽器開啟 GitHub Remote;
-如果是 Local plugin, 則會開啟 plugin 所在目錄
+傳入 '--app' 使用指定 app 名稱來開啟 plugin source
+
+	$ slctl plugin open PLUGIN --app firefox
+
+傳入 '--wait' 等待 open command 執行完畢才結束
+
+	$ slctl plugin open PLUGIN --app firefox -w
 `
 
 type pluginOpenCmd struct {
