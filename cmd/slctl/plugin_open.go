@@ -43,7 +43,7 @@ func newPluginOpenCmd() *cobra.Command {
 
 	f := cmd.Flags()
 	f.StringVar(&c.app, "app", "", "open the plugin using the specified application")
-	f.BoolVar(&c.wait, "wait", false, "wait for the open command to complete")
+	f.BoolVarP(&c.wait, "wait", "w", false, "wait for the open command to complete")
 	return cmd
 }
 
