@@ -30,6 +30,7 @@ func newPluginCmd() *cobra.Command {
 		newPluginUpgradeCmd(),
 		newPluginExtsCmd(),
 		newPluginUnmountCmd(),
+		newPluginOpenCmd(),
 	)
 	return cmd
 }
