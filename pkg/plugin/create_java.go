@@ -43,6 +43,13 @@ const javaPom = `<?xml version="1.0" encoding="UTF-8"?>
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
+	<parent>
+		<groupId>org.springframework.boot</groupId>
+		<artifactId>spring-boot-starter-parent</artifactId>
+		<version>2.1.9.RELEASE</version>
+		<relativePath/> <!-- lookup parent from repository -->
+	</parent>
+
 	<groupId>tw.com.softleader</groupId>
 	<artifactId>{{.Name}}</artifactId>
 	<version>{{.Version}}</version>
@@ -50,13 +57,6 @@ const javaPom = `<?xml version="1.0" encoding="UTF-8"?>
 
 	<name>{{.Name}}</name>
 	<description>{{.Description}}</description>
-
-	<parent>
-		<groupId>org.springframework.boot</groupId>
-		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>2.1.0.RELEASE</version>
-		<relativePath/> <!-- lookup parent from repository -->
-	</parent>
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
