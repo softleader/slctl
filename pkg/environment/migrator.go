@@ -16,9 +16,7 @@ func moveHome(from, to string) error {
 	if p := h.Plugins(); paths.IsExistDirectory(p) {
 		if plugins, err := ioutil.ReadDir(p); err == nil {
 			for _, p := range plugins {
-				if err := relink(from, h, p); err != nil {
-					return err
-				}
+				relink(from, h, p) // 如果 link 失敗也不回傳 err, 就當成 plugin 不存在了讓使用者重新安裝就好
 			}
 		}
 	}
