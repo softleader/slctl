@@ -38,7 +38,7 @@ func needsToCheckOnline(dueDate time.Time) bool {
 }
 
 func checkOnline(log *logrus.Logger, currentVersion string) error {
-	log.Println("Checking for latest version...")
+	log.Println("Checking for latest slctl version...")
 	client := github.NewClient(nil)
 	ctx := context.Background()
 	log.Debugf("fetching latest release of github.com/%s/%s", owner, repo)
