@@ -76,11 +76,11 @@ func createTempHome(root string) (string, error) {
 	if err := os.Symlink(lh.Config(), filepath.Join(lh.Plugins(), "should-relink")); err != nil {
 		return "", err
 	}
-	static := filepath.Join(root, "static")
+	static := filepath.Join(root, "should-not-relink")
 	if err := os.Mkdir(static, 0755); err != nil {
 		return "", err
 	}
-	if err := os.Symlink(static, filepath.Join(lh.Plugins(), "static")); err != nil {
+	if err := os.Symlink(static, filepath.Join(lh.Plugins(), "should-not-relink")); err != nil {
 		return "", err
 	}
 	return lh.String(), nil
