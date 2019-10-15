@@ -25,19 +25,17 @@ func moveHome(from, to string) error {
 
 func relink(from string, to paths.Home, plugin os.FileInfo) error {
 	path := filepath.Join(to.Plugins(), plugin.Name())
-	if _, err := filepath.EvalSymlinks(path); err != nil {
-		target, err := os.Readlink(path)
-		if err != nil {
-			return err
-		}
-		base := strings.ReplaceAll(target, from, "")
-		newTarget := filepath.Join(to.String(), base)
-		if err := os.Remove(path); err != nil {
-			return err
-		}
-		if err := os.Symlink(newTarget, path); err != nil {
-			return err
-		}
+	if _, err := filepath.EvalSymlinks(path); err == nil { // 代表 link 是正常的
+		return nil
 	}
-	return nil
+	target, err := os.Readlink(path)
+	if err != nil {
+		return err
+	}
+	base := strings.ReplaceAll(target, from, "")
+	newTarget := filepath.Join(to.String(), base)
+	if err := os.Remove(path); err != nil {
+		return err
+	}
+	return os.Symlink(newTarget, path)
 }
