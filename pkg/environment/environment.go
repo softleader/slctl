@@ -59,7 +59,7 @@ func DefaultHome(base string) string {
 	oh := filepath.Join(base, oldHome)
 	if paths.IsExistDirectory(oh) {
 		// 我們在 3.7.x 之後的版本更換了預設的 home 目錄, 如果發現有舊的 home 就主動搬移吧
-		if err := moveHome(oh, h); err != nil {
+		if err := MoveHome(oh, h); err != nil {
 			return oh // 在搬移的過程中如果發現任何問題, 還是維持舊目錄好了
 		}
 	}

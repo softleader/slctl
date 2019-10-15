@@ -8,15 +8,16 @@ import (
 	"strings"
 )
 
-func moveHome(from, to string) error {
-	if err := os.Rename(from, to); err != nil {
+// MoveHome moves home from "oldHome" to "newHome"
+func MoveHome(oldHome, newHome string) error {
+	if err := os.Rename(oldHome, newHome); err != nil {
 		return err
 	}
-	h := paths.Home(to)
+	h := paths.Home(newHome)
 	if p := h.Plugins(); paths.IsExistDirectory(p) {
 		if plugins, err := ioutil.ReadDir(p); err == nil {
 			for _, p := range plugins {
-				relink(from, h, p) // 如果 link 失敗也不回傳 err, 就當成 plugin 不存在了讓使用者重新安裝就好
+				relink(oldHome, h, p) // 如果 link 失敗也不回傳 err, 就當成 plugin 不存在了讓使用者重新安裝就好
 			}
 		}
 	}

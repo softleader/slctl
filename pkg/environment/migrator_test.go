@@ -23,7 +23,7 @@ func TestMoveHome(t *testing.T) {
 	}
 
 	home := filepath.Join(root, "home")
-	if err := moveHome(oldHome, home); err != nil {
+	if err := MoveHome(oldHome, home); err != nil {
 		t.Fatal(err)
 	}
 
