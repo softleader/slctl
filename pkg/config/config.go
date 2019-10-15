@@ -14,6 +14,8 @@ import (
 const (
 	// CleanupDueDays 代表每次自動執行 cleanup 的間隔天數
 	CleanupDueDays = 30
+	// CheckUpdatesDueDays 代表每次自動執行檢查版本的間隔天數
+	CheckUpdatesDueDays = 15
 )
 
 // ErrTokenNotExist 代表了 GitHub Token 在不存在於 config 中
@@ -22,13 +24,15 @@ You might need to run 'slctl init'`)
 
 // ConfFile 內容等於 $SL_HOME/config/configs.yaml
 type ConfFile struct {
-	Token   string    `json:"token"`   // github token
-	Cleanup time.Time `json:"cleanup"` // 下次要執行 cleanup 的時間
+	Token        string    `json:"token"`        // github token
+	Cleanup      time.Time `json:"cleanup"`      // 下次要執行 cleanup 的時間
+	CheckUpdates time.Time `json:"checkUpdates"` // 下次要執行檢查版本的時間
 }
 
 // NewConfFile return a pointer of a blank ConfFile
 func NewConfFile() (c *ConfFile) {
 	c = &ConfFile{}
+	c.UpdateCheckUpdatesTime()
 	c.UpdateCleanupTime()
 	return
 }
@@ -36,6 +40,11 @@ func NewConfFile() (c *ConfFile) {
 // UpdateCleanupTime updates cleanup time
 func (c *ConfFile) UpdateCleanupTime() {
 	c.Cleanup = time.Now().AddDate(0, 0, CleanupDueDays)
+}
+
+// UpdateCheckUpdatesTime updates check updates time
+func (c *ConfFile) UpdateCheckUpdatesTime() {
+	c.CheckUpdates = time.Now().AddDate(0, 0, CheckUpdatesDueDays)
 }
 
 // LoadConfFile return a pointer of a ConfFile which read from path

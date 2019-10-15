@@ -5,6 +5,7 @@ require (
 	github.com/dsnet/compress v0.0.0-20171208185109-cc9eb1d7ad76 // indirect
 	github.com/fatih/color v1.7.0 // indirect
 	github.com/golang/snappy v0.0.0-20180518054509-2e65f85255db // indirect
+	github.com/google/go-github v17.0.0+incompatible
 	github.com/google/go-github/v21 v21.0.0
 	github.com/gosuri/uitable v0.0.0-20160404203958-36ee7e946282
 	github.com/inconshreveable/mousetrap v1.0.0 // indirect

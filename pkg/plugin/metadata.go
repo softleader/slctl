@@ -1,8 +1,8 @@
 package plugin
 
 import (
-	"fmt"
 	"github.com/Masterminds/semver"
+	"github.com/softleader/slctl/pkg/ver"
 )
 
 // MetadataFileName 定義了 metadata 的檔案名稱
@@ -22,15 +22,7 @@ type Metadata struct {
 
 // IsVersionGreaterThan checks current version is greater than other.version
 func (m *Metadata) IsVersionGreaterThan(other *Metadata) (bool, error) {
-	c, err := semver.NewConstraint(fmt.Sprintf(">%s", other.Version))
-	if err != nil {
-		return false, err
-	}
-	v, err := semver.NewVersion(m.Version)
-	if err != nil {
-		return false, err
-	}
-	return c.Check(v), nil
+	return ver.Revision(m.Version).IsGreaterThan(other.Version)
 }
 
 // IsVersionLegal check is Version meet SemanticVersion2 spec, more details: https://semver.org/
