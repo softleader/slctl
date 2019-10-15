@@ -41,13 +41,13 @@ func checkOnline(log *logrus.Logger, currentVersion string) error {
 	log.Println("Checking for latest slctl version...")
 	client := github.NewClient(nil)
 	ctx := context.Background()
-	log.Debugf("fetching latest release of github.com/%s/%s", owner, repo)
+	log.Debugf("fetching the latest published release from github.com/%s/%s", owner, repo)
 	rr, _, err := client.Repositories.GetLatestRelease(ctx, owner, repo)
 	if err != nil {
 		return err
 	}
 	latest := rr.GetTagName()
-	log.Debugf("found latest tag: %s", latest)
+	log.Debugf("found latest version: %s+%s", latest, rr.GetTargetCommitish())
 	if updateAvailable, err := ver.Revision(latest).IsGreaterThan(currentVersion); err != nil {
 		return err
 	} else if updateAvailable {
