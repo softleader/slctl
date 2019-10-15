@@ -9,26 +9,21 @@ import (
 	"strings"
 )
 
-const pluginOpenDesc = `Open plugin
+const pluginOpenDesc = `Open plugins
 
-當 Plugin Source 來自於 GitHub, 則以預設瀏覽器開啟 GitHub Repo 網址; 反之開啟 plugin 所在目錄
+當 Plugin Source 來自於 GitHub, 則以預設瀏覽器開啟 GitHub Repo 網址; 反之開啟 Plugin 所在目錄
 
 	$ slctl plugin open PLUGIN
 
-傳入 '--app' 使用指定 app 名稱來開啟 plugin source
+傳入 '--app' 使用指定 app 名稱來開啟非 GitHub Source 的 Plugin
 
-	$ slctl plugin open PLUGIN --app firefox
-
-傳入 '--wait' 等待 open command 執行完畢才結束
-
-	$ slctl plugin open PLUGIN --app firefox -w
+	$ slctl plugin open PLUGIN -a "Sublime Text"
 `
 
 type pluginOpenCmd struct {
 	home   paths.Home
 	plugin string
 	app    string
-	wait   bool
 }
 
 func newPluginOpenCmd() *cobra.Command {
@@ -49,8 +44,7 @@ func newPluginOpenCmd() *cobra.Command {
 	}
 
 	f := cmd.Flags()
-	f.StringVar(&c.app, "app", "", "open the plugin using the specified application")
-	f.BoolVarP(&c.wait, "wait", "w", false, "wait for the open command to complete")
+	f.StringVarP(&c.app, "app", "a", "", "opens plugin with the specified application")
 	return cmd
 }
 
@@ -61,9 +55,6 @@ func (c *pluginOpenCmd) run() (err error) {
 	}
 	for _, p := range plugins {
 		if strings.EqualFold(p.Metadata.Name, c.plugin) {
-			if c.wait {
-				return p.OpenAndWait(c.app)
-			}
 			return p.Open(c.app)
 		}
 	}

@@ -22,8 +22,8 @@ var (
 	leadingDash = regexp.MustCompile(`^[-]{1,2}(.+)`)
 	// oldHome 代表了在 3.6.x 版本之前的預設 Home 位置
 	oldHome = ".sl"
-	// newHome 代表了在 3.7.x 版本5之後的預設 Home 位置
-	newHome = filepath.Join(".config", "slctl")
+	// home 代表了在 3.7.x 版本之後的預設 Home 位置
+	home = filepath.Join(".config", "slctl")
 )
 
 type settings struct {
@@ -55,14 +55,15 @@ func (s *settings) AddFlags(fs *pflag.FlagSet) error {
 
 // DefaultHome 回傳此 app 的預設 home 目錄名稱
 func DefaultHome(base string) string {
+	h := filepath.Join(base, home)
 	oh := filepath.Join(base, oldHome)
-	nh := filepath.Join(base, newHome)
 	if paths.IsExistDirectory(oh) {
-		if err := os.Rename(oh, nh); err != nil {
-			return oh
+		// 我們在 3.7.x 之後的版本更換了預設的 home 目錄, 如果發現有舊的 home 就主動搬移吧
+		if err := moveHome(oh, h); err != nil {
+			return oh // 在搬移的過程中如果發現任何問題, 還是維持舊目錄好了
 		}
 	}
-	return nh
+	return h
 }
 
 // ExpandEnvToFlags 將當前系統參數中已經設的值複寫掉 flags 的設定
