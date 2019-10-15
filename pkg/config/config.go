@@ -44,7 +44,12 @@ func (c *ConfFile) UpdateCleanupTime() {
 
 // UpdateCheckUpdatesTime updates check updates time
 func (c *ConfFile) UpdateCheckUpdatesTime() {
-	c.CheckUpdates = time.Now().AddDate(0, 0, CheckUpdatesDueDays)
+	c.UpdateCheckUpdatesTimeInDays(CheckUpdatesDueDays)
+}
+
+// UpdateCheckUpdatesTimeInDays updates check updates time
+func (c *ConfFile) UpdateCheckUpdatesTimeInDays(days int) {
+	c.CheckUpdates = time.Now().AddDate(0, 0, days)
 }
 
 // LoadConfFile return a pointer of a ConfFile which read from path
