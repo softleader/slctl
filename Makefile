@@ -13,11 +13,11 @@ CHOCO_SERVER := http://softleader.com.tw:48081/repository/choco/
 CHOCO_USER := choco:choco
 
 .PHONY: help
-help:   ## Show this help.
+help:	## # Show this help.
 	@fgrep -h "##" $(MAKEFILE_LIST) | fgrep -v fgrep | sed -e 's/\\$$//' | sed -e 's/##//'
 
 .PHONY: sandbox
-sandbox: bootstrap test		## Build and run slctl in Docker container
+sandbox: bootstrap test	## # Build and run slctl in Docker container
 ifndef HAS_DOCKER
 	$(error You must install Docker)
 endif
@@ -26,29 +26,29 @@ endif
 	docker run --rm -it slctl bash
 
 .PHONY: link
-link: bootstrap test build
+link: bootstrap test build	## # Build and run slctl and link to /usr/local/bin
 	ln -sf $(BUILD)/$(BINARY) /usr/local/bin
 
 .PHONY: test
-test: error-free
+test: error-free	## # Run error-free and test
 	go test ./... -v
 
 .PHONY: error-free
-error-free: goimports gofmt golint govet
+error-free: goimports gofmt golint govet	## # Run code check
 
 .PHONY: goimports
-goimports:
+goimports:	## # Run goimports
 ifndef HAS_GOIMPORTS
 	go get golang.org/x/tools/cmd/goimports
 endif
 	goimports -w -e .
 
 .PHONY: gofmt
-gofmt:
+gofmt:	## # Run gofmt
 	gofmt -s -e -w .
 
 .PHONY: golint
-golint:
+golint:	## # Run golint
 ifndef HAS_GOLINT
 	go get -u golang.org/x/lint/golint
 endif
@@ -56,17 +56,17 @@ endif
 	golint -set_exit_status ./pkg/...
 
 .PHONY: govet
-govet:
+govet:	## # Run go vet
 	go vet ./cmd/...
 	go vet ./pkg/...
 
 .PHONY: build
-build:
+build:	## # Build binary for current OS and arch
 	go build -o $(BUILD)/$(BINARY) -ldflags $(LDFLAGS) $(MAIN)
 
 # build static binaries: https://medium.com/@diogok/on-golang-static-binaries-cross-compiling-and-plugins-1aed33499671
 .PHONY: dist
-dist:
+dist:	## # Build and compress to tgz for linux amd64, darwin amd64 and windows amd64
 ifeq ($(strip $(VERSION)),)
 	$(error VERSION is not set)
 endif
@@ -84,16 +84,16 @@ endif
 	tar -C $(BUILD) -llzcvf $(DIST)/$(BINARY)-windows-$(VERSION).tgz $(BINARY).exe README.md LICENSE
 
 .PHONY: bootstrap
-bootstrap:
+bootstrap:	## # Make sure all dependency are downloaded
 	go mod download
 
 .PHONY: clean
-clean:
+clean:	## # Clean build temp dir and link to /usr/local/bin
 	rm -rf _*
 	rm -f /usr/local/bin/$(BINARY)
 
 .PHONY: choco-pack
-choco-pack:
+choco-pack:	## # Build to Choco package
 ifndef HAS_DOCKER
 	$(error You must install Docker)
 endif
@@ -106,5 +106,5 @@ endif
 	docker run -v $(CHOCO_DIST):$(CHOCO_DIST) -w $(CHOCO_DIST) -it patrickhuber/choco-linux choco pack --version $(VERSION) --out $(CHOCO_DIST) $(CHOCO_DIST)/.nuspec
 
 .PHONY: choco-push
-choco-push: choco-pack
+choco-push: choco-pack	## # Push to SoftLeader Choco server
 	curl -X PUT -F "file=@$(CHOCO_DIST)/$(BINARY).$(VERSION).nupkg" $(CHOCO_SERVER) -u $(CHOCO_USER)
