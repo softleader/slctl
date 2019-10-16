@@ -3,6 +3,8 @@ package main
 import (
 	"context"
 	"fmt"
+	"os"
+
 	"github.com/google/go-github/v21/github"
 	"github.com/sirupsen/logrus"
 	"github.com/softleader/slctl/pkg/config"
@@ -13,7 +15,6 @@ import (
 	"github.com/softleader/slctl/pkg/paths"
 	"github.com/softleader/slctl/pkg/prompt"
 	"github.com/spf13/cobra"
-	"os"
 )
 
 const (

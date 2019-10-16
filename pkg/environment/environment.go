@@ -1,12 +1,13 @@
 package environment
 
 import (
-	"github.com/mitchellh/go-homedir"
-	"github.com/softleader/slctl/pkg/paths"
-	"github.com/spf13/pflag"
 	"os"
 	"path/filepath"
 	"regexp"
+
+	"github.com/mitchellh/go-homedir"
+	"github.com/softleader/slctl/pkg/paths"
+	"github.com/spf13/pflag"
 )
 
 var (

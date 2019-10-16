@@ -3,18 +3,19 @@ package plugin
 import (
 	"bytes"
 	"fmt"
-	"github.com/mitchellh/go-homedir"
-	"github.com/sirupsen/logrus"
-	"github.com/softleader/slctl/pkg/github/token"
-	"github.com/softleader/slctl/pkg/paths"
-	"github.com/softleader/slctl/pkg/strcase"
-	"gopkg.in/yaml.v2"
 	"io/ioutil"
 	"os"
 	"path/filepath"
 	"reflect"
 	"strings"
 	"text/template"
+
+	"github.com/mitchellh/go-homedir"
+	"github.com/sirupsen/logrus"
+	"github.com/softleader/slctl/pkg/github/token"
+	"github.com/softleader/slctl/pkg/paths"
+	"github.com/softleader/slctl/pkg/strcase"
+	"gopkg.in/yaml.v2"
 )
 
 var registeredCreators = []creator{

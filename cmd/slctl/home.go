@@ -1,12 +1,13 @@
 package main
 
 import (
+	"path/filepath"
+
 	"github.com/mitchellh/go-homedir"
 	"github.com/sirupsen/logrus"
 	"github.com/softleader/slctl/pkg/environment"
 	"github.com/softleader/slctl/pkg/paths"
 	"github.com/spf13/cobra"
-	"path/filepath"
 )
 
 const longHomeHelp = `home displays the location of SL_HOME.

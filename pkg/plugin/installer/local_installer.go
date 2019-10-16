@@ -3,13 +3,14 @@ package installer
 import (
 	"errors"
 	"fmt"
+	"os"
+	"path/filepath"
+	"regexp"
+
 	"github.com/mitchellh/go-homedir"
 	"github.com/sirupsen/logrus"
 	"github.com/softleader/slctl/pkg/paths"
 	"github.com/softleader/slctl/pkg/plugin"
-	"os"
-	"path/filepath"
-	"regexp"
 )
 
 var (

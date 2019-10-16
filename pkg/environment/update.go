@@ -2,12 +2,13 @@ package environment
 
 import (
 	"context"
+	"time"
+
 	"github.com/google/go-github/github"
 	"github.com/sirupsen/logrus"
 	"github.com/softleader/slctl/pkg/config"
 	"github.com/softleader/slctl/pkg/paths"
 	"github.com/softleader/slctl/pkg/ver"
-	"time"
 )
 
 const (

@@ -1,13 +1,14 @@
 package plugin
 
 import (
-	"github.com/sirupsen/logrus"
-	"github.com/softleader/slctl/pkg/config"
-	"github.com/softleader/slctl/pkg/paths"
 	"io/ioutil"
 	"os"
 	"path/filepath"
 	"time"
+
+	"github.com/sirupsen/logrus"
+	"github.com/softleader/slctl/pkg/config"
+	"github.com/softleader/slctl/pkg/paths"
 )
 
 // Cleanup remove outdated downloads of plugin

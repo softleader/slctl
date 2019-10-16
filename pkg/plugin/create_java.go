@@ -2,9 +2,10 @@ package plugin
 
 import (
 	"fmt"
-	"github.com/softleader/slctl/pkg/strcase"
 	"path/filepath"
 	"strings"
+
+	"github.com/softleader/slctl/pkg/strcase"
 )
 
 const javaMain = `package tw.com.softleader.slctl.plugin;

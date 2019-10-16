@@ -1,13 +1,14 @@
 package main
 
 import (
+	"io/ioutil"
+	"os"
+	"testing"
+
 	"github.com/sirupsen/logrus"
 	"github.com/softleader/slctl/pkg/config"
 	"github.com/softleader/slctl/pkg/environment"
 	"github.com/softleader/slctl/pkg/paths"
-	"io/ioutil"
-	"os"
-	"testing"
 )
 
 func TestRefreshConfig(t *testing.T) {

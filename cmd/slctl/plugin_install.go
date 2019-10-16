@@ -1,13 +1,14 @@
 package main
 
 import (
+	"io"
+
 	"github.com/sirupsen/logrus"
 	"github.com/softleader/slctl/pkg/environment"
 	"github.com/softleader/slctl/pkg/github/token"
 	"github.com/softleader/slctl/pkg/paths"
 	"github.com/softleader/slctl/pkg/plugin"
 	"github.com/softleader/slctl/pkg/plugin/installer"
-	"io"
 
 	"github.com/spf13/cobra"
 )

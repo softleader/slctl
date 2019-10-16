@@ -238,6 +238,7 @@ func TestMetadata_String(t *testing.T) {
 `
 
 const golangMakefile = `HAS_GOLINT := $(shell command -v golint;)
+HAS_GOIMPORTS := $(shell command -v goimports;)
 SL_HOME ?= $(shell slctl home)
 SL_PLUGIN_DIR ?= $(SL_HOME)/plugins/{{.Name}}/
 METADATA := metadata.yaml
@@ -256,20 +257,35 @@ install: bootstrap test build
 	cp $(METADATA) $(SL_PLUGIN_DIR)
 
 .PHONY: test
-test: golint
+test: error-free
 	go test ./... -v
+
+.PHONY: error-free
+error-free: goimports gofmt golint govet
+
+.PHONY: goimports
+goimports:
+ifndef HAS_GOIMPORTS
+	go get golang.org/x/tools/cmd/goimports
+endif
+	goimports -w -e .
 
 .PHONY: gofmt
 gofmt:
 	gofmt -s -w .
 
 .PHONY: golint
-golint: gofmt
+golint:
 ifndef HAS_GOLINT
 	go get -u golang.org/x/lint/golint
 endif
 	golint -set_exit_status ./cmd/...
 	golint -set_exit_status ./pkg/...
+
+.PHONY: govet
+govet:
+	go vet ./cmd/...
+	go vet ./pkg/...
 
 .PHONY: build
 build: clean bootstrap

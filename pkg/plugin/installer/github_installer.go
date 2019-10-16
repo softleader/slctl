@@ -3,6 +3,10 @@ package installer
 import (
 	"context"
 	"fmt"
+	"path/filepath"
+	"runtime"
+	"strings"
+
 	"github.com/google/go-github/v21/github"
 	"github.com/sirupsen/logrus"
 	"github.com/softleader/slctl/pkg/config"
@@ -10,9 +14,6 @@ import (
 	"github.com/softleader/slctl/pkg/paths"
 	"github.com/softleader/slctl/pkg/plugin"
 	"golang.org/x/oauth2"
-	"path/filepath"
-	"runtime"
-	"strings"
 )
 
 type gitHubInstaller struct {

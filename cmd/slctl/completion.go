@@ -2,10 +2,11 @@ package main
 
 import (
 	"bytes"
-	"github.com/sirupsen/logrus"
-	"github.com/spf13/cobra"
 	"io"
 	"strings"
+
+	"github.com/sirupsen/logrus"
+	"github.com/spf13/cobra"
 )
 
 const (

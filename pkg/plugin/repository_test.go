@@ -2,13 +2,14 @@ package plugin
 
 import (
 	"fmt"
+	"os"
+	"strings"
+	"testing"
+
 	"github.com/mitchellh/go-homedir"
 	"github.com/sirupsen/logrus"
 	"github.com/softleader/slctl/pkg/environment"
 	"github.com/softleader/slctl/pkg/paths"
-	"os"
-	"strings"
-	"testing"
 )
 
 func TestFetchOnline(t *testing.T) {

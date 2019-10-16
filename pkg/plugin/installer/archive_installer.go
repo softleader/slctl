@@ -2,15 +2,16 @@ package installer
 
 import (
 	"fmt"
+	"io"
+	"io/ioutil"
+	"os"
+	"path/filepath"
+
 	"github.com/mholt/archiver"
 	"github.com/sirupsen/logrus"
 	"github.com/softleader/slctl/pkg/environment"
 	"github.com/softleader/slctl/pkg/paths"
 	"github.com/softleader/slctl/pkg/plugin"
-	"io"
-	"io/ioutil"
-	"os"
-	"path/filepath"
 )
 
 type archiveInstaller struct {

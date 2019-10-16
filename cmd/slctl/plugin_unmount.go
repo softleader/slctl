@@ -2,11 +2,12 @@ package main
 
 import (
 	"fmt"
+	"os"
+
 	"github.com/sirupsen/logrus"
 	"github.com/softleader/slctl/pkg/environment"
 	"github.com/softleader/slctl/pkg/plugin"
 	"github.com/spf13/cobra"
-	"os"
 )
 
 type pluginUnmountCmd struct {

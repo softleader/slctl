@@ -2,11 +2,12 @@ package main
 
 import (
 	"fmt"
+	"os"
+	"os/exec"
+
 	"github.com/sirupsen/logrus"
 	"github.com/softleader/slctl/pkg/plugin"
 	"github.com/spf13/cobra"
-	"os"
-	"os/exec"
 )
 
 const pluginHelp = `Manage slctl plugins.

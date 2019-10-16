@@ -2,12 +2,13 @@ package main
 
 import (
 	"fmt"
+	"path/filepath"
+
 	"github.com/sirupsen/logrus"
 	"github.com/softleader/slctl/pkg/environment"
 	"github.com/softleader/slctl/pkg/paths"
 	"github.com/softleader/slctl/pkg/plugin"
 	"github.com/spf13/cobra"
-	"path/filepath"
 )
 
 const pluginCreateDesc = `產生 Plugin 範本, 如: 'slctl plugin create foo' 將會產生 golang plugin 範本, 目錄結構大致如下:

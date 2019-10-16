@@ -1,11 +1,12 @@
 package environment
 
 import (
-	"github.com/softleader/slctl/pkg/paths"
 	"io/ioutil"
 	"os"
 	"path/filepath"
 	"strings"
+
+	"github.com/softleader/slctl/pkg/paths"
 )
 
 // MoveHome moves home from "oldHome" to "newHome"

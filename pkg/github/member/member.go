@@ -2,6 +2,7 @@ package member
 
 import (
 	"context"
+
 	"github.com/google/go-github/v21/github"
 )
 

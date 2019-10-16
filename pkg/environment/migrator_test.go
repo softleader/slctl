@@ -2,12 +2,13 @@ package environment
 
 import (
 	"fmt"
-	"github.com/sirupsen/logrus"
-	"github.com/softleader/slctl/pkg/paths"
 	"io/ioutil"
 	"os"
 	"path/filepath"
 	"testing"
+
+	"github.com/sirupsen/logrus"
+	"github.com/softleader/slctl/pkg/paths"
 )
 
 func TestMoveHome(t *testing.T) {

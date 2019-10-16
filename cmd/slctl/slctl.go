@@ -1,13 +1,14 @@
 package main
 
 import (
+	"os"
+
 	"github.com/sirupsen/logrus"
 	"github.com/softleader/slctl/pkg/environment"
 	"github.com/softleader/slctl/pkg/formatter"
 	"github.com/softleader/slctl/pkg/plugin"
 	"github.com/softleader/slctl/pkg/release"
 	"github.com/spf13/cobra"
-	"os"
 )
 
 const (

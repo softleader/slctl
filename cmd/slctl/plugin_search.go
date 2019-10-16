@@ -2,13 +2,14 @@ package main
 
 import (
 	"fmt"
+	"strings"
+
 	"github.com/gosuri/uitable"
 	"github.com/sirupsen/logrus"
 	"github.com/softleader/slctl/pkg/environment"
 	"github.com/softleader/slctl/pkg/paths"
 	"github.com/softleader/slctl/pkg/plugin"
 	"github.com/spf13/cobra"
-	"strings"
 )
 
 const pluginSearchDesc = `Search SoftLeader official plugin

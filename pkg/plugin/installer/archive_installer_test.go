@@ -2,14 +2,15 @@ package installer
 
 import (
 	"compress/flate"
-	"github.com/mholt/archiver"
-	"github.com/sirupsen/logrus"
-	"github.com/softleader/slctl/pkg/paths"
-	"github.com/softleader/slctl/pkg/plugin"
 	"io/ioutil"
 	"os"
 	"path/filepath"
 	"testing"
+
+	"github.com/mholt/archiver"
+	"github.com/sirupsen/logrus"
+	"github.com/softleader/slctl/pkg/paths"
+	"github.com/softleader/slctl/pkg/plugin"
 )
 
 func TestArchiveInstaller_Install(t *testing.T) {

@@ -1,12 +1,13 @@
 package installer
 
 import (
-	"github.com/softleader/slctl/pkg/paths"
-	"gopkg.in/cheggaaa/pb.v1"
 	"io"
 	"net/http"
 	"os"
 	"path/filepath"
+
+	"github.com/softleader/slctl/pkg/paths"
+	"gopkg.in/cheggaaa/pb.v1"
 )
 
 const barWidth = 90

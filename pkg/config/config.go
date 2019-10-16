@@ -3,12 +3,13 @@ package config
 import (
 	"errors"
 	"fmt"
-	"github.com/sirupsen/logrus"
-	"github.com/softleader/slctl/pkg/paths"
-	"gopkg.in/yaml.v2"
 	"io/ioutil"
 	"os"
 	"time"
+
+	"github.com/sirupsen/logrus"
+	"github.com/softleader/slctl/pkg/paths"
+	"gopkg.in/yaml.v2"
 )
 
 const (

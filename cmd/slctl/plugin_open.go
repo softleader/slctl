@@ -2,11 +2,12 @@ package main
 
 import (
 	"fmt"
+	"strings"
+
 	"github.com/softleader/slctl/pkg/environment"
 	"github.com/softleader/slctl/pkg/paths"
 	"github.com/softleader/slctl/pkg/plugin"
 	"github.com/spf13/cobra"
-	"strings"
 )
 
 const pluginOpenDesc = `Open plugins

@@ -2,8 +2,9 @@ package paths
 
 import (
 	"fmt"
-	"github.com/sirupsen/logrus"
 	"os"
+
+	"github.com/sirupsen/logrus"
 )
 
 // EnsureDirectories 確保傳入資料夾路徑存在, 不存在會主動建立之

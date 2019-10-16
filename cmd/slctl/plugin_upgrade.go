@@ -2,13 +2,14 @@ package main
 
 import (
 	"fmt"
+	"strings"
+
 	"github.com/sirupsen/logrus"
 	"github.com/softleader/slctl/pkg/environment"
 	"github.com/softleader/slctl/pkg/paths"
 	"github.com/softleader/slctl/pkg/plugin"
 	"github.com/softleader/slctl/pkg/plugin/installer"
 	"github.com/spf13/cobra"
-	"strings"
 )
 
 const pluginUpgradeDesc = `Upgrade plugin which installed from GitHub Repo

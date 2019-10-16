@@ -2,8 +2,6 @@ package release
 
 import (
 	"fmt"
-)
-import (
 	"testing"
 )
 

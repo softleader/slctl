@@ -2,6 +2,7 @@ package ver
 
 import (
 	"fmt"
+
 	"github.com/Masterminds/semver"
 )
 

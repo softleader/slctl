@@ -2,17 +2,18 @@ package plugin
 
 import (
 	"fmt"
-	"github.com/sirupsen/logrus"
-	"github.com/softleader/slctl/pkg/environment"
-	"github.com/softleader/slctl/pkg/release"
-	"github.com/spf13/cobra"
-	"gopkg.in/yaml.v2"
 	"io/ioutil"
 	"os"
 	"os/exec"
 	"path/filepath"
 	"strconv"
 	"syscall"
+
+	"github.com/sirupsen/logrus"
+	"github.com/softleader/slctl/pkg/environment"
+	"github.com/softleader/slctl/pkg/release"
+	"github.com/spf13/cobra"
+	"gopkg.in/yaml.v2"
 )
 
 // ExitError 代表有指定 exit status 的 error

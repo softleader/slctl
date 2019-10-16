@@ -3,6 +3,11 @@ package plugin
 import (
 	"context"
 	"fmt"
+	"io/ioutil"
+	"os"
+	"strings"
+	"time"
+
 	"github.com/google/go-github/v21/github"
 	"github.com/sirupsen/logrus"
 	"github.com/softleader/slctl/pkg/config"
@@ -10,10 +15,6 @@ import (
 	"github.com/softleader/slctl/pkg/paths"
 	"golang.org/x/oauth2"
 	"gopkg.in/yaml.v2"
-	"io/ioutil"
-	"os"
-	"strings"
-	"time"
 )
 
 const (

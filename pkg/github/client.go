@@ -4,13 +4,14 @@ import (
 	"bufio"
 	"context"
 	"fmt"
+	"os"
+	"strings"
+	"syscall"
+
 	"github.com/google/go-github/v21/github"
 	"github.com/sirupsen/logrus"
 	"golang.org/x/crypto/ssh/terminal"
 	"golang.org/x/oauth2"
-	"os"
-	"strings"
-	"syscall"
 )
 
 // NewBasicAuthClient 產生一個 BasicAuth 的 GitHub Client, 並且會檢查完 OTP

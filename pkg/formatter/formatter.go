@@ -3,8 +3,9 @@ package formatter
 import (
 	"bytes"
 	"fmt"
-	"github.com/sirupsen/logrus"
 	"strings"
+
+	"github.com/sirupsen/logrus"
 )
 
 // PlainFormatter 代表什麼都不 format 的 formatter

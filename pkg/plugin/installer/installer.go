@@ -2,6 +2,7 @@ package installer
 
 import (
 	"fmt"
+
 	"github.com/sirupsen/logrus"
 	"github.com/softleader/slctl/pkg/paths"
 	"github.com/softleader/slctl/pkg/plugin"

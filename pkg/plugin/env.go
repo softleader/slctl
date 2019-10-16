@@ -1,14 +1,15 @@
 package plugin
 
 import (
+	"os"
+	"path/filepath"
+	"strconv"
+
 	"github.com/sirupsen/logrus"
 	"github.com/softleader/slctl/pkg/config"
 	"github.com/softleader/slctl/pkg/environment"
 	"github.com/softleader/slctl/pkg/paths"
 	"github.com/softleader/slctl/pkg/release"
-	"os"
-	"path/filepath"
-	"strconv"
 )
 
 var (

@@ -1,10 +1,11 @@
 package main
 
 import (
+	"reflect"
+
 	"github.com/sirupsen/logrus"
 	"github.com/softleader/slctl/pkg/plugin"
 	"github.com/spf13/cobra"
-	"reflect"
 )
 
 const (
