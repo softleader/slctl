@@ -26,7 +26,7 @@ endif
 	docker run --rm -it slctl bash
 
 .PHONY: link
-link: bootstrap test build	## # Build and run slctl and link to /usr/local/bin
+link: bootstrap test build	## # Build and link binary to /usr/local/bin
 	ln -sf $(BUILD)/$(BINARY) /usr/local/bin
 
 .PHONY: test
