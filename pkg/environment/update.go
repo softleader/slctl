@@ -4,6 +4,8 @@ import (
 	"context"
 	"time"
 
+	"github.com/softleader/slctl/pkg/release"
+
 	"github.com/google/go-github/github"
 	"github.com/sirupsen/logrus"
 	"github.com/softleader/slctl/pkg/config"
@@ -17,7 +19,10 @@ const (
 )
 
 // CheckForUpdates 檢查是否有更新的 slctl 版本
-func CheckForUpdates(log *logrus.Logger, home paths.Home, currentVersion string, force bool) error {
+func CheckForUpdates(log *logrus.Logger, home paths.Home, metadata *release.Metadata, force bool) error {
+	if !metadata.IsReleased() {
+		return nil
+	}
 	conf, err := config.LoadConfFile(home.ConfigFile())
 	if err != nil && err != config.ErrTokenNotExist {
 		return err
@@ -27,7 +32,7 @@ func CheckForUpdates(log *logrus.Logger, home paths.Home, currentVersion string,
 			return nil
 		}
 	}
-	if updateAvailable, err := checkOnline(log, currentVersion); err != nil {
+	if updateAvailable, err := checkOnline(log, metadata.GitVersion); err != nil {
 		return err
 	} else if updateAvailable {
 		conf.UpdateCheckUpdatesTimeInDays(1) // 如果已經發現可以更新, 一天後需要檢查是否更新了沒

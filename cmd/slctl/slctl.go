@@ -71,7 +71,7 @@ func newRootCmd(args []string) (*cobra.Command, error) {
 		},
 		PersistentPostRun: func(cmd *cobra.Command, args []string) {
 			if !environment.Settings.Offline {
-				environment.CheckForUpdates(logrus.StandardLogger(), environment.Settings.Home, version, false)
+				environment.CheckForUpdates(logrus.StandardLogger(), environment.Settings.Home, metadata, false)
 			}
 			plugin.Cleanup(logrus.StandardLogger(), environment.Settings.Home, false, false)
 		},

@@ -47,7 +47,7 @@ func (c *versionCmd) run() error {
 		if environment.Settings.Offline {
 			return fmt.Errorf("can not check for updates in offline mode")
 		}
-		return environment.CheckForUpdates(logrus.StandardLogger(), environment.Settings.Home, version, true)
+		return environment.CheckForUpdates(logrus.StandardLogger(), environment.Settings.Home, metadata, true)
 	}
 	return nil
 }

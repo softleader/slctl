@@ -214,6 +214,11 @@ func (b *Metadata) String() string {
 func (b *Metadata) FullString() string {
 	return fmt.Sprintf("%#v", b)
 }
+
+// IsReleased 回傳 Metadata 是否已經 released
+func (b *Metadata) IsReleased() bool {
+	return b.GitVersion != unreleased && b.GitCommit != unknown
+}
 `
 
 const golangPkgReleaseTest = `package release
