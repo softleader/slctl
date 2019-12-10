@@ -3,7 +3,7 @@ package ver
 import (
 	"fmt"
 
-	"github.com/Masterminds/semver"
+	"github.com/blang/semver"
 )
 
 // Revision 版號
@@ -15,13 +15,13 @@ func (r Revision) String() string {
 
 // IsGreaterThan 判斷此 revision 是否 > other revision
 func (r Revision) IsGreaterThan(other string) (bool, error) {
-	c, err := semver.NewConstraint(fmt.Sprintf(">%s", other))
+	rr, err := semver.ParseRange(fmt.Sprintf(">%s", other))
 	if err != nil {
 		return false, err
 	}
-	v, err := semver.NewVersion(r.String())
+	v, err := semver.Parse(r.String())
 	if err != nil {
 		return false, err
 	}
-	return c.Check(v), nil
+	return rr(v), nil
 }

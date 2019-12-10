@@ -1,7 +1,7 @@
 package plugin
 
 import (
-	"github.com/Masterminds/semver"
+	"github.com/blang/semver"
 	"github.com/softleader/slctl/pkg/ver"
 )
 
@@ -27,6 +27,6 @@ func (m *Metadata) IsVersionGreaterThan(other *Metadata) (bool, error) {
 
 // IsVersionLegal check is Version meet SemanticVersion2 spec, more details: https://semver.org/
 func (m *Metadata) IsVersionLegal() bool {
-	_, err := semver.NewVersion(m.Version)
+	_, err := semver.Parse(m.Version)
 	return err == nil
 }
