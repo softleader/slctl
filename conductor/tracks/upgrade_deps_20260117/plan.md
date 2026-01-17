@@ -3,13 +3,13 @@
 這個計畫旨在升級 `slctl` 專案的依賴與開發環境。
 
 ## Phase 1: 環境準備與依賴分析
-- [ ] Task: 檢查當前開發環境與工具鏈可用性
-    - [ ] 確認 `go` 版本與環境變數
-    - [ ] 執行現有測試確保基準線正確
-- [ ] Task: 分析 `go.mod` 中的直接依賴，識別需要優先升級的套件
-    - [ ] 列表當前依賴版本
-    - [ ] 識別有安全性更新或重大更新的套件
-- [ ] Task: Conductor - User Manual Verification 'Phase 1: 環境準備與依賴分析' (Protocol in workflow.md)
+- [x] Task: 檢查當前開發環境與工具鏈可用性
+    - [x] 確認 `go` 版本與環境變數
+    - [x] 執行現有測試確保基準線正確
+- [x] Task: 分析 `go.mod` 中的直接依賴，識別需要優先升級的套件
+    - [x] 列表當前依賴版本
+    - [x] 識別有安全性更新或重大更新的套件
+- [~] Task: Conductor - User Manual Verification 'Phase 1: 環境準備與依賴分析' (Protocol in workflow.md)
 
 ## Phase 2: 核心套件升級 (Go & Cobra)
 - [ ] Task: 升級 Go 版本
