@@ -78,7 +78,7 @@ func (c *initCmd) run() (err error) {
 	if c.home.ContainsAnySpace() {
 		return fmt.Errorf(`default home path contains space which is not allowed (%s).
 You might need to specify another SL_HOME without space and set to system variable.
-For more details: https://github.com/softleader/slctl/wiki/Home-Path`, c.home.String())
+For more details: https://github.com/softleader/slctl/blob/master/docs/Home-Path.md`, c.home.String())
 	}
 	if err = ensureDirectories(c.home, logrus.StandardLogger()); err != nil {
 		return err
