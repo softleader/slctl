@@ -16,7 +16,7 @@ import (
 const (
 	deviceCodeURL   = "https://github.com/login/device/code"
 	accessTokenURL  = "https://github.com/login/oauth/access_token"
-	defaultClientID = "Iv1.025f0e9d9b6e8f1b" // Placeholder
+	defaultClientID = "178c6fc778ccc68e1d6a" // GitHub CLI Client ID for testing
 )
 
 var (
@@ -72,7 +72,8 @@ func RequestDeviceCode(ctx context.Context, clientID string, scopes []github.Sco
 	defer resp.Body.Close()
 
 	if resp.StatusCode != http.StatusOK {
-		return nil, fmt.Errorf("unexpected status code: %d", resp.StatusCode)
+		body, _ := ioutil.ReadAll(resp.Body)
+		return nil, fmt.Errorf("unexpected status code: %d, body: %s", resp.StatusCode, string(body))
 	}
 
 	var dcr DeviceCodeResponse
