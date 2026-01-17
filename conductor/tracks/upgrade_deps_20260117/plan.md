@@ -20,19 +20,19 @@
     - [x] 驗證 CLI 入口點 `cmd/slctl` 是否正常編譯
 - [x] Task: Conductor - User Manual Verification 'Phase 2: 核心套件升級 (Go & Cobra)' (Protocol in workflow.md) [cb2c969]
 
-## Phase 3: 升級其他關鍵依賴套件
+## Phase 3: 升級其他關鍵依賴套件 [checkpoint: 26f539c]
 - [x] Task: 升級 GitHub API 相關套件 (`google/go-github`) [7d8f171]
     - [x] 執行升級指令
     - [x] 修復因 API 變更導致的編譯錯誤 (如果有的話)
 - [x] Task: 升級日誌與工具套件 (`logrus`, `archiver`, 等) [7d8f171]
     - [x] 批量升級輔助套件
     - [x] 執行 `go mod tidy` 清理依賴
-- [~] Task: Conductor - User Manual Verification 'Phase 3: 升級其他關鍵依賴套件' (Protocol in workflow.md)
+- [x] Task: Conductor - User Manual Verification 'Phase 3: 升級其他關鍵依賴套件' (Protocol in workflow.md) [26f539c]
 
 ## Phase 4: 全面測試與清理
-- [ ] Task: 執行全面自動化測試
-    - [ ] 執行 `go test ./...`
-    - [ ] 驗證測試覆蓋率是否達標 (>80%)
+- [~] Task: 執行全面自動化測試
+    - [~] 執行 `go test ./...`
+    - [~] 驗證測試覆蓋率是否達標 (>80%)
 - [ ] Task: 驗證手動關鍵功能 (Init, Plugin System)
     - [ ] 測試 `slctl init`
     - [ ] 測試插件搜尋與安裝流程
