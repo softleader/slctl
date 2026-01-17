@@ -56,7 +56,7 @@ func (c *pluginRemoveCmd) run() error {
 		}
 	}
 	if len(errorPlugins) > 0 {
-		return fmt.Errorf(strings.Join(errorPlugins, "\n"))
+		return fmt.Errorf("%s", strings.Join(errorPlugins, "\n"))
 	}
 	return nil
 }

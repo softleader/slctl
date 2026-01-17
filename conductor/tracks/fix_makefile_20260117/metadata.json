@@ -1,0 +1,6 @@
+{
+  "id": "fix_makefile_20260117",
+  "title": "修復 Makefile 工具鏈問題",
+  "description": "更新 Makefile 以支援現代 Go 工具安裝方式並修正編譯錯誤",
+  "status": "todo"
+}

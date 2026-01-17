@@ -1,6 +1,10 @@
 HAS_DOCKER := $(shell command -v docker;)
-HAS_GOLINT := $(shell command -v golint;)
-HAS_GOIMPORTS := $(shell command -v goimports;)
+GOPATH := $(shell go env GOPATH)
+GOBIN := $(GOPATH)/bin
+HAS_GOLINT := $(shell command -v golint || ls $(GOBIN)/golint 2>/dev/null)
+HAS_GOIMPORTS := $(shell command -v goimports || ls $(GOBIN)/goimports 2>/dev/null)
+GOIMPORTS := $(shell command -v goimports || echo $(GOBIN)/goimports)
+GOLINT := $(shell command -v golint || echo $(GOBIN)/golint)
 VERSION :=
 COMMIT :=
 DIST := $(CURDIR)/_dist
@@ -41,7 +45,7 @@ goimports:	## # Run goimports
 ifndef HAS_GOIMPORTS
 	go install golang.org/x/tools/cmd/goimports@latest
 endif
-	goimports -w -e .
+	$(GOIMPORTS) -w -e .
 
 .PHONY: gofmt
 gofmt:	## # Run gofmt
@@ -52,8 +56,8 @@ golint:	## # Run golint
 ifndef HAS_GOLINT
 	go install golang.org/x/lint/golint@latest
 endif
-	golint -set_exit_status ./cmd/...
-	golint -set_exit_status ./pkg/...
+	$(GOLINT) -set_exit_status ./cmd/...
+	$(GOLINT) -set_exit_status ./pkg/...
 
 .PHONY: govet
 govet:	## # Run go vet

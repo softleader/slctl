@@ -39,7 +39,7 @@ func newVersionCmd() *cobra.Command {
 
 func (c *versionCmd) run() error {
 	if c.full {
-		logrus.Printf(metadata.FullString())
+		logrus.Printf("%s", metadata.FullString())
 	} else {
 		logrus.Println(metadata.String())
 	}
