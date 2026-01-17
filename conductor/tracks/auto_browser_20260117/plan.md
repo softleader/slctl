@@ -17,4 +17,4 @@
     - [x] Verify: 執行 `go test ./cmd/slctl/...` 確認測試通過。
 
 ## Phase 3: 驗證與交付
-- [ ] Task: Conductor - User Manual Verification '功能驗證' (Protocol in workflow.md)
+- [x] Task: Conductor - User Manual Verification '功能驗證' (Protocol in workflow.md)
