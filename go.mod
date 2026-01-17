@@ -3,6 +3,7 @@ module github.com/softleader/slctl
 go 1.24.0
 
 require (
+	github.com/atotto/clipboard v0.1.4
 	github.com/blang/semver v3.5.1+incompatible
 	github.com/google/go-github/v69 v69.2.0
 	github.com/gosuri/uitable v0.0.4
@@ -12,7 +13,6 @@ require (
 	github.com/skratchdot/open-golang v0.0.0-20190402232053-79abb63cd66e
 	github.com/spf13/cobra v1.10.2
 	github.com/spf13/pflag v1.0.10
-	golang.org/x/crypto v0.47.0
 	golang.org/x/oauth2 v0.0.0-20181203162652-d668ce993890
 	gopkg.in/cheggaaa/pb.v1 v1.0.27
 	gopkg.in/yaml.v2 v2.2.2
@@ -35,6 +35,5 @@ require (
 	golang.org/x/net v0.49.0 // indirect
 	golang.org/x/sync v0.19.0 // indirect
 	golang.org/x/sys v0.40.0 // indirect
-	golang.org/x/term v0.39.0 // indirect
 	google.golang.org/appengine v1.4.0 // indirect
 )

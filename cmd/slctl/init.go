@@ -5,8 +5,10 @@ import (
 	"fmt"
 	"os"
 
+	"github.com/atotto/clipboard"
 	"github.com/google/go-github/v69/github"
 	"github.com/sirupsen/logrus"
+	"github.com/skratchdot/open-golang/open"
 	"github.com/softleader/slctl/pkg/config"
 	"github.com/softleader/slctl/pkg/environment"
 	gh "github.com/softleader/slctl/pkg/github"
@@ -15,6 +17,12 @@ import (
 	"github.com/softleader/slctl/pkg/paths"
 	"github.com/softleader/slctl/pkg/prompt"
 	"github.com/spf13/cobra"
+)
+
+// Mockable functions for testing
+var (
+	openBrowser      = open.Run
+	writeToClipboard = clipboard.WriteAll
 )
 
 const (
@@ -91,6 +99,20 @@ For more details: https://github.com/softleader/slctl/wiki/Home-Path`, c.home.St
 			}
 
 			logrus.Printf("Please go to %s and enter the code: %s", dcr.VerificationURI, dcr.UserCode)
+
+			// Attempt to copy user code to clipboard (non-fatal if fails)
+			if err := writeToClipboard(dcr.UserCode); err != nil {
+				logrus.Debugf("Failed to copy code to clipboard: %v", err)
+			} else {
+				logrus.Debug("Code copied to clipboard")
+			}
+
+			// Attempt to open browser (non-fatal if fails)
+			if err := openBrowser(dcr.VerificationURI); err != nil {
+				logrus.Debugf("Failed to open browser: %v", err)
+			} else {
+				logrus.Debug("Browser opened")
+			}
 
 			c.token, err = gh.PollAccessToken(ctx, "", dcr.DeviceCode, dcr.Interval)
 			if err != nil {
