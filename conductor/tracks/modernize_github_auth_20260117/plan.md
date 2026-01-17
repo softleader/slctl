@@ -35,12 +35,12 @@
     - [x] 驗證流程：確保 Token 有效性並取得當前使用者資訊 (類似原有 `Welcome aboard %s!`)。
 - [x] Task: Conductor - User Manual Verification 'Update CLI Init Command' (Protocol in workflow.md) 60e138c
 
-## Phase 5: 驗證與清理 (Verification & Cleanup)
-- [ ] Task: 全面測試與文件更新
-    - [ ] 執行所有單元測試確保沒有 Regression。
-    - [ ] 手動驗證流程：
+## Phase 5: 驗證與清理 (Verification & Cleanup) [checkpoint: 0e02858]
+- [x] Task: 全面測試與文件更新 0bcc952
+    - [x] 執行所有單元測試確保沒有 Regression。
+    - [x] 手動驗證流程：
         - `slctl init` (Device Flow)
         - `slctl init --token <PAT>`
         - `slctl init --offline`
-    - [ ] 更新使用者文件 (如果有) 說明新的登入方式。
-- [ ] Task: Conductor - User Manual Verification 'Verification & Cleanup' (Protocol in workflow.md)
+    - [x] 更新使用者文件 (如果有) 說明新的登入方式。
+- [x] Task: Conductor - User Manual Verification 'Verification & Cleanup' (Protocol in workflow.md) 0e02858
