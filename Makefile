@@ -39,7 +39,7 @@ error-free: goimports gofmt golint govet	## # Run code check
 .PHONY: goimports
 goimports:	## # Run goimports
 ifndef HAS_GOIMPORTS
-	go get golang.org/x/tools/cmd/goimports
+	go install golang.org/x/tools/cmd/goimports@latest
 endif
 	goimports -w -e .
 
@@ -50,7 +50,7 @@ gofmt:	## # Run gofmt
 .PHONY: golint
 golint:	## # Run golint
 ifndef HAS_GOLINT
-	go get -u golang.org/x/lint/golint
+	go install golang.org/x/lint/golint@latest
 endif
 	golint -set_exit_status ./cmd/...
 	golint -set_exit_status ./pkg/...
