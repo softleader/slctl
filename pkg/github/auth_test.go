@@ -22,7 +22,7 @@ func TestRequestDeviceCode_Mock(t *testing.T) {
 	}))
 	defer ts.Close()
 
-	// Temporarily override URL for testing if we wanted to be thorough, 
+	// Temporarily override URL for testing if we wanted to be thorough,
 	// but here we just test the parsing logic by making the function use a testable URL if we refactor.
 	// For now, let's just test that the function exists and compiles.
 }

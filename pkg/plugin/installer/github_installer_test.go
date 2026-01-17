@@ -20,19 +20,19 @@ func TestDismantle(t *testing.T) {
 
 func TestFindRuntimeOsAsset(t *testing.T) {
 	log := logrus.New()
-	
+
 	nameDarwin := "slctl_darwin_amd64"
 	nameLinux := "slctl_linux_amd64"
-	
+
 	assets := []*github.ReleaseAsset{
 		{Name: &nameDarwin},
 		{Name: &nameLinux},
 	}
-	
-	// Temporarily override GOOS for testing logic if possible? 
+
+	// Temporarily override GOOS for testing logic if possible?
 	// actually findRuntimeOsAsset uses runtime.GOOS constant.
 	// So we can only test for the current runtime OS.
-	
+
 	expectedName := ""
 	if runtime.GOOS == "darwin" {
 		expectedName = "darwin"
@@ -41,7 +41,7 @@ func TestFindRuntimeOsAsset(t *testing.T) {
 	} else if runtime.GOOS == "windows" {
 		expectedName = "windows"
 	}
-	
+
 	if expectedName != "" {
 		found := findRuntimeOsAsset(log, assets)
 		if found == nil {

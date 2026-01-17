@@ -16,7 +16,7 @@ import (
 const (
 	deviceCodeURL   = "https://github.com/login/device/code"
 	accessTokenURL  = "https://github.com/login/oauth/access_token"
-	defaultClientID = "178c6fc778ccc68e1d6a" // GitHub CLI Client ID for testing
+	defaultClientID = "Ov23li1SPkIjssKOzz2f"
 )
 
 var (
@@ -91,7 +91,7 @@ func PollAccessToken(ctx context.Context, clientID, deviceCode string, interval 
 	if interval <= 0 {
 		interval = 5
 	}
-	
+
 	form := url.Values{}
 	form.Add("client_id", clientID)
 	form.Add("device_code", deviceCode)
@@ -116,7 +116,7 @@ func PollAccessToken(ctx context.Context, clientID, deviceCode string, interval 
 			if err != nil {
 				return "", err
 			}
-			
+
 			body, err := ioutil.ReadAll(resp.Body)
 			resp.Body.Close()
 			if err != nil {

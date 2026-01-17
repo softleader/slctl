@@ -26,13 +26,13 @@ Use 'init --help' for more information about the command`)
 // EnsureScopes 確保當前的 token 有傳入的所有 scopes
 func EnsureScopes(log *logrus.Logger, scopes []github.Scope) (err error) {
 	// Deprecated in v69 upgrade
-	return errors.New("Basic Auth is deprecated. Please use a Personal Access Token with correct scopes.")
+	return errors.New("basic Auth is deprecated. Please use a Personal Access Token with correct scopes")
 }
 
 // Grant 產生傳入的 username/password 的 token
 func Grant(ctx context.Context, client *github.Client, log *logrus.Logger, force bool) (token string, err error) {
 	// Deprecated in v69 upgrade
-	return "", errors.New("Basic Auth login is deprecated. Please use --token or the new login flow.")
+	return "", errors.New("basic Auth login is deprecated. Please use --token or the new login flow")
 }
 
 // Confirm 確保 token 的使用者存在於傳入的 org 中
