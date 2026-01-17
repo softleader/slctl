@@ -132,7 +132,7 @@ For more details: https://github.com/softleader/slctl/blob/master/docs/Home-Path
 	if err = config.Refresh(c.home, c.token, logrus.StandardLogger()); err != nil {
 		return err
 	}
-	if c.yes || prompt.YesNoQuestion(logrus.StandardLogger().Out, askForPublicizeOrg) {
+	if client != nil && (c.yes || prompt.YesNoQuestion(logrus.StandardLogger().Out, askForPublicizeOrg)) {
 		if err = member.PublicizeOrganization(ctx, client, organization); err != nil {
 			return err
 		}
