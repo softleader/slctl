@@ -1,7 +1,7 @@
 # Technology Stack - slctl
 
 ## Frontend / CLI
-- **Language**: [Go](https://golang.org/) - 核心開發語言。
+- **Language**: [Go 1.23+](https://golang.org/) - 核心開發語言。
 - **Framework**: [Cobra](https://github.com/spf13/cobra) - 用於構建強大的 CLI 應用程式。
 - **Argument Parsing**: [pflag](https://github.com/spf13/pflag) - 支援 POSIX 風格的 flag。
 
