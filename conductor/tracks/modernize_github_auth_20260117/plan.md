@@ -16,13 +16,13 @@
     - [x] 確保現有的 `slctl` 其他指令仍能透過 Token 正確取得 Client。
 - [x] Task: Conductor - User Manual Verification 'Refactor API Client' (Protocol in workflow.md) 625957b
 
-## Phase 3: 實作裝置授權流程 (Implement Device Flow)
+## Phase 3: 實作裝置授權流程 (Implement Device Flow) [checkpoint: e628313]
 - [x] Task: 實作 OAuth 2.0 Device Flow 邏輯 e9adcf5
     - [x] 建立 `pkg/github/auth.go` (或適當位置) 的測試檔案，定義 Device Flow 的介面與 mock。
     - [x] 實作請求 Device Code 的功能 (`POST https://github.com/login/device/code`)。
     - [x] 實作輪詢 Access Token 的功能 (`POST https://github.com/login/oauth/access_token`)，包含處理 `authorization_pending`, `slow_down` 等狀態。
     - [x] 整合 Client ID 配置 (預設或參數化)。
-- [~] Task: Conductor - User Manual Verification 'Implement Device Flow' (Protocol in workflow.md)
+- [x] Task: Conductor - User Manual Verification 'Implement Device Flow' (Protocol in workflow.md) e628313
 
 ## Phase 4: 更新 CLI 初始化指令 (Update CLI Init Command)
 - [ ] Task: 重構 `slctl init` 介面
