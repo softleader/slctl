@@ -1,10 +1,12 @@
 # 實作計畫: 升級 go-github 並現代化登入流程
 
-## Phase 1: 依賴與基礎建設 (Dependencies & Infrastructure)
+## Phase 1: 依賴與基礎建設 (Dependencies & Infrastructure) [checkpoint: fbd7e7f]
 - [x] Task: 升級 go-github 版本 48bb7f8
-    - [ ] 執行 `go get github.com/google/go-github/v69` (或最新版)。
-    - [ ] 執行 `go mod tidy` 確保 `go.mod` 與 `go.sum` 正確更新。
-- [ ] Task: Conductor - User Manual Verification 'Dependencies & Infrastructure' (Protocol in workflow.md)
+    - [x] 執行 `go get github.com/google/go-github/v69` (或最新版)。
+    - [x] 執行 `go mod tidy` 確保 `go.mod` 與 `go.sum` 正確更新。
+    - [x] 修正因版本升級導致的編譯錯誤 (Compile Errors)。
+    - [x] 執行現有測試 (Expected to fail)，確認受影響範圍。
+- [x] Task: Conductor - User Manual Verification 'Dependencies & Infrastructure' (Protocol in workflow.md) fbd7e7f
 
 ## Phase 2: 重構 API Client (Refactor API Client)
 - [ ] Task: 重新設計 Client 建構邏輯
