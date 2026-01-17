@@ -1,0 +1,8 @@
+{
+    "track_id": "auto_browser_20260117",
+    "type": "feature",
+    "status": "new",
+    "created_at": "2026-01-17T17:42:00+08:00",
+    "updated_at": "2026-01-17T17:42:00+08:00",
+    "description": "Auto open browser and copy code to clipboard during slctl init"
+}
