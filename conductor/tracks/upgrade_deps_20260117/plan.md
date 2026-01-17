@@ -29,11 +29,11 @@
     - [x] 執行 `go mod tidy` 清理依賴
 - [x] Task: Conductor - User Manual Verification 'Phase 3: 升級其他關鍵依賴套件' (Protocol in workflow.md) [26f539c]
 
-## Phase 4: 全面測試與清理
+## Phase 4: 全面測試與清理 [checkpoint: d71d27f]
 - [x] Task: 執行全面自動化測試 [82ccfee]
     - [x] 執行 `go test ./...`
     - [x] 驗證測試覆蓋率是否達標 (>80%)
 - [x] Task: 驗證手動關鍵功能 (Init, Plugin System) [82ccfee]
     - [x] 測試 `slctl init`
     - [x] 測試插件搜尋與安裝流程
-- [~] Task: Conductor - User Manual Verification 'Phase 4: 全面測試與清理' (Protocol in workflow.md)
+- [x] Task: Conductor - User Manual Verification 'Phase 4: 全面測試與清理' (Protocol in workflow.md) [d71d27f]
