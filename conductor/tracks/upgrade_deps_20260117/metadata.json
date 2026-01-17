@@ -1,0 +1,8 @@
+{
+    "track_id": "upgrade_deps_20260117",
+    "type": "maintenance",
+    "status": "new",
+    "created_at": "2026-01-17T15:42:00Z",
+    "updated_at": "2026-01-17T15:42:00Z",
+    "description": "升級專案依賴套件與 Go 版本以符合現代標準，修復潛在的安全性問題並提升開發環境效率。"
+}
