@@ -28,12 +28,12 @@
 - [x] Task: 重構 `slctl init` 介面 b13a701
     - [x] 修改 `cmd/slctl/init.go`，移除用戶名/密碼的 Flags (`-u`, `-p`) 和相關變數。
     - [x] 更新 Help/Usage 訊息，反映新的登入選項。
-- [~] Task: 整合新的登入流程
-    - [ ] 實作邏輯：若無 `--token`，則啟動 Device Flow。
-    - [ ] 顯示清晰的 User Code 與 Verification URL 提示。
-    - [ ] 在成功取得 Token 後，呼叫現有的儲存邏輯 (Config Persistence)。
-    - [ ] 驗證流程：確保 Token 有效性並取得當前使用者資訊 (類似原有 `Welcome aboard %s!`)。
-- [ ] Task: Conductor - User Manual Verification 'Update CLI Init Command' (Protocol in workflow.md)
+- [x] Task: 整合新的登入流程 ae3c56f
+    - [x] 實作邏輯：若無 `--token`，則啟動 Device Flow。
+    - [x] 顯示清晰的 User Code 與 Verification URL 提示。
+    - [x] 在成功取得 Token 後，呼叫現有的儲存邏輯 (Config Persistence)。
+    - [x] 驗證流程：確保 Token 有效性並取得當前使用者資訊 (類似原有 `Welcome aboard %s!`)。
+- [~] Task: Conductor - User Manual Verification 'Update CLI Init Command' (Protocol in workflow.md)
 
 ## Phase 5: 驗證與清理 (Verification & Cleanup)
 - [ ] Task: 全面測試與文件更新
