@@ -14,6 +14,6 @@
 
 - [x] Task: 編輯驗證 ac2f807
     - 執行 `go build ./...` 確保所有套件皆能成功編譯。
-- [~] Task: 執行單元測試
+- [x] Task: 執行單元測試 02252f2
     - 執行 `go test ./...` 確保現有功能未受損壞且測試通過。
-- [ ] Task: Conductor - User Manual Verification 'Phase 2: 驗證與穩定性' (Protocol in workflow.md)
+- [~] Task: Conductor - User Manual Verification 'Phase 2: 驗證與穩定性' (Protocol in workflow.md)
