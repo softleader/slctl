@@ -11,18 +11,18 @@
     - [x] 識別有安全性更新或重大更新的套件
 - [x] Task: Conductor - User Manual Verification 'Phase 1: 環境準備與依賴分析' (Protocol in workflow.md) [ad4d2e8]
 
-## Phase 2: 核心套件升級 (Go & Cobra)
+## Phase 2: 核心套件升級 (Go & Cobra) [checkpoint: cb2c969]
 - [x] Task: 升級 Go 版本 [1fca756]
     - [x] 修改 `go.mod` 中的 `go` 版本
     - [x] 更新 `Makefile` 相關版本屬性
 - [x] Task: 升級 `spf13/cobra` 與 `spf13/pflag` [841735e]
     - [x] 執行 `go get github.com/spf13/cobra@latest`
     - [x] 驗證 CLI 入口點 `cmd/slctl` 是否正常編譯
-- [~] Task: Conductor - User Manual Verification 'Phase 2: 核心套件升級 (Go & Cobra)' (Protocol in workflow.md)
+- [x] Task: Conductor - User Manual Verification 'Phase 2: 核心套件升級 (Go & Cobra)' (Protocol in workflow.md) [cb2c969]
 
 ## Phase 3: 升級其他關鍵依賴套件
-- [ ] Task: 升級 GitHub API 相關套件 (`google/go-github`)
-    - [ ] 執行升級指令
+- [~] Task: 升級 GitHub API 相關套件 (`google/go-github`)
+    - [~] 執行升級指令
     - [ ] 修復因 API 變更導致的編譯錯誤 (如果有的話)
 - [ ] Task: 升級日誌與工具套件 (`logrus`, `archiver`, 等)
     - [ ] 批量升級輔助套件
