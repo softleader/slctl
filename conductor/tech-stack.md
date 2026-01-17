@@ -1,12 +1,13 @@
 # Technology Stack - slctl
 
 ## Frontend / CLI
-- **Language**: [Go 1.23+](https://golang.org/) - 核心開發語言。
+- **Language**: [Go 1.24+](https://golang.org/) - 核心開發語言。
 - **Framework**: [Cobra](https://github.com/spf13/cobra) - 用於構建強大的 CLI 應用程式。
 - **Argument Parsing**: [pflag](https://github.com/spf13/pflag) - 支援 POSIX 風格的 flag。
 
 ## Service Integration
 - **Platform**: [GitHub API](https://developer.github.com/v3/) - 用於存取 GitHub 資源與權限驗證。
+- **SDK**: [go-github v69+](https://github.com/google/go-github) - GitHub API 的 Go 語言客戶端庫。
 - **Networking/OAuth2**: [golang.org/x/oauth2](https://pkg.go.dev/golang.org/x/oauth2) - 處理 GitHub 認證流程。
 
 ## Infrastructure & Tooling
