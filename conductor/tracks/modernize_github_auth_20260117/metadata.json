@@ -1,0 +1,8 @@
+{
+    "track_id": "modernize_github_auth_20260117",
+    "type": "feature",
+    "status": "new",
+    "created_at": "2026-01-17T16:13:30+08:00",
+    "updated_at": "2026-01-17T16:13:30+08:00",
+    "description": "更新go-github版本，必要時可以調整init的登入流程"
+}
