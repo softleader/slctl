@@ -21,13 +21,13 @@
 - [x] Task: Conductor - User Manual Verification 'Phase 2: 核心套件升級 (Go & Cobra)' (Protocol in workflow.md) [cb2c969]
 
 ## Phase 3: 升級其他關鍵依賴套件
-- [~] Task: 升級 GitHub API 相關套件 (`google/go-github`)
-    - [~] 執行升級指令
-    - [ ] 修復因 API 變更導致的編譯錯誤 (如果有的話)
-- [ ] Task: 升級日誌與工具套件 (`logrus`, `archiver`, 等)
-    - [ ] 批量升級輔助套件
-    - [ ] 執行 `go mod tidy` 清理依賴
-- [ ] Task: Conductor - User Manual Verification 'Phase 3: 升級其他關鍵依賴套件' (Protocol in workflow.md)
+- [x] Task: 升級 GitHub API 相關套件 (`google/go-github`) [a3bd96b] (SHA will be updated in next step)
+    - [x] 執行升級指令
+    - [x] 修復因 API 變更導致的編譯錯誤 (如果有的話)
+- [x] Task: 升級日誌與工具套件 (`logrus`, `archiver`, 等) [a3bd96b]
+    - [x] 批量升級輔助套件
+    - [x] 執行 `go mod tidy` 清理依賴
+- [~] Task: Conductor - User Manual Verification 'Phase 3: 升級其他關鍵依賴套件' (Protocol in workflow.md)
 
 ## Phase 4: 全面測試與清理
 - [ ] Task: 執行全面自動化測試

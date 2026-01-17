@@ -5,7 +5,7 @@ import (
 	"errors"
 	"fmt"
 
-	"github.com/google/go-github/v21/github"
+	"github.com/google/go-github/v28/github"
 	"github.com/sirupsen/logrus"
 	"github.com/softleader/slctl/pkg/environment"
 	gh "github.com/softleader/slctl/pkg/github"

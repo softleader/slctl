@@ -8,7 +8,7 @@ import (
 	"strings"
 	"syscall"
 
-	"github.com/google/go-github/v21/github"
+	"github.com/google/go-github/v28/github"
 	"github.com/sirupsen/logrus"
 	"golang.org/x/crypto/ssh/terminal"
 	"golang.org/x/oauth2"

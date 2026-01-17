@@ -6,7 +6,7 @@ import (
 
 	"github.com/softleader/slctl/pkg/release"
 
-	"github.com/google/go-github/github"
+	"github.com/google/go-github/v28/github"
 	"github.com/sirupsen/logrus"
 	"github.com/softleader/slctl/pkg/config"
 	"github.com/softleader/slctl/pkg/paths"
