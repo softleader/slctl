@@ -3,7 +3,7 @@
 ## Phase 1: 更新與清理 (Update and Tidy)
 本階段將集中於實際更新依賴項並清理 `go.mod` 檔案。
 
-- [ ] Task: 執行全面更新
+- [x] Task: 執行全面更新 e97d5d8
     - 執行 `go get -u ./...` 以更新所有直接與間接依賴項。
 - [ ] Task: 清理依賴檔案
     - 執行 `go mod tidy` 以移除未使用的依賴並同步 `go.sum`。
