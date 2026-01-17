@@ -24,7 +24,7 @@ func TestFetchOnline(t *testing.T) {
 	hh := paths.Home(h)
 	r, err := fetchOnline(logrus.StandardLogger(), hh, "softleader")
 	if err != nil {
-		if strings.Contains(err.Error(), "401 Bad credentials") {
+		if strings.Contains(err.Error(), "401 Bad credentials") || strings.Contains(err.Error(), "token not exist") {
 			t.Skipf("maybe just token not set")
 		}
 		t.Error(err)
