@@ -45,14 +45,15 @@ bash 或是 zsh 的使用者可以參考 [Completion Script](https://github.com/
 
 ## Getting Started
 
-執行 `slctl init` 透過互動式的問答產生並儲存 [GitHub Personal Access Token](https://github.com/settings/tokens), 也可以傳入 `--username`, `--password` 及 `--yes` 來整合非互動式的情境 (e.g. DevOps pipeline):
+執行 `slctl init` 透過 GitHub OAuth 裝置授權流程 (Device Flow) 產生並儲存 GitHub Access Token。
 
 ```sh
 $ slctl init
-$ slctl init -u GITHUB_USERNAME -p GITHUB_PASSWORD -y
 ```
 
-使用 `--force` 在發現有重複的 Token 時, 會強制刪除並產生一個全新的 Access Token
+執行後請依提示在瀏覽器中輸入顯示的驗證碼完成授權。
+
+使用 `--force` 在發現有重複的 Token 時, 會強制產生一個全新的 Access Token
 
 ```sh
 $ slctl init -f
