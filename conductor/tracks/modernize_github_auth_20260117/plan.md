@@ -9,12 +9,12 @@
 - [x] Task: Conductor - User Manual Verification 'Dependencies & Infrastructure' (Protocol in workflow.md) fbd7e7f
 
 ## Phase 2: 重構 API Client (Refactor API Client)
-- [ ] Task: 重新設計 Client 建構邏輯
-    - [ ] 建立新的測試 `pkg/github/client_test.go` 定義新版 Client 的預期行為。
-    - [ ] 移除 `pkg/github/client.go` 中的 `NewBasicAuthClient` 及其相關 Basic Auth 邏輯。
-    - [ ] 優化 `NewTokenClient` 或建立新的建構函式以支援直接傳入 Token 初始化的 Client。
-    - [ ] 確保現有的 `slctl` 其他指令仍能透過 Token 正確取得 Client。
-- [ ] Task: Conductor - User Manual Verification 'Refactor API Client' (Protocol in workflow.md)
+- [x] Task: 重新設計 Client 建構邏輯 9ad51e2
+    - [x] 建立新的測試 `pkg/github/client_test.go` 定義新版 Client 的預期行為。
+    - [x] 移除 `pkg/github/client.go` 中的 `NewBasicAuthClient` 及其相關 Basic Auth 邏輯。
+    - [x] 優化 `NewTokenClient` 或建立新的建構函式以支援直接傳入 Token 初始化的 Client。
+    - [x] 確保現有的 `slctl` 其他指令仍能透過 Token 正確取得 Client。
+- [~] Task: Conductor - User Manual Verification 'Refactor API Client' (Protocol in workflow.md)
 
 ## Phase 3: 實作裝置授權流程 (Implement Device Flow)
 - [ ] Task: 實作 OAuth 2.0 Device Flow 邏輯
