@@ -30,10 +30,10 @@
 - [x] Task: Conductor - User Manual Verification 'Phase 3: 升級其他關鍵依賴套件' (Protocol in workflow.md) [26f539c]
 
 ## Phase 4: 全面測試與清理
-- [~] Task: 執行全面自動化測試
-    - [~] 執行 `go test ./...`
-    - [~] 驗證測試覆蓋率是否達標 (>80%)
-- [ ] Task: 驗證手動關鍵功能 (Init, Plugin System)
-    - [ ] 測試 `slctl init`
-    - [ ] 測試插件搜尋與安裝流程
-- [ ] Task: Conductor - User Manual Verification 'Phase 4: 全面測試與清理' (Protocol in workflow.md)
+- [x] Task: 執行全面自動化測試 [a8d2e8f] (SHA will be updated)
+    - [x] 執行 `go test ./...`
+    - [x] 驗證測試覆蓋率是否達標 (>80%)
+- [x] Task: 驗證手動關鍵功能 (Init, Plugin System) [a8d2e8f]
+    - [x] 測試 `slctl init`
+    - [x] 測試插件搜尋與安裝流程
+- [~] Task: Conductor - User Manual Verification 'Phase 4: 全面測試與清理' (Protocol in workflow.md)
