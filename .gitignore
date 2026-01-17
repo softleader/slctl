@@ -16,3 +16,4 @@ _dist/
 _build/
 .idea/
 .DS_Store
+.vscode/
