@@ -99,12 +99,15 @@ For more details: https://github.com/softleader/slctl/wiki/Home-Path`, c.home.St
 	ctx := context.Background()
 	if !environment.Settings.Offline {
 		if c.token == "" {
-			if client, err = gh.NewBasicAuthClient(ctx, logrus.StandardLogger(), c.username, c.password); err != nil {
-				return err
-			}
-			if c.token, err = token.Grant(ctx, client, logrus.StandardLogger(), c.force); err != nil {
-				return err
-			}
+			return fmt.Errorf("GitHub access token is required. Please use --token or the new login flow (TBD).")
+			/*
+				if client, err = gh.NewBasicAuthClient(ctx, logrus.StandardLogger(), c.username, c.password); err != nil {
+					return err
+				}
+				if c.token, err = token.Grant(ctx, client, logrus.StandardLogger(), c.force); err != nil {
+					return err
+				}
+			*/
 		} else if client, err = gh.NewTokenClient(ctx, c.token); err != nil {
 			return err
 		}
