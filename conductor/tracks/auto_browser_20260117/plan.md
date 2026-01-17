@@ -5,7 +5,7 @@
     - [x] 執行 `go get github.com/atotto/clipboard`
     - [x] 執行 `go mod tidy` 更新 `go.mod` 與 `go.sum` (依賴將在程式碼使用後自動加入)
 
-## Phase 2: 實作自動化功能 (TDD)
+## Phase 2: 實作自動化功能 (TDD) [checkpoint: 84edffb]
 - [x] Task: 重構 `cmd/slctl/init.go` 以支援測試 (Refactor for Testability)
     - [x] 定義變數 `openBrowser` (預設呼叫 `open.Run`)
     - [x] 定義變數 `writeToClipboard` (預設呼叫 `clipboard.WriteAll`)
