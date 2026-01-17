@@ -9,5 +9,5 @@ This file tracks all major tracks for the project. Each track has its own detail
 
 ---
 
-- [ ] **Track: 更新dependicy**
+- [x] **Track: 更新dependicy**
 *Link: [./tracks/update_deps_20260117/](./tracks/update_deps_20260117/)*
