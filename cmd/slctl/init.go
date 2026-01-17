@@ -85,18 +85,24 @@ For more details: https://github.com/softleader/slctl/wiki/Home-Path`, c.home.St
 	ctx := context.Background()
 	if !environment.Settings.Offline {
 		if c.token == "" {
-			return fmt.Errorf("GitHub access token is required. Please use --token or the new login flow (TBD).")
-			/*
-				if client, err = gh.NewBasicAuthClient(ctx, logrus.StandardLogger(), c.username, c.password); err != nil {
-					return err
-				}
-				if c.token, err = token.Grant(ctx, client, logrus.StandardLogger(), c.force); err != nil {
-					return err
-				}
-			*/
-		} else if client, err = gh.NewTokenClient(ctx, c.token); err != nil {
+			dcr, err := gh.RequestDeviceCode(ctx, "", gh.Scopes)
+			if err != nil {
+				return fmt.Errorf("failed to request device code: %w", err)
+			}
+
+			logrus.Printf("Please go to %s and enter the code: %s", dcr.VerificationURI, dcr.UserCode)
+
+			c.token, err = gh.PollAccessToken(ctx, "", dcr.DeviceCode, dcr.Interval)
+			if err != nil {
+				return fmt.Errorf("failed to poll for access token: %w", err)
+			}
+			logrus.Println("Successfully authenticated.")
+		}
+
+		if client, err = gh.NewTokenClient(ctx, c.token); err != nil {
 			return err
 		}
+
 		if username, err = token.Confirm(ctx, client, organization, logrus.StandardLogger()); err != nil {
 			return err
 		}
