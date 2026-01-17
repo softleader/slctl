@@ -28,6 +28,7 @@ func TestFetchOnline(t *testing.T) {
 			t.Skipf("maybe just token not set")
 		}
 		t.Error(err)
+		return
 	}
 	if l := len(r.Repos); l < 3 {
 		t.Errorf("should be a least 3 official plugins, but got %v", l)

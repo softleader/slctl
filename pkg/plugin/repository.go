@@ -8,7 +8,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/google/go-github/v28/github"
+	"github.com/google/go-github/v69/github"
 	"github.com/sirupsen/logrus"
 	"github.com/softleader/slctl/pkg/config"
 	"github.com/softleader/slctl/pkg/environment"
@@ -105,7 +105,7 @@ func fetchOnline(log *logrus.Logger, home paths.Home, org string) (r *Repository
 	client := github.NewClient(tc)
 	query := fmt.Sprintf("org:%s+topic:%s", org, officialPluginTopic)
 	log.Debugf("specifying searching qualifiers: %s\n", query)
-	var allRepos []github.Repository
+	var allRepos []*github.Repository
 	opt := &github.SearchOptions{}
 	for {
 		result, resp, err := client.Search.Repositories(ctx, query, opt)

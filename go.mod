@@ -4,7 +4,7 @@ go 1.24.0
 
 require (
 	github.com/blang/semver v3.5.1+incompatible
-	github.com/google/go-github/v28 v28.1.1
+	github.com/google/go-github/v69 v69.2.0
 	github.com/gosuri/uitable v0.0.4
 	github.com/mholt/archiver v3.1.1+incompatible
 	github.com/mitchellh/go-homedir v1.1.0
@@ -23,7 +23,6 @@ require (
 	github.com/fatih/color v1.18.0 // indirect
 	github.com/golang/protobuf v1.2.0 // indirect
 	github.com/golang/snappy v0.0.0-20180518054509-2e65f85255db // indirect
-	github.com/google/go-cmp v0.6.0 // indirect
 	github.com/google/go-querystring v1.1.0 // indirect
 	github.com/inconshreveable/mousetrap v1.1.0 // indirect
 	github.com/mattn/go-colorable v0.1.13 // indirect
