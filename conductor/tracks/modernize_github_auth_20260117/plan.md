@@ -25,10 +25,10 @@
 - [x] Task: Conductor - User Manual Verification 'Implement Device Flow' (Protocol in workflow.md) e628313
 
 ## Phase 4: 更新 CLI 初始化指令 (Update CLI Init Command)
-- [ ] Task: 重構 `slctl init` 介面
-    - [ ] 修改 `cmd/slctl/init.go`，移除用戶名/密碼的 Flags (`-u`, `-p`) 和相關變數。
-    - [ ] 更新 Help/Usage 訊息，反映新的登入選項。
-- [ ] Task: 整合新的登入流程
+- [x] Task: 重構 `slctl init` 介面 b13a701
+    - [x] 修改 `cmd/slctl/init.go`，移除用戶名/密碼的 Flags (`-u`, `-p`) 和相關變數。
+    - [x] 更新 Help/Usage 訊息，反映新的登入選項。
+- [~] Task: 整合新的登入流程
     - [ ] 實作邏輯：若無 `--token`，則啟動 Device Flow。
     - [ ] 顯示清晰的 User Code 與 Verification URL 提示。
     - [ ] 在成功取得 Token 後，呼叫現有的儲存邏輯 (Config Persistence)。
