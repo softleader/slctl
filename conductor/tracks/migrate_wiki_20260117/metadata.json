@@ -1,8 +1,8 @@
 {
-  "track_id": "migrate_wiki_20260117",
-  "type": "chore",
-  "status": "new",
-  "created_at": "2026-01-17T09:57:35Z",
-  "updated_at": "2026-01-17T09:57:35Z",
-  "description": "將 .wiki 內容遷移至 docs 並更新全域連結"
+    "track_id": "migrate_wiki_20260117",
+    "type": "chore",
+    "status": "completed",
+    "created_at": "2026-01-17T09:57:35Z",
+    "updated_at": "2026-01-17T09:59:55Z",
+    "description": "將 .wiki 內容遷移至 docs 並更新全域連結"
 }
