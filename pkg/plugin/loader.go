@@ -2,7 +2,6 @@ package plugin
 
 import (
 	"fmt"
-	"io/ioutil"
 	"os"
 	"os/exec"
 	"path/filepath"
@@ -149,7 +148,7 @@ func LoadAll(basedir string) ([]*Plugin, error) {
 
 // LoadDir 載入 plugin 資料夾
 func LoadDir(dirname string) (*Plugin, error) {
-	data, err := ioutil.ReadFile(filepath.Join(dirname, MetadataFileName))
+	data, err := os.ReadFile(filepath.Join(dirname, MetadataFileName))
 	if err != nil {
 		return nil, err
 	}
@@ -157,7 +156,7 @@ func LoadDir(dirname string) (*Plugin, error) {
 	if err := yaml.Unmarshal(data, &plug.Metadata); err != nil {
 		return nil, err
 	}
-	b, err := ioutil.ReadFile(filepath.Join(dirname, SourceFileName))
+	b, err := os.ReadFile(filepath.Join(dirname, SourceFileName))
 	if err != nil && !os.IsNotExist(err) {
 		return nil, err
 	}

@@ -3,7 +3,6 @@ package plugin
 import (
 	"bytes"
 	"fmt"
-	"io/ioutil"
 	"os"
 	"path/filepath"
 	"reflect"
@@ -135,5 +134,5 @@ func save(file file) (err error) {
 	if err != nil {
 		return
 	}
-	return ioutil.WriteFile(file.filepath(), out, 0755)
+	return os.WriteFile(file.filepath(), out, 0755)
 }

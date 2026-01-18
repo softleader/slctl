@@ -3,7 +3,6 @@ package plugin
 import (
 	"context"
 	"fmt"
-	"io/ioutil"
 	"os"
 	"strings"
 	"time"
@@ -74,12 +73,12 @@ func (r *Repository) save(path string) error {
 	if err != nil {
 		return err
 	}
-	return ioutil.WriteFile(path, data, 0644)
+	return os.WriteFile(path, data, 0644)
 }
 
 func loadLocal(log *logrus.Logger, path string) (r *Repository, err error) {
 	log.Debugf("loading cached plugin repositories from: %s\n", path)
-	data, err := ioutil.ReadFile(path)
+	data, err := os.ReadFile(path)
 	if err != nil {
 		return
 	}
