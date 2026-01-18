@@ -12,8 +12,8 @@
 - [x] Task: 檢查 `Makefile` 是否有硬編碼的 Go 版本檢查或限制 eaf7b3d
 - [x] Task: Conductor - User Manual Verification 'Infrastructure & CI/CD' (Protocol in workflow.md) 43343aa
 
-## Phase 3: Documentation & Final Verification
+## Phase 3: Documentation & Final Verification [checkpoint: 7e1b859]
 - [x] Task: 更新 `docs/` 目錄下提及 Go 版本的文件（如 `docs/Compiling-Source.md`） 6a9c75a
-- [ ] Task: 執行完整測試套件 (`go test ./...`) 確保功能正常
-- [ ] Task: 執行專案編譯 (`make build`) 驗證產出物
-- [ ] Task: Conductor - User Manual Verification 'Documentation & Final Verification' (Protocol in workflow.md)
+- [x] Task: 執行完整測試套件 (`go test ./...`) 確保功能正常 e2226b5
+- [x] Task: 執行專案編譯 (`make build`) 驗證產出物 0ac5dcd
+- [x] Task: Conductor - User Manual Verification 'Documentation & Final Verification' (Protocol in workflow.md) 7e1b859
