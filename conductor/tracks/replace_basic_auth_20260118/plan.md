@@ -6,9 +6,9 @@
 - [x] 24400b9 Task: Conductor - User Manual Verification '基礎架構更新' (Protocol in workflow.md)
 
 ## 2. 功能模組適配 (插件相關指令)
-- [ ] Task: 撰寫 `slctl plugin search` 使用 OAuth Flow 的失敗測試
-- [ ] Task: 在 `slctl plugin search` 中實作 OAuth Flow
-- [ ] Task: 驗證 `slctl plugin install` 與新版 `EnsureScopes` 的整合
+- [x] Task: 撰寫 `slctl plugin search` 使用 OAuth Flow 的失敗測試
+- [x] eb55a86 Task: 在 `slctl plugin search` 中實作 OAuth Flow
+- [x] eb55a86 Task: 驗證 `slctl plugin install` 與新版 `EnsureScopes` 的整合
 - [ ] Task: Conductor - User Manual Verification '功能模組適配' (Protocol in workflow.md)
 
 ## 3. 清理舊邏輯 (移除遺留的 Basic Auth)
