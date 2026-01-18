@@ -37,7 +37,7 @@ builds:
 archives:
   - id: default
     formats:
-      - tar.gz
+      - tar
     name_template: >-
       {{ .ProjectName }}-{{ .Os }}-
       {{- if eq .Arch "amd64" }}amd64
