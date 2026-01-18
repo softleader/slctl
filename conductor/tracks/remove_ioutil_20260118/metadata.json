@@ -1,8 +1,0 @@
-{
-  "track_id": "remove_ioutil_20260118",
-  "type": "chore",
-  "status": "new",
-  "created_at": "2026-01-18T14:27:43+08:00",
-  "updated_at": "2026-01-18T14:27:43+08:00",
-  "description": "移除 deprecated io/ioutil 套件，替換為 Go 1.16+ 推薦的 io 和 os 套件"
-}
