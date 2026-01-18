@@ -7,7 +7,7 @@
 - [x] Task: Conductor - User Manual Verification 'Core Configuration' (Protocol in workflow.md) b3a8360
 
 ## Phase 2: Infrastructure & CI/CD
-- [ ] Task: 更新 GitHub Actions 工作流 (`.github/workflows/*.yml`) 以使用 Go 1.25.6
+- [x] Task: 更新 GitHub Actions 工作流 (`.github/workflows/*.yml`) 以使用 Go 1.25.6 2c18e48
 - [ ] Task: 檢查並更新 `.goreleaser.yml` 中的 Go 版本設定
 - [ ] Task: 檢查 `Makefile` 是否有硬編碼的 Go 版本檢查或限制
 - [ ] Task: Conductor - User Manual Verification 'Infrastructure & CI/CD' (Protocol in workflow.md)
