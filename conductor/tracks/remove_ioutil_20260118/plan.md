@@ -35,11 +35,11 @@
 
 - [x] Task: Conductor - User Manual Verification 'Phase 2: Plugin 套件更新' (Protocol in workflow.md)
 
-## Phase 3: 最終驗證
+## Phase 3: 最終驗證 [checkpoint: 7f31437]
 
-- [ ] Task: 執行完整驗證套件
-    - [ ] 執行 `make error-free`（goimports, gofmt, golint, go vet）
-    - [ ] 執行 `make test` 確認所有測試通過
-    - [ ] 執行 `grep -r "io/ioutil" .` 確認無殘留
+- [x] Task: 執行完整驗證套件
+    - [x] 執行 `make error-free`（goimports, gofmt, golint, go vet）
+    - [x] 執行 `make test` 確認所有測試通過
+    - [x] 執行 `grep -r "io/ioutil" .` 確認無殘留
 
-- [ ] Task: Conductor - User Manual Verification 'Phase 3: 最終驗證' (Protocol in workflow.md)
+- [x] Task: Conductor - User Manual Verification 'Phase 3: 最終驗證' (Protocol in workflow.md)
