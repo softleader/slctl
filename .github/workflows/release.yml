@@ -48,7 +48,7 @@ jobs:
           tar -xvf tapper.tar.gz
           chmod +x tapper
           ./tapper --owner softleader \
-            --token ${{ secrets.GITHUB_TOKEN }} \
+            --token ${{ secrets.HOMETAP_GITHUB_TOKEN }} \
             --formula slctl \
             --version ${{ github.event.inputs.tag }} \
             --dist ./dist
