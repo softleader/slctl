@@ -36,7 +36,8 @@ builds:
 
 archives:
   - id: default
-    format: tar.gz
+    formats:
+      - tar.gz
     name_template: >-
       {{ .ProjectName }}-{{ .Os }}-
       {{- if eq .Arch "amd64" }}amd64
@@ -45,7 +46,8 @@ archives:
       {{- .Version }}
     format_overrides:
       - goos: windows
-        format: zip
+        formats:
+          - zip
     files:
       - README.md
       - LICENSE
