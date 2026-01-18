@@ -12,7 +12,7 @@
 - [x] 9683b30 Task: Conductor - User Manual Verification '功能模組適配' (Protocol in workflow.md)
 
 ## 3. 清理舊邏輯 (移除遺留的 Basic Auth)
-- [ ] Task: 識別並移除 CLI 旗標與結構中所有遺留的 `Username`/`Password` 引用
+- [x] 9118c7c Task: 識別並移除 CLI 旗標與結構中所有遺留的 `Username`/`Password` 引用
 - [ ] Task: 更新文件與幫助訊息，反映僅支援 OAuth 驗證
 - [ ] Task: 最終驗證所有與 GitHub 相關的指令
 - [ ] Task: Conductor - User Manual Verification '清理舊邏輯' (Protocol in workflow.md)
