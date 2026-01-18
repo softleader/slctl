@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"fmt"
 	"strings"
 
@@ -64,7 +65,7 @@ func newPluginSearchCmd() *cobra.Command {
 }
 
 func (c *pluginSearchCmd) run() (err error) {
-	r, err := plugin.LoadRepository(logrus.StandardLogger(), c.home, organization, c.force)
+	r, err := plugin.LoadRepository(context.Background(), logrus.StandardLogger(), c.home, organization, c.force, nil)
 	if err != nil {
 		return err
 	}
