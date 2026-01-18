@@ -42,7 +42,7 @@ jobs:
 
       - name: Update Homebrew Formula
         env:
-          GH_TOKEN: ${{ secrets.TAP_GITHUB_TOKEN }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           gh release download --repo softleader/homebrew-tap --pattern "brew-tapper-linux-amd64.tar.gz" --output tapper.tar.gz
           tar -xvf tapper.tar.gz
