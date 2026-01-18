@@ -7,5 +7,4 @@ This file tracks all major tracks for the project. Each track has its own detail
 
 ---
 
-- [x] **Track: 更新go version 到1.25.6**
-*Link: [./tracks/upgrade_go_1_25_6_20260118/](./tracks/upgrade_go_1_25_6_20260118/)*
+
