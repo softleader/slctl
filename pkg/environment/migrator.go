@@ -1,7 +1,6 @@
 package environment
 
 import (
-	"io/ioutil"
 	"os"
 	"path/filepath"
 	"strings"
@@ -16,7 +15,7 @@ func MoveHome(oldHome, newHome string) error {
 	}
 	h := paths.Home(newHome)
 	if p := h.Plugins(); paths.IsExistDirectory(p) {
-		if plugins, err := ioutil.ReadDir(p); err == nil {
+		if plugins, err := os.ReadDir(p); err == nil {
 			for _, p := range plugins {
 				relink(oldHome, h, p) // 如果 link 失敗也不回傳 err, 就當成 plugin 不存在了讓使用者重新安裝就好
 			}
@@ -25,7 +24,7 @@ func MoveHome(oldHome, newHome string) error {
 	return nil
 }
 
-func relink(from string, to paths.Home, plugin os.FileInfo) error {
+func relink(from string, to paths.Home, plugin os.DirEntry) error {
 	path := filepath.Join(to.Plugins(), plugin.Name())
 	if _, err := filepath.EvalSymlinks(path); err == nil { // 代表 link 是正常的
 		return nil

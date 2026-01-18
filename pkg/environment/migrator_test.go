@@ -2,7 +2,6 @@ package environment
 
 import (
 	"fmt"
-	"io/ioutil"
 	"os"
 	"path/filepath"
 	"testing"
@@ -12,7 +11,7 @@ import (
 )
 
 func TestMoveHome(t *testing.T) {
-	root, err := ioutil.TempDir("", "")
+	root, err := os.MkdirTemp("", "")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -34,7 +33,7 @@ func TestMoveHome(t *testing.T) {
 	}
 
 	// 新目錄應該有舊目錄的資料
-	files, err := ioutil.ReadDir(home)
+	files, err := os.ReadDir(home)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -44,7 +43,7 @@ func TestMoveHome(t *testing.T) {
 
 	// 所有 link 應該都要正常
 	hh := paths.Home(home)
-	plugins, err := ioutil.ReadDir(hh.Plugins())
+	plugins, err := os.ReadDir(hh.Plugins())
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -57,7 +56,7 @@ func TestMoveHome(t *testing.T) {
 }
 
 func createTempHome(root string) (string, error) {
-	oldHome, err := ioutil.TempDir(root, "old-home-")
+	oldHome, err := os.MkdirTemp(root, "old-home-")
 	if err != nil {
 		return "", err
 	}
