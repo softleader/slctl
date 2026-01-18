@@ -1,7 +1,7 @@
 # Implementation Plan - Upgrade Go Version to 1.25.6
 
 ## Phase 1: Core Configuration
-- [ ] Task: 更新 `go.mod` 中的 Go 版本至 1.25.6
+- [x] Task: 更新 `go.mod` 中的 Go 版本至 1.25.6 2deaea3
 - [ ] Task: 更新 `conductor/tech-stack.md` 中的 Go 版本資訊
 - [ ] Task: 執行 `go mod tidy` 驗證相依性並同步環境
 - [ ] Task: Conductor - User Manual Verification 'Core Configuration' (Protocol in workflow.md)
