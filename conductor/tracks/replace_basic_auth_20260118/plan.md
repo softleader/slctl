@@ -1,9 +1,9 @@
 # 實作計畫：以 OAuth Flow 取代 Basic Auth
 
-## 1. 基礎架構更新 (支援 Token 中的 OAuth)
+## 1. 基礎架構更新 (支援 Token 中的 OAuth) [checkpoint: 24400b9]
 - [x] f9f7c41 Task: 撰寫 `token.EnsureScopes` 支援 OAuth Token 的失敗測試
 - [x] f9f7c41 Task: 更新 `token.EnsureScopes`，透過 GitHub API 驗證 Scope 而非直接回傳錯誤
-- [ ] Task: Conductor - User Manual Verification '基礎架構更新' (Protocol in workflow.md)
+- [x] 24400b9 Task: Conductor - User Manual Verification '基礎架構更新' (Protocol in workflow.md)
 
 ## 2. 功能模組適配 (插件相關指令)
 - [ ] Task: 撰寫 `slctl plugin search` 使用 OAuth Flow 的失敗測試
