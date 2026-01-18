@@ -5,8 +5,10 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/google/go-github/v21/github"
+	"github.com/atotto/clipboard"
+	"github.com/google/go-github/v69/github"
 	"github.com/sirupsen/logrus"
+	"github.com/skratchdot/open-golang/open"
 	"github.com/softleader/slctl/pkg/config"
 	"github.com/softleader/slctl/pkg/environment"
 	gh "github.com/softleader/slctl/pkg/github"
@@ -17,39 +19,33 @@ import (
 	"github.com/spf13/cobra"
 )
 
-const (
-	initDesc = `This command grants Github access token and sets up local configuration in $SL_HOME (default ~/.config/slctl/).
+// Mockable functions for testing
+var (
+	openBrowser      = open.Run
+	writeToClipboard = clipboard.WriteAll
+)
 
-執行 'slctl init' 透過互動式的問答產生並儲存 GitHub Personal Access Token (https://github.com/settings/tokens)
-也可以傳入 '--username', '--password' 及 '--yes' 來整合非互動式的情境 (e.g. DevOps pipeline):
+const (
+	initDesc = `This command authorizes slctl with GitHub and sets up local configuration in $SL_HOME (default ~/.config/slctl/).
+
+To authenticate, slctl will use the GitHub Device Flow. You will be prompted to enter a code in your browser.
+
+Alternatively, you can provide a Personal Access Token (PAT) directly using the '--token' flag.
+The PAT must have the required scopes. To see them, run 'slctl init scopes'.
 
 	$ slctl init
-	$ slctl init -u GITHUB_USERNAME -p GITHUB_PASSWORD -y
-
-使用 '--force' 在發現有重複的 Token 時, 會強制刪除並產生一個全新的 Access Token
-
-	$ slctl init -f
-
-若你想自己維護 Access Token (請務必確保有足夠的權限), 可以使用 '--token' 讓 slctl 驗證後直接儲存起來
-執行 'scopes'' 可以列出所有 slctl 需要的 Access Token 權限
-
 	$ slctl init --token GITHUB_TOKEN
-	$ slctl init scopes
 
-使用 '--offline' 則 slctl 不會跟 GitHub API 有任何互動, 只會配置 $SL_HOME 環境目錄.
-
-同時使用 '--offline' 及 '--token' 可跳過 Token 驗證直接儲存起來 (e.g. 沒網路環境下)
+Using '--offline' skips all GitHub API interactions and only sets up local directories.
 `
 	askForPublicizeOrg = `Do you want to publicize the membership in SoftLeader?`
 )
 
 type initCmd struct {
-	home     paths.Home
-	username string
-	password string
-	token    string
-	force    bool
-	yes      bool
+	home  paths.Home
+	token string
+	force bool
+	yes   bool
 }
 
 func newInitCmd() *cobra.Command {
@@ -69,8 +65,6 @@ func newInitCmd() *cobra.Command {
 	f := cmd.Flags()
 	f.BoolVarP(&c.force, "force", "f", false, "force to re-generate a new one if token already exists")
 	f.StringVar(&c.token, "token", "", "github access token")
-	f.StringVarP(&c.username, "username", "u", "", "github username")
-	f.StringVarP(&c.password, "password", "p", "", "github password")
 	f.BoolVarP(&c.yes, "yes", "y", false, "automatic 'yes' to prompts. Assume 'yes' as answer to all prompts and run non-interactively")
 
 	cmd.AddCommand(
@@ -84,7 +78,7 @@ func (c *initCmd) run() (err error) {
 	if c.home.ContainsAnySpace() {
 		return fmt.Errorf(`default home path contains space which is not allowed (%s).
 You might need to specify another SL_HOME without space and set to system variable.
-For more details: https://github.com/softleader/slctl/wiki/Home-Path`, c.home.String())
+For more details: https://github.com/softleader/slctl/blob/master/docs/Home-Path.md`, c.home.String())
 	}
 	if err = ensureDirectories(c.home, logrus.StandardLogger()); err != nil {
 		return err
@@ -99,15 +93,38 @@ For more details: https://github.com/softleader/slctl/wiki/Home-Path`, c.home.St
 	ctx := context.Background()
 	if !environment.Settings.Offline {
 		if c.token == "" {
-			if client, err = gh.NewBasicAuthClient(ctx, logrus.StandardLogger(), c.username, c.password); err != nil {
-				return err
+			dcr, err := gh.RequestDeviceCode(ctx, "", gh.Scopes)
+			if err != nil {
+				return fmt.Errorf("failed to request device code: %w", err)
 			}
-			if c.token, err = token.Grant(ctx, client, logrus.StandardLogger(), c.force); err != nil {
-				return err
+
+			logrus.Printf("Please go to %s and enter the code: %s", dcr.VerificationURI, dcr.UserCode)
+
+			// Attempt to copy user code to clipboard (non-fatal if fails)
+			if err := writeToClipboard(dcr.UserCode); err != nil {
+				logrus.Debugf("Failed to copy code to clipboard: %v", err)
+			} else {
+				logrus.Debug("Code copied to clipboard")
 			}
-		} else if client, err = gh.NewTokenClient(ctx, c.token); err != nil {
+
+			// Attempt to open browser (non-fatal if fails)
+			if err := openBrowser(dcr.VerificationURI); err != nil {
+				logrus.Debugf("Failed to open browser: %v", err)
+			} else {
+				logrus.Debug("Browser opened")
+			}
+
+			c.token, err = gh.PollAccessToken(ctx, "", dcr.DeviceCode, dcr.Interval)
+			if err != nil {
+				return fmt.Errorf("failed to poll for access token: %w", err)
+			}
+			logrus.Println("Successfully authenticated.")
+		}
+
+		if client, err = gh.NewTokenClient(ctx, c.token); err != nil {
 			return err
 		}
+
 		if username, err = token.Confirm(ctx, client, organization, logrus.StandardLogger()); err != nil {
 			return err
 		}
@@ -115,7 +132,7 @@ For more details: https://github.com/softleader/slctl/wiki/Home-Path`, c.home.St
 	if err = config.Refresh(c.home, c.token, logrus.StandardLogger()); err != nil {
 		return err
 	}
-	if c.yes || prompt.YesNoQuestion(logrus.StandardLogger().Out, askForPublicizeOrg) {
+	if client != nil && (c.yes || prompt.YesNoQuestion(logrus.StandardLogger().Out, askForPublicizeOrg)) {
 		if err = member.PublicizeOrganization(ctx, client, organization); err != nil {
 			return err
 		}

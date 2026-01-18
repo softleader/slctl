@@ -2,7 +2,7 @@ package main
 
 import (
 	"github.com/sirupsen/logrus"
-	"github.com/softleader/slctl/pkg/github/token"
+	gh "github.com/softleader/slctl/pkg/github"
 	"github.com/spf13/cobra"
 )
 
@@ -20,7 +20,7 @@ func newInitScopesCmd() *cobra.Command {
 		Long:  initScopesDesc,
 		Args:  cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
-			for _, scope := range token.Scopes {
+			for _, scope := range gh.Scopes {
 				logrus.Println(scope)
 			}
 			return nil

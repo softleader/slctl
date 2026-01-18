@@ -3,7 +3,7 @@ package member
 import (
 	"context"
 
-	"github.com/google/go-github/v21/github"
+	"github.com/google/go-github/v69/github"
 )
 
 // PublicizeOrganization Publicize the organization

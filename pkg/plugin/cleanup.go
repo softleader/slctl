@@ -1,7 +1,6 @@
 package plugin
 
 import (
-	"io/ioutil"
 	"os"
 	"path/filepath"
 	"time"
@@ -50,7 +49,7 @@ func Cleanup(log *logrus.Logger, home paths.Home, force bool, dryRun bool) error
 }
 
 func remove(log *logrus.Logger, home paths.Home, root string, installedPlugins map[string]interface{}, dryRun bool) error {
-	files, err := ioutil.ReadDir(root)
+	files, err := os.ReadDir(root)
 	if err != nil {
 		return err
 	}

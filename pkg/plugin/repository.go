@@ -3,17 +3,16 @@ package plugin
 import (
 	"context"
 	"fmt"
-	"io/ioutil"
 	"os"
 	"strings"
 	"time"
 
-	"github.com/google/go-github/v21/github"
+	"github.com/google/go-github/v69/github"
 	"github.com/sirupsen/logrus"
 	"github.com/softleader/slctl/pkg/config"
 	"github.com/softleader/slctl/pkg/environment"
+	gh "github.com/softleader/slctl/pkg/github"
 	"github.com/softleader/slctl/pkg/paths"
-	"golang.org/x/oauth2"
 	"gopkg.in/yaml.v2"
 )
 
@@ -44,10 +43,10 @@ type Repository struct {
 }
 
 // LoadRepository 載入 Repository
-func LoadRepository(log *logrus.Logger, home paths.Home, org string, force bool) (r *Repository, err error) {
+func LoadRepository(ctx context.Context, log *logrus.Logger, home paths.Home, org string, force bool, client *github.Client) (r *Repository, err error) {
 	cached := home.CacheRepositoryFile()
 	if force {
-		if r, err = fetchOnline(log, home, org); err == nil {
+		if r, err = fetchOnline(ctx, log, home, org, client); err == nil {
 			r.save(cached)
 		}
 		return
@@ -58,7 +57,7 @@ func LoadRepository(log *logrus.Logger, home paths.Home, org string, force bool)
 	}
 	if expired(r) {
 		log.Debugln("cache is out of date")
-		if r, err = fetchOnline(log, home, org); err == nil {
+		if r, err = fetchOnline(ctx, log, home, org, client); err == nil {
 			r.save(cached)
 		}
 	}
@@ -74,12 +73,12 @@ func (r *Repository) save(path string) error {
 	if err != nil {
 		return err
 	}
-	return ioutil.WriteFile(path, data, 0644)
+	return os.WriteFile(path, data, 0644)
 }
 
 func loadLocal(log *logrus.Logger, path string) (r *Repository, err error) {
 	log.Debugf("loading cached plugin repositories from: %s\n", path)
-	data, err := ioutil.ReadFile(path)
+	data, err := os.ReadFile(path)
 	if err != nil {
 		return
 	}
@@ -88,38 +87,41 @@ func loadLocal(log *logrus.Logger, path string) (r *Repository, err error) {
 	return
 }
 
-func fetchOnline(log *logrus.Logger, home paths.Home, org string) (r *Repository, err error) {
+func fetchOnline(ctx context.Context, log *logrus.Logger, home paths.Home, org string, client *github.Client) (r *Repository, err error) {
 	if environment.Settings.Offline {
 		return nil, fmt.Errorf("can not fetch plugin repository in offline mode")
 	}
 	log.Debugf("fetching the plugin repositories\n")
-	cfg, err := config.LoadConfFile(home.ConfigFile())
-	if err != nil {
-		return
+
+	if client == nil {
+		var cfg *config.ConfFile
+		cfg, err = config.LoadConfFile(home.ConfigFile())
+		if err != nil {
+			return
+		}
+		client, err = gh.NewTokenClient(ctx, cfg.Token)
+		if err != nil {
+			return
+		}
 	}
-	ctx := context.Background()
-	ts := oauth2.StaticTokenSource(
-		&oauth2.Token{AccessToken: cfg.Token},
-	)
-	tc := oauth2.NewClient(ctx, ts)
-	client := github.NewClient(tc)
-	query := fmt.Sprintf("org:%s+topic:%s", org, officialPluginTopic)
+
+	query := fmt.Sprintf("org:%s topic:%s", org, officialPluginTopic)
 	log.Debugf("specifying searching qualifiers: %s\n", query)
-	var allRepos []github.Repository
+	var allRepos []*github.Repository
 	opt := &github.SearchOptions{}
 	for {
 		result, resp, err := client.Search.Repositories(ctx, query, opt)
 		if err != nil {
+			log.Debugf("GitHub Search API error: %v\n", err)
 			break
 		}
+		log.Debugf("GitHub Search API response: StatusCode=%d, TotalCount=%d, PageRepos=%d\n",
+			resp.StatusCode, result.GetTotal(), len(result.Repositories))
 		allRepos = append(allRepos, result.Repositories...)
 		if resp.NextPage == 0 {
 			break
 		}
 		opt.Page = resp.NextPage
-	}
-	if err != nil {
-		return
 	}
 	r = &Repository{}
 	r.Expires = time.Now().AddDate(0, 0, 1)

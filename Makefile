@@ -1,6 +1,10 @@
 HAS_DOCKER := $(shell command -v docker;)
-HAS_GOLINT := $(shell command -v golint;)
-HAS_GOIMPORTS := $(shell command -v goimports;)
+GOPATH := $(shell go env GOPATH)
+GOBIN := $(GOPATH)/bin
+HAS_GOLINT := $(shell command -v golint || ls $(GOBIN)/golint 2>/dev/null)
+HAS_GOIMPORTS := $(shell command -v goimports || ls $(GOBIN)/goimports 2>/dev/null)
+GOIMPORTS := $(shell command -v goimports || echo $(GOBIN)/goimports)
+GOLINT := $(shell command -v golint || echo $(GOBIN)/golint)
 VERSION :=
 COMMIT :=
 DIST := $(CURDIR)/_dist
@@ -39,9 +43,9 @@ error-free: goimports gofmt golint govet	## # Run code check
 .PHONY: goimports
 goimports:	## # Run goimports
 ifndef HAS_GOIMPORTS
-	go get golang.org/x/tools/cmd/goimports
+	go install golang.org/x/tools/cmd/goimports@latest
 endif
-	goimports -w -e .
+	$(GOIMPORTS) -w -e .
 
 .PHONY: gofmt
 gofmt:	## # Run gofmt
@@ -50,10 +54,10 @@ gofmt:	## # Run gofmt
 .PHONY: golint
 golint:	## # Run golint
 ifndef HAS_GOLINT
-	go get -u golang.org/x/lint/golint
+	go install golang.org/x/lint/golint@latest
 endif
-	golint -set_exit_status ./cmd/...
-	golint -set_exit_status ./pkg/...
+	$(GOLINT) -set_exit_status ./cmd/...
+	$(GOLINT) -set_exit_status ./pkg/...
 
 .PHONY: govet
 govet:	## # Run go vet
@@ -66,7 +70,7 @@ build:	## # Build binary for current OS and arch
 
 # build static binaries: https://medium.com/@diogok/on-golang-static-binaries-cross-compiling-and-plugins-1aed33499671
 .PHONY: dist
-dist:	## # Build and compress to tgz for linux amd64, darwin amd64 and windows amd64
+dist:	## # Build and compress to tgz for linux amd64, darwin amd64/arm64 and windows amd64
 ifeq ($(strip $(VERSION)),)
 	$(error VERSION is not set)
 endif
@@ -79,7 +83,9 @@ endif
 	CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o $(BUILD)/$(BINARY) -ldflags $(LDFLAGS) -a -tags netgo $(MAIN)
 	tar -C $(BUILD) -zcvf $(DIST)/$(BINARY)-linux-$(VERSION).tgz $(BINARY) README.md LICENSE
 	CGO_ENABLED=0 GOOS=darwin GOARCH=amd64 go build -o $(BUILD)/$(BINARY) -ldflags $(LDFLAGS) -a -tags netgo $(MAIN)
-	tar -C $(BUILD) -zcvf $(DIST)/$(BINARY)-darwin-$(VERSION).tgz $(BINARY) README.md LICENSE
+	tar -C $(BUILD) -zcvf $(DIST)/$(BINARY)-darwin-amd64-$(VERSION).tgz $(BINARY) README.md LICENSE
+	CGO_ENABLED=0 GOOS=darwin GOARCH=arm64 go build -o $(BUILD)/$(BINARY) -ldflags $(LDFLAGS) -a -tags netgo $(MAIN)
+	tar -C $(BUILD) -zcvf $(DIST)/$(BINARY)-darwin-arm64-$(VERSION).tgz $(BINARY) README.md LICENSE
 	CGO_ENABLED=0 GOOS=windows GOARCH=amd64 go build -o $(BUILD)/$(BINARY).exe -ldflags $(LDFLAGS) -a -tags netgo $(MAIN)
 	tar -C $(BUILD) -llzcvf $(DIST)/$(BINARY)-windows-$(VERSION).tgz $(BINARY).exe README.md LICENSE
 

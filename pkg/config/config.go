@@ -3,7 +3,6 @@ package config
 import (
 	"errors"
 	"fmt"
-	"io/ioutil"
 	"os"
 	"time"
 
@@ -55,7 +54,7 @@ func (c *ConfFile) UpdateCheckUpdatesTimeInDays(days int) {
 
 // LoadConfFile return a pointer of a ConfFile which read from path
 func LoadConfFile(path string) (*ConfFile, error) {
-	b, err := ioutil.ReadFile(path)
+	b, err := os.ReadFile(path)
 	if err != nil {
 		if os.IsNotExist(err) {
 			return nil, fmt.Errorf(
@@ -84,7 +83,7 @@ func (c *ConfFile) WriteFile(path string, perm os.FileMode) error {
 	if err != nil {
 		return err
 	}
-	return ioutil.WriteFile(path, data, perm)
+	return os.WriteFile(path, data, perm)
 }
 
 // Refresh 將傳入的 token 寫回檔案中

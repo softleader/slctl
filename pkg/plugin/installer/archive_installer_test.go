@@ -2,7 +2,6 @@ package installer
 
 import (
 	"compress/flate"
-	"io/ioutil"
 	"os"
 	"path/filepath"
 	"testing"
@@ -14,7 +13,7 @@ import (
 )
 
 func TestArchiveInstaller_Install(t *testing.T) {
-	home, err := ioutil.TempDir("", "sl_home")
+	home, err := os.MkdirTemp("", "sl_home")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -31,7 +30,7 @@ func TestArchiveInstaller_Install(t *testing.T) {
 	arcName := "test.zip"
 	arcPath := filepath.Join(hh.String(), arcName)
 	arcSrc := filepath.Join(hh.String(), "file.txt")
-	if err := ioutil.WriteFile(arcSrc, []byte("test"), 0744); err != nil {
+	if err := os.WriteFile(arcSrc, []byte("test"), 0744); err != nil {
 		t.Error(err)
 		return
 	}

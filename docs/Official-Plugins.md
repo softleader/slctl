@@ -1,0 +1,1 @@
+點擊連結 [SoftLeader Official Plugins](https://github.com/search?q=org%3Asoftleader+slctl-plugin&unscoped_q=slctl-plugin) 查看所有松凌官方的 Slctl Plugin

@@ -7,13 +7,13 @@ import (
 	"runtime"
 	"strings"
 
-	"github.com/google/go-github/v21/github"
+	"github.com/google/go-github/v69/github"
 	"github.com/sirupsen/logrus"
 	"github.com/softleader/slctl/pkg/config"
 	"github.com/softleader/slctl/pkg/environment"
+	gh "github.com/softleader/slctl/pkg/github"
 	"github.com/softleader/slctl/pkg/paths"
 	"github.com/softleader/slctl/pkg/plugin"
-	"golang.org/x/oauth2"
 )
 
 type gitHubInstaller struct {
@@ -28,12 +28,11 @@ func newGitHubInstaller(log *logrus.Logger, source, tag string, asset int, home 
 	if err != nil {
 		return nil, err
 	}
+	client, err := gh.NewTokenClient(context.Background(), conf.Token)
+	if err != nil {
+		return nil, err
+	}
 	ctx := context.Background()
-	ts := oauth2.StaticTokenSource(
-		&oauth2.Token{AccessToken: conf.Token},
-	)
-	tc := oauth2.NewClient(ctx, ts)
-	client := github.NewClient(tc)
 
 	owner, repo := dismantle(source)
 
@@ -62,7 +61,7 @@ func newGitHubInstaller(log *logrus.Logger, source, tag string, asset int, home 
 		return nil, err
 	}
 
-	rc, url, err := client.Repositories.DownloadReleaseAsset(ctx, owner, repo, ra.GetID())
+	rc, url, err := client.Repositories.DownloadReleaseAsset(ctx, owner, repo, ra.GetID(), client.Client())
 	if err != nil {
 		return nil, err
 	}
@@ -102,21 +101,21 @@ func pickAsset(log *logrus.Logger, release *github.RepositoryRelease, asset int)
 		if len := len(release.Assets); asset >= len {
 			return nil, fmt.Errorf("only %v assets found on release %q but you're asking %v (start from zero)", len, release.GetName(), asset)
 		}
-		ra = &release.Assets[asset]
+		ra = release.Assets[asset]
 		return
 	}
 	log.Debugf("trying to find asset for %q\n", runtime.GOOS)
 	if ra = findRuntimeOsAsset(log, release.Assets); ra == nil {
 		log.Debugf("%s asset not found, using first asset\n", runtime.GOOS)
-		ra = &release.Assets[0]
+		ra = release.Assets[0]
 	}
 	return
 }
 
-func findRuntimeOsAsset(_ *logrus.Logger, assets []github.ReleaseAsset) *github.ReleaseAsset {
+func findRuntimeOsAsset(_ *logrus.Logger, assets []*github.ReleaseAsset) *github.ReleaseAsset {
 	for _, asset := range assets {
 		if strings.Contains(asset.GetName(), runtime.GOOS) {
-			return &asset
+			return asset
 		}
 	}
 	return nil

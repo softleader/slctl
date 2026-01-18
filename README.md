@@ -30,7 +30,7 @@ Slctl is a command line interface for running commands against SoftLeader servic
 
 ### Compiling from source
 
-你可以參考 [Compiling Source](https://github.com/softleader/slctl/wiki/Compiling-Source) 章節, 從原始碼編譯後使用, Happy Hacking :cat::computer:
+你可以參考 [Compiling Source](./docs/Compiling-Source.md) 章節, 從原始碼編譯後使用, Happy Hacking :cat::computer:
 
 ### Upgrade
 
@@ -41,18 +41,19 @@ Slctl is a command line interface for running commands against SoftLeader servic
 
 ### Completion Script
 
-bash 或是 zsh 的使用者可以參考 [Completion Script](https://github.com/softleader/slctl/wiki/Completion-Script) 章節設定自動補齊指令, 讓你每次輸入指令時按下 tab 就可以獲得提示
+bash 或是 zsh 的使用者可以參考 [Completion Script](./docs/Completion-Script.md) 章節設定自動補齊指令, 讓你每次輸入指令時按下 tab 就可以獲得提示
 
 ## Getting Started
 
-執行 `slctl init` 透過互動式的問答產生並儲存 [GitHub Personal Access Token](https://github.com/settings/tokens), 也可以傳入 `--username`, `--password` 及 `--yes` 來整合非互動式的情境 (e.g. DevOps pipeline):
+執行 `slctl init` 透過 GitHub OAuth 裝置授權流程 (Device Flow) 產生並儲存 GitHub Access Token。
 
 ```sh
 $ slctl init
-$ slctl init -u GITHUB_USERNAME -p GITHUB_PASSWORD -y
 ```
 
-使用 `--force` 在發現有重複的 Token 時, 會強制刪除並產生一個全新的 Access Token
+執行後請依提示在瀏覽器中輸入顯示的驗證碼完成授權。
+
+使用 `--force` 在發現有重複的 Token 時, 會強制產生一個全新的 Access Token
 
 ```sh
 $ slctl init -f
@@ -65,13 +66,13 @@ $ slctl init --token GITHUB_TOKEN
 $ slctl init scopes
 ```
 
-使用 `--offline` 則 slctl 不會跟 GitHub API 有任何互動, 只會配置 [$SL_HOME](https://github.com/softleader/slctl/wiki/Home-Path) 環境目錄.
+使用 `--offline` 則 slctl 不會跟 GitHub API 有任何互動, 只會配置 [$SL_HOME](./docs/Home-Path.md) 環境目錄.
 
 同時使用 `--offline` 及 `--token` 可跳過 Token 驗證直接儲存起來 (e.g. 沒網路環境下)
 
 ## Plugins
 
-Slctl 有完整的 Plugin 系統, 你可以從收尋[松凌官方 Plugin](https://github.com/softleader/slctl/wiki/Official-Plugins) 開始:
+Slctl 有完整的 Plugin 系統, 你可以從收尋[松凌官方 Plugin](./docs/Official-Plugins.md) 開始:
 
 ```sh
 $ slctl plugin search FILTER...
@@ -100,12 +101,12 @@ $ slctl plugin search -f
 
 執行 `$ slctl plugin install SOURCE` 即可安裝
 
-除了 GitHub Repo Source 外, Slctl 還支援了許多的 SOURCE 來源, 點擊 [Installing a Plugin](https://github.com/softleader/slctl/wiki/Plugins-Guide#installing-a-plugin) 查看更多的 *SOURCE* 說明
+除了 GitHub Repo Source 外, Slctl 還支援了許多的 SOURCE 來源, 點擊 [Installing a Plugin](./docs/Plugins-Guide.md#installing-a-plugin) 查看更多的 *SOURCE* 說明
 
 ### Upgrading Plugins
 
-*Slctl* 支援 GitHub Repo 的 Plugin 自動更新, 請參考 [Upgrading Plugins](https://github.com/softleader/slctl/wiki/Plugins-Guide#upgrading-plugins)
+*Slctl* 支援 GitHub Repo 的 Plugin 自動更新, 請參考 [Upgrading Plugins](./docs/Plugins-Guide.md#upgrading-plugins)
 
 ### Writing A Plugin
 
-*Slctl* 支援任何語言的 Plugin, 請參考 [Plugins Guide](https://github.com/softleader/slctl/wiki/Plugins-Guide)
+*Slctl* 支援任何語言的 Plugin, 請參考 [Plugins Guide](./docs/Plugins-Guide.md)

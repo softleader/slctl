@@ -1,6 +1,7 @@
 package plugin
 
 import (
+	"context"
 	"fmt"
 	"os"
 	"strings"
@@ -22,12 +23,13 @@ func TestFetchOnline(t *testing.T) {
 		t.SkipNow()
 	}
 	hh := paths.Home(h)
-	r, err := fetchOnline(logrus.StandardLogger(), hh, "softleader")
+	r, err := fetchOnline(context.Background(), logrus.StandardLogger(), hh, "softleader", nil)
 	if err != nil {
-		if strings.Contains(err.Error(), "401 Bad credentials") {
+		if strings.Contains(err.Error(), "401 Bad credentials") || strings.Contains(err.Error(), "token not exist") {
 			t.Skipf("maybe just token not set")
 		}
 		t.Error(err)
+		return
 	}
 	if l := len(r.Repos); l < 3 {
 		t.Errorf("should be a least 3 official plugins, but got %v", l)

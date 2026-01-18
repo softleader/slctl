@@ -3,7 +3,6 @@ package installer
 import (
 	"fmt"
 	"io"
-	"io/ioutil"
 	"os"
 	"path/filepath"
 
@@ -62,7 +61,7 @@ func (i *archiveInstaller) retrievePlugin() error {
 	if err = extract(saved, extractDir); err != nil {
 		return err
 	}
-	if err := ioutil.WriteFile(filepath.Join(extractDir, plugin.SourceFileName), []byte(i.source), 0644); err != nil {
+	if err := os.WriteFile(filepath.Join(extractDir, plugin.SourceFileName), []byte(i.source), 0644); err != nil {
 		return err
 	}
 	i.source = extractDir

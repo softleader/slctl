@@ -1,7 +1,6 @@
 package config
 
 import (
-	"io/ioutil"
 	"os"
 	"strings"
 	"testing"
@@ -11,7 +10,7 @@ func TestWriteFile(t *testing.T) {
 	cf := NewConfFile()
 	cf.Token = "this.is.a.fake.token"
 
-	repoFile, err := ioutil.TempFile("", "sl-config")
+	repoFile, err := os.CreateTemp("", "sl-config")
 	if err != nil {
 		t.Errorf("failed to create test-file (%v)", err)
 	}

@@ -1,0 +1,8 @@
+{
+  "track_id": "fix_plugin_search_20260118",
+  "type": "bug",
+  "status": "new",
+  "created_at": "2026-01-18T14:55:00Z",
+  "updated_at": "2026-01-18T14:55:00Z",
+  "description": "修正bug，slctl plugin search 沒有找到結果，以及TestFetchOnline失敗"
+}
