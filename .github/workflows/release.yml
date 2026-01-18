@@ -39,3 +39,16 @@ jobs:
           args: release --clean
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Update Homebrew Formula
+        env:
+          GH_TOKEN: ${{ secrets.TAP_GITHUB_TOKEN }}
+        run: |
+          gh release download --repo softleader/homebrew-tap --pattern "brew-tapper-linux-amd64.tar.gz" --output tapper.tar.gz
+          tar -xvf tapper.tar.gz
+          chmod +x tapper
+          ./tapper --owner softleader \
+            --token ${{ secrets.TAP_GITHUB_TOKEN }} \
+            --formula slctl \
+            --version ${{ github.event.inputs.tag }} \
+            --dist ./dist

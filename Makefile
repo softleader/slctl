@@ -68,6 +68,10 @@ govet:	## # Run go vet
 build:	## # Build binary for current OS and arch
 	go build -o $(BUILD)/$(BINARY) -ldflags $(LDFLAGS) $(MAIN)
 
+.PHONY: goreleaser
+goreleaser: 
+	goreleaser build --snapshot --clean
+
 # build static binaries: https://medium.com/@diogok/on-golang-static-binaries-cross-compiling-and-plugins-1aed33499671
 .PHONY: dist
 dist:	## # Build and compress to tgz for linux amd64, darwin amd64/arm64 and windows amd64

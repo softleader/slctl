@@ -1,0 +1,8 @@
+{
+    "track_id": "brew_tapper_upgrade_20260118",
+    "type": "feature",
+    "status": "new",
+    "created_at": "2026-01-18T18:01:19+08:00",
+    "updated_at": "2026-01-18T18:01:19+08:00",
+    "description": "Upgrade brew-tapper for multi-platform support (arm64) and modernize Go version to 1.25.6"
+}
