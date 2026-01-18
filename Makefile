@@ -70,7 +70,7 @@ build:	## # Build binary for current OS and arch
 
 .PHONY: goreleaser
 goreleaser: 
-	goreleaser build --snapshot --clean
+	goreleaser build --clean
 
 # build static binaries: https://medium.com/@diogok/on-golang-static-binaries-cross-compiling-and-plugins-1aed33499671
 .PHONY: dist
