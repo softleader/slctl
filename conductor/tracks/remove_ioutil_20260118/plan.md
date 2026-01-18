@@ -12,10 +12,10 @@
     - [x] 替換 `pkg/config/config_test.go` 中的 ioutil 呼叫
     - [x] 更新 import 語句
 
-- [ ] Task: 替換 `pkg/environment/` 目錄中的 ioutil 使用
-    - [ ] 替換 `pkg/environment/migrator.go` 中的 ioutil 呼叫
-    - [ ] 替換 `pkg/environment/migrator_test.go` 中的 ioutil 呼叫
-    - [ ] 更新 import 語句
+- [x] Task: 替換 `pkg/environment/` 目錄中的 ioutil 使用 [dcc8e93]
+    - [x] 替換 `pkg/environment/migrator.go` 中的 ioutil 呼叫
+    - [x] 替換 `pkg/environment/migrator_test.go` 中的 ioutil 呼叫
+    - [x] 更新 import 語句
 
 - [ ] Task: Conductor - User Manual Verification 'Phase 1: 核心套件更新' (Protocol in workflow.md)
 
