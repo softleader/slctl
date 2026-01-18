@@ -5,11 +5,11 @@
 - [x] f9f7c41 Task: 更新 `token.EnsureScopes`，透過 GitHub API 驗證 Scope 而非直接回傳錯誤
 - [x] 24400b9 Task: Conductor - User Manual Verification '基礎架構更新' (Protocol in workflow.md)
 
-## 2. 功能模組適配 (插件相關指令)
+## 2. 功能模組適配 (插件相關指令) [checkpoint: 9683b30]
 - [x] Task: 撰寫 `slctl plugin search` 使用 OAuth Flow 的失敗測試
 - [x] eb55a86 Task: 在 `slctl plugin search` 中實作 OAuth Flow
 - [x] eb55a86 Task: 驗證 `slctl plugin install` 與新版 `EnsureScopes` 的整合
-- [ ] Task: Conductor - User Manual Verification '功能模組適配' (Protocol in workflow.md)
+- [x] 9683b30 Task: Conductor - User Manual Verification '功能模組適配' (Protocol in workflow.md)
 
 ## 3. 清理舊邏輯 (移除遺留的 Basic Auth)
 - [ ] Task: 識別並移除 CLI 旗標與結構中所有遺留的 `Username`/`Password` 引用
