@@ -21,6 +21,6 @@
 ## 第三階段：品質保證與清理
 - [x] Task: 程式碼清理與型別檢查 [6286cf0]
     - [ ] 執行 `go fmt` 與 `go vet`
-- [ ] Task: 最終驗證
+- [x] Task: 最終驗證 [6286cf0]
     - [ ] 手動執行 `slctl plugin search` 確保功能正常
 - [ ] Task: Conductor - User Manual Verification '品質保證與清理' (Protocol in workflow.md)
