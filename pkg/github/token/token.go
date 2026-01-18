@@ -16,8 +16,6 @@ const (
 )
 
 var (
-	// Scopes 表示此 app 預設需要的 scopes
-	Scopes = []github.Scope{github.ScopeReadOrg, github.ScopeUser, github.ScopeRepo}
 	// ErrOauthAccessAlreadyExists 表示 token 已存在
 	ErrOauthAccessAlreadyExists = errors.New(`access token already exists
 To store a token on https://github.com/settings/tokens, use '--token' flag  
