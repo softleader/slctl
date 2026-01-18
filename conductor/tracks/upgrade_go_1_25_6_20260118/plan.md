@@ -3,7 +3,7 @@
 ## Phase 1: Core Configuration
 - [x] Task: 更新 `go.mod` 中的 Go 版本至 1.25.6 2deaea3
 - [x] Task: 更新 `conductor/tech-stack.md` 中的 Go 版本資訊 3bed93f
-- [ ] Task: 執行 `go mod tidy` 驗證相依性並同步環境
+- [x] Task: 執行 `go mod tidy` 驗證相依性並同步環境 73b4653
 - [ ] Task: Conductor - User Manual Verification 'Core Configuration' (Protocol in workflow.md)
 
 ## Phase 2: Infrastructure & CI/CD
