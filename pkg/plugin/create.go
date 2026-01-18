@@ -11,7 +11,7 @@ import (
 
 	"github.com/mitchellh/go-homedir"
 	"github.com/sirupsen/logrus"
-	"github.com/softleader/slctl/pkg/github/token"
+	gh "github.com/softleader/slctl/pkg/github"
 	"github.com/softleader/slctl/pkg/paths"
 	"github.com/softleader/slctl/pkg/strcase"
 	"gopkg.in/yaml.v2"
@@ -68,7 +68,7 @@ You might need to run 'slctl plugin create langs'`, lang)
 	}
 	plugin.Exec = creator.exec(plugin)
 	plugin.Hook = creator.hook(plugin)
-	plugin.GitHub.Scopes = token.Scopes
+	plugin.GitHub.Scopes = gh.Scopes
 	plugin.IgnoreGlobalFlags = false
 	files := creator.files(plugin, path)
 	files = append(files, marshal{
