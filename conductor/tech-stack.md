@@ -14,7 +14,8 @@
 ## Infrastructure & Tooling
 - **Logging**: [Logrus](https://github.com/sirupsen/logrus) - 結構化日誌記錄。
 - **Build System**: [Makefile](https://www.gnu.org/software/make/manual/make.html) - 自動化構建、測試與發佈流程。
-- **CI/CD**: [Travis CI](https://travis-ci.com/) - 持續整合平台。
+- **CI/CD**: [GitHub Actions](https://github.com/features/actions) - 自動化發佈與持續整合平台。
+- **Release Automation**: [GoReleaser](https://goreleaser.com/) - 跨平台編譯與發佈工具。
 - **Distribution**: 
   - [Homebrew](https://brew.sh/) (macOS/Linux)
   - [Chocolatey](https://chocolatey.org/) (Windows)
