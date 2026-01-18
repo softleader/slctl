@@ -9,10 +9,10 @@
     - [ ] 確保 `org:softleader topic:slctl-plugin` 符合 GitHub API 規範
 
 ## 第二階段：修正搜尋邏輯 (Green Phase)
-- [ ] Task: 修正 `fetchOnline` 搜尋邏輯
+- [x] Task: 修正 `fetchOnline` 搜尋邏輯 [6286cf0]
     - [ ] 調整 `query` 字串格式（例如將 `+` 改為空格，讓 SDK 處理編碼）
     - [ ] 確保 API Client 獲得正確的 Token 授權
-- [ ] Task: 優化搜尋結果處理
+- [x] Task: 優化搜尋結果處理 [6286cf0]
     - [ ] 增加對空結果的進一步診斷（例如檢查回應的狀態碼與內容）
 - [ ] Task: 執行測試並驗證 (Green Phase)
     - [ ] 確保 `TestFetchOnline` 成功通過且結果數量符合預期
