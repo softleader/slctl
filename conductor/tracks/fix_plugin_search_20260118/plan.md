@@ -14,7 +14,7 @@
     - [ ] 確保 API Client 獲得正確的 Token 授權
 - [x] Task: 優化搜尋結果處理 [6286cf0]
     - [ ] 增加對空結果的進一步診斷（例如檢查回應的狀態碼與內容）
-- [ ] Task: 執行測試並驗證 (Green Phase)
+- [x] Task: 執行測試並驗證 (Green Phase) [6286cf0]
     - [ ] 確保 `TestFetchOnline` 成功通過且結果數量符合預期
 - [ ] Task: Conductor - User Manual Verification '修正搜尋邏輯' (Protocol in workflow.md)
 
