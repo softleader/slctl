@@ -70,7 +70,7 @@ build:	## # Build binary for current OS and arch
 
 # build static binaries: https://medium.com/@diogok/on-golang-static-binaries-cross-compiling-and-plugins-1aed33499671
 .PHONY: dist
-dist:	## # Build and compress to tgz for linux amd64, darwin amd64 and windows amd64
+dist:	## # Build and compress to tgz for linux amd64, darwin amd64/arm64 and windows amd64
 ifeq ($(strip $(VERSION)),)
 	$(error VERSION is not set)
 endif
@@ -83,7 +83,9 @@ endif
 	CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o $(BUILD)/$(BINARY) -ldflags $(LDFLAGS) -a -tags netgo $(MAIN)
 	tar -C $(BUILD) -zcvf $(DIST)/$(BINARY)-linux-$(VERSION).tgz $(BINARY) README.md LICENSE
 	CGO_ENABLED=0 GOOS=darwin GOARCH=amd64 go build -o $(BUILD)/$(BINARY) -ldflags $(LDFLAGS) -a -tags netgo $(MAIN)
-	tar -C $(BUILD) -zcvf $(DIST)/$(BINARY)-darwin-$(VERSION).tgz $(BINARY) README.md LICENSE
+	tar -C $(BUILD) -zcvf $(DIST)/$(BINARY)-darwin-amd64-$(VERSION).tgz $(BINARY) README.md LICENSE
+	CGO_ENABLED=0 GOOS=darwin GOARCH=arm64 go build -o $(BUILD)/$(BINARY) -ldflags $(LDFLAGS) -a -tags netgo $(MAIN)
+	tar -C $(BUILD) -zcvf $(DIST)/$(BINARY)-darwin-arm64-$(VERSION).tgz $(BINARY) README.md LICENSE
 	CGO_ENABLED=0 GOOS=windows GOARCH=amd64 go build -o $(BUILD)/$(BINARY).exe -ldflags $(LDFLAGS) -a -tags netgo $(MAIN)
 	tar -C $(BUILD) -llzcvf $(DIST)/$(BINARY)-windows-$(VERSION).tgz $(BINARY).exe README.md LICENSE
 
