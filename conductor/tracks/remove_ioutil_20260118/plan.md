@@ -7,10 +7,10 @@
     - [x] 更新 import 語句
     - [x] 執行 `go vet` 確認無錯誤
 
-- [ ] Task: 替換 `pkg/config/` 目錄中的 ioutil 使用
-    - [ ] 替換 `pkg/config/config.go` 中的 ioutil 呼叫
-    - [ ] 替換 `pkg/config/config_test.go` 中的 ioutil 呼叫
-    - [ ] 更新 import 語句
+- [x] Task: 替換 `pkg/config/` 目錄中的 ioutil 使用 [9b4b0c1]
+    - [x] 替換 `pkg/config/config.go` 中的 ioutil 呼叫
+    - [x] 替換 `pkg/config/config_test.go` 中的 ioutil 呼叫
+    - [x] 更新 import 語句
 
 - [ ] Task: 替換 `pkg/environment/` 目錄中的 ioutil 使用
     - [ ] 替換 `pkg/environment/migrator.go` 中的 ioutil 呼叫
