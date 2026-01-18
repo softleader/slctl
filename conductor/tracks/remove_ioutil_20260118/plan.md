@@ -1,6 +1,6 @@
 # 實作計畫：移除 deprecated io/ioutil 套件
 
-## Phase 1: 核心套件更新
+## Phase 1: 核心套件更新 [checkpoint: d8be100]
 
 - [x] Task: 替換 `pkg/github/auth.go` 中的 ioutil 使用 [8d5d6cb]
     - [x] 識別並替換 `ioutil.ReadAll` → `io.ReadAll`
@@ -17,7 +17,7 @@
     - [x] 替換 `pkg/environment/migrator_test.go` 中的 ioutil 呼叫
     - [x] 更新 import 語句
 
-- [ ] Task: Conductor - User Manual Verification 'Phase 1: 核心套件更新' (Protocol in workflow.md)
+- [x] Task: Conductor - User Manual Verification 'Phase 1: 核心套件更新' (Protocol in workflow.md)
 
 ## Phase 2: Plugin 套件更新
 
