@@ -21,17 +21,17 @@
 
 ## Phase 2: Plugin 套件更新
 
-- [ ] Task: 替換 `pkg/plugin/` 根目錄中的 ioutil 使用
-    - [ ] 替換 `pkg/plugin/create.go` 中的 ioutil 呼叫
-    - [ ] 替換 `pkg/plugin/loader.go` 中的 ioutil 呼叫
-    - [ ] 替換 `pkg/plugin/cleanup.go` 中的 ioutil 呼叫
-    - [ ] 替換 `pkg/plugin/repository.go` 中的 ioutil 呼叫
-    - [ ] 更新 import 語句
+- [x] Task: 替換 `pkg/plugin/` 根目錄中的 ioutil 使用 [f90cb94]
+    - [x] 替換 `pkg/plugin/create.go` 中的 ioutil 呼叫
+    - [x] 替換 `pkg/plugin/loader.go` 中的 ioutil 呼叫
+    - [x] 替換 `pkg/plugin/cleanup.go` 中的 ioutil 呼叫
+    - [x] 替換 `pkg/plugin/repository.go` 中的 ioutil 呼叫
+    - [x] 更新 import 語句
 
-- [ ] Task: 替換 `pkg/plugin/installer/` 目錄中的 ioutil 使用
-    - [ ] 替換 `pkg/plugin/installer/archive_installer.go` 中的 ioutil 呼叫
-    - [ ] 替換 `pkg/plugin/installer/archive_installer_test.go` 中的 ioutil 呼叫
-    - [ ] 更新 import 語句
+- [x] Task: 替換 `pkg/plugin/installer/` 目錄中的 ioutil 使用 [667cf9a]
+    - [x] 替換 `pkg/plugin/installer/archive_installer.go` 中的 ioutil 呼叫
+    - [x] 替換 `pkg/plugin/installer/archive_installer_test.go` 中的 ioutil 呼叫
+    - [x] 更新 import 語句
 
 - [ ] Task: Conductor - User Manual Verification 'Phase 2: Plugin 套件更新' (Protocol in workflow.md)
 
