@@ -18,7 +18,7 @@
     - [ ] 確保 `TestFetchOnline` 成功通過且結果數量符合預期
 - [ ] Task: Conductor - User Manual Verification '修正搜尋邏輯' (Protocol in workflow.md)
 
-## 第三階段：品質保證與清理
+## 第三階段：品質保證與清理 [checkpoint: e8612b7]
 - [x] Task: 程式碼清理與型別檢查 [6286cf0]
     - [ ] 執行 `go fmt` 與 `go vet`
 - [x] Task: 最終驗證 [6286cf0]
