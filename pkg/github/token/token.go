@@ -49,13 +49,6 @@ func EnsureScopes(ctx context.Context, client *github.Client, log *logrus.Logger
 	return nil
 }
 
-// Grant 產生傳入的 username/password 的 token
-// Deprecated: Basic Auth login is deprecated. Please use --token or the new login flow
-func Grant(ctx context.Context, client *github.Client, log *logrus.Logger, force bool) (token string, err error) {
-	// Deprecated in v69 upgrade
-	return "", errors.New("basic Auth login is deprecated. Please use --token or the new login flow")
-}
-
 // Confirm 確保 token 的使用者存在於傳入的 org 中
 func Confirm(ctx context.Context, client *github.Client, org string, _ *logrus.Logger) (name string, err error) {
 	var mem *github.Membership

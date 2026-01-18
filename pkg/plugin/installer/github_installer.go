@@ -11,9 +11,9 @@ import (
 	"github.com/sirupsen/logrus"
 	"github.com/softleader/slctl/pkg/config"
 	"github.com/softleader/slctl/pkg/environment"
+	gh "github.com/softleader/slctl/pkg/github"
 	"github.com/softleader/slctl/pkg/paths"
 	"github.com/softleader/slctl/pkg/plugin"
-	"golang.org/x/oauth2"
 )
 
 type gitHubInstaller struct {
@@ -28,12 +28,11 @@ func newGitHubInstaller(log *logrus.Logger, source, tag string, asset int, home 
 	if err != nil {
 		return nil, err
 	}
+	client, err := gh.NewTokenClient(context.Background(), conf.Token)
+	if err != nil {
+		return nil, err
+	}
 	ctx := context.Background()
-	ts := oauth2.StaticTokenSource(
-		&oauth2.Token{AccessToken: conf.Token},
-	)
-	tc := oauth2.NewClient(ctx, ts)
-	client := github.NewClient(tc)
 
 	owner, repo := dismantle(source)
 
@@ -62,7 +61,7 @@ func newGitHubInstaller(log *logrus.Logger, source, tag string, asset int, home 
 		return nil, err
 	}
 
-	rc, url, err := client.Repositories.DownloadReleaseAsset(ctx, owner, repo, ra.GetID(), tc)
+	rc, url, err := client.Repositories.DownloadReleaseAsset(ctx, owner, repo, ra.GetID(), client.Client())
 	if err != nil {
 		return nil, err
 	}
