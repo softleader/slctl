@@ -117,9 +117,6 @@ func fetchOnline(log *logrus.Logger, home paths.Home, org string) (r *Repository
 		}
 		opt.Page = resp.NextPage
 	}
-	if err != nil {
-		return
-	}
 	r = &Repository{}
 	r.Expires = time.Now().AddDate(0, 0, 1)
 	for _, repo := range allRepos {
