@@ -1,0 +1,8 @@
+{
+  "track_id": "migrate_release_gh_actions_20260118",
+  "type": "chore",
+  "status": "new",
+  "created_at": "2026-01-18T16:07:25+08:00",
+  "updated_at": "2026-01-18T16:07:25+08:00",
+  "description": "Migrate release process from Travis CI to GitHub Actions using GoReleaser"
+}
