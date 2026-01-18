@@ -5,5 +5,5 @@ This file tracks all major tracks for the project. Each track has its own detail
 
 ---
 
-- [ ] **Track: 更換 Basic Auth 為 OAuth Flow**
+- [x] **Track: 更換 Basic Auth 為 OAuth Flow**
 *Link: [./tracks/replace_basic_auth_20260118/](./tracks/replace_basic_auth_20260118/)*
