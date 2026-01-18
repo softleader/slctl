@@ -19,7 +19,7 @@
 - [ ] Task: Conductor - User Manual Verification '修正搜尋邏輯' (Protocol in workflow.md)
 
 ## 第三階段：品質保證與清理
-- [ ] Task: 程式碼清理與型別檢查
+- [x] Task: 程式碼清理與型別檢查 [6286cf0]
     - [ ] 執行 `go fmt` 與 `go vet`
 - [ ] Task: 最終驗證
     - [ ] 手動執行 `slctl plugin search` 確保功能正常
