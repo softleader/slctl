@@ -102,15 +102,18 @@ func fetchOnline(log *logrus.Logger, home paths.Home, org string) (r *Repository
 	)
 	tc := oauth2.NewClient(ctx, ts)
 	client := github.NewClient(tc)
-	query := fmt.Sprintf("org:%s+topic:%s", org, officialPluginTopic)
+	query := fmt.Sprintf("org:%s topic:%s", org, officialPluginTopic)
 	log.Debugf("specifying searching qualifiers: %s\n", query)
 	var allRepos []*github.Repository
 	opt := &github.SearchOptions{}
 	for {
 		result, resp, err := client.Search.Repositories(ctx, query, opt)
 		if err != nil {
+			log.Debugf("GitHub Search API error: %v\n", err)
 			break
 		}
+		log.Debugf("GitHub Search API response: StatusCode=%d, TotalCount=%d, PageRepos=%d\n",
+			resp.StatusCode, result.GetTotal(), len(result.Repositories))
 		allRepos = append(allRepos, result.Repositories...)
 		if resp.NextPage == 0 {
 			break
