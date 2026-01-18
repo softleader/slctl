@@ -1,6 +1,6 @@
 Slctl 是使用 [Go](https://golang.org/) 寫的, 需要事先安裝好:
 
-- [Go 1.12.x](https://golang.org/doc/install)
+- [Go 1.25.6](https://golang.org/doc/install)
 - [Git](https://git-scm.com/) - 程式碼管理
 - make - For easy build (Optional)
 - [Docker](https://www.docker.com/) - For Sandbox testing (Optional)
