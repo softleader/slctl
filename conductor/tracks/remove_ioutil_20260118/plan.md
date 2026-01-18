@@ -19,7 +19,7 @@
 
 - [x] Task: Conductor - User Manual Verification 'Phase 1: 核心套件更新' (Protocol in workflow.md)
 
-## Phase 2: Plugin 套件更新
+## Phase 2: Plugin 套件更新 [checkpoint: 3f179de]
 
 - [x] Task: 替換 `pkg/plugin/` 根目錄中的 ioutil 使用 [f90cb94]
     - [x] 替換 `pkg/plugin/create.go` 中的 ioutil 呼叫
@@ -33,7 +33,7 @@
     - [x] 替換 `pkg/plugin/installer/archive_installer_test.go` 中的 ioutil 呼叫
     - [x] 更新 import 語句
 
-- [ ] Task: Conductor - User Manual Verification 'Phase 2: Plugin 套件更新' (Protocol in workflow.md)
+- [x] Task: Conductor - User Manual Verification 'Phase 2: Plugin 套件更新' (Protocol in workflow.md)
 
 ## Phase 3: 最終驗證
 
