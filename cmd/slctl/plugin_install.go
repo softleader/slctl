@@ -3,8 +3,12 @@ package main
 import (
 	"io"
 
+	"context"
+
 	"github.com/sirupsen/logrus"
+	"github.com/softleader/slctl/pkg/config"
 	"github.com/softleader/slctl/pkg/environment"
+	gh "github.com/softleader/slctl/pkg/github"
 	"github.com/softleader/slctl/pkg/github/token"
 	"github.com/softleader/slctl/pkg/paths"
 	"github.com/softleader/slctl/pkg/plugin"
@@ -103,7 +107,16 @@ func install(source string, tag string, asset int, home paths.Home, opt *install
 		return err
 	}
 
-	if err = token.EnsureScopes(logrus.StandardLogger(), p.Metadata.GitHub.Scopes); err != nil {
+	conf, err := config.LoadConfFile(home.ConfigFile())
+	if err != nil {
+		return err
+	}
+	ctx := context.Background()
+	client, err := gh.NewTokenClient(ctx, conf.Token)
+	if err != nil {
+		return err
+	}
+	if err = token.EnsureScopes(ctx, client, logrus.StandardLogger(), p.Metadata.GitHub.Scopes); err != nil {
 		return err
 	}
 

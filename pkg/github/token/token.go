@@ -5,6 +5,8 @@ import (
 	"errors"
 	"fmt"
 
+	"strings"
+
 	"github.com/google/go-github/v69/github"
 	"github.com/sirupsen/logrus"
 )
@@ -24,10 +26,27 @@ Use 'init --help' for more information about the command`)
 )
 
 // EnsureScopes 確保當前的 token 有傳入的所有 scopes
-// Deprecated: Basic Auth is no longer supported. Use OAuth 2.0 Device Flow instead.
-func EnsureScopes(log *logrus.Logger, scopes []github.Scope) (err error) {
-	// Deprecated in v69 upgrade
-	return errors.New("basic Auth is deprecated. Please use a Personal Access Token with correct scopes")
+func EnsureScopes(ctx context.Context, client *github.Client, log *logrus.Logger, scopes []github.Scope) (err error) {
+	if len(scopes) == 0 {
+		return nil
+	}
+	_, resp, err := client.Users.Get(ctx, "")
+	if err != nil {
+		return err
+	}
+	granted := resp.Header.Get("X-OAuth-Scopes")
+	log.Debugf("granted scopes: %s", granted)
+
+	missing := []string{}
+	for _, s := range scopes {
+		if !strings.Contains(granted, string(s)) {
+			missing = append(missing, string(s))
+		}
+	}
+	if len(missing) > 0 {
+		return fmt.Errorf("missing scopes: %v", missing)
+	}
+	return nil
 }
 
 // Grant 產生傳入的 username/password 的 token
