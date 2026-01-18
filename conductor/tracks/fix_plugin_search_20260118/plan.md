@@ -8,7 +8,7 @@
     - [ ] 在 `fetchOnline` 中增加 Debug Log，輸出 Query 字串
     - [ ] 確保 `org:softleader topic:slctl-plugin` 符合 GitHub API 規範
 
-## 第二階段：修正搜尋邏輯 (Green Phase)
+## 第二階段：修正搜尋邏輯 (Green Phase) [checkpoint: 52d9f85]
 - [x] Task: 修正 `fetchOnline` 搜尋邏輯 [6286cf0]
     - [ ] 調整 `query` 字串格式（例如將 `+` 改為空格，讓 SDK 處理編碼）
     - [ ] 確保 API Client 獲得正確的 Token 授權
