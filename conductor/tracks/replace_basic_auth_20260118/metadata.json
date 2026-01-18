@@ -1,0 +1,8 @@
+{
+    "track_id": "replace_basic_auth_20260118",
+    "type": "bug",
+    "status": "new",
+    "created_at": "2026-01-18T07:18:22Z",
+    "updated_at": "2026-01-18T07:18:22Z",
+    "description": "更換 Basic Auth 為 OAuth Flow"
+}
