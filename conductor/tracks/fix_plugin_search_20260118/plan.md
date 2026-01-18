@@ -4,7 +4,7 @@
 - [x] Task: 建立失敗測試案例並確認錯誤訊息 (Red Phase) [6286cf0]
     - [ ] 執行 `go test -v ./pkg/plugin/ -run TestFetchOnline`
     - [ ] 記錄並分析目前的 API 回傳結果
-- [ ] Task: 驗證 GitHub Search API 呼叫參數
+- [x] Task: 驗證 GitHub Search API 呼叫參數 [6286cf0]
     - [ ] 在 `fetchOnline` 中增加 Debug Log，輸出 Query 字串
     - [ ] 確保 `org:softleader topic:slctl-plugin` 符合 GitHub API 規範
 
