@@ -13,6 +13,7 @@
 
 vendor/
 _dist/
+dist/
 _build/
 .idea/
 .DS_Store

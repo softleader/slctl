@@ -1,7 +1,7 @@
 [![Go Report Card](https://goreportcard.com/badge/github.com/softleader/slctl)](https://goreportcard.com/report/github.com/softleader/slctl)
 ![stability-stable](https://img.shields.io/badge/stability-stable-green.svg)
 [![license](https://img.shields.io/github/license/softleader/slctl.svg)](./LICENSE)
-[![Build Status](https://img.shields.io/travis/com/softleader/slctl.svg)](https://travis-ci.com/softleader/slctl)
+[![Build Status](https://github.com/softleader/slctl/actions/workflows/release.yml/badge.svg)](https://github.com/softleader/slctl/actions/workflows/release.yml)
 [![release](https://img.shields.io/github/release/softleader/slctl.svg)](https://github.com/softleader/slctl/releases)
 
 # slctl
@@ -22,7 +22,7 @@ Slctl is a command line interface for running commands against SoftLeader servic
 
     > Linux 使用者建議使用 [Linuxbrew](http://linuxbrew.sh/) - Homebrew 的 Linux 分支
 
-- [Chocolatey](https://chocolatey.org/) 是 Windows 上常見的的套件管理程式, 也被許多 CI 整合 (e.g. [Travis CI](https://docs.travis-ci.com/user/reference/windows/#chocolatey)), 推薦 Windows 使用者使用:
+- [Chocolatey](https://chocolatey.org/) 是 Windows 上常見的的套件管理程式, 推薦 Windows 使用者使用:
 
 	```sh
 	$ choco install slctl -s http://choco-repo.cloud.softleader.com.tw/repository/choco/
