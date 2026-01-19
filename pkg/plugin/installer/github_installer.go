@@ -20,6 +20,8 @@ type gitHubInstaller struct {
 	archiveInstaller
 }
 
+var tokenClient = gh.NewTokenClient
+
 func newGitHubInstaller(log *logrus.Logger, source, tag string, asset int, home paths.Home, opt *InstallOption) (*gitHubInstaller, error) {
 	if environment.Settings.Offline {
 		return nil, errNonResolvableInOfflineMode
@@ -28,7 +30,7 @@ func newGitHubInstaller(log *logrus.Logger, source, tag string, asset int, home 
 	if err != nil {
 		return nil, err
 	}
-	client, err := gh.NewTokenClient(context.Background(), conf.Token)
+	client, err := tokenClient(context.Background(), conf.Token)
 	if err != nil {
 		return nil, err
 	}

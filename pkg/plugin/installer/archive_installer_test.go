@@ -65,3 +65,67 @@ func TestArchiveInstaller_Install(t *testing.T) {
 		t.Errorf("expected downloaded dir to be a legal local reference: %s", dst)
 	}
 }
+
+func TestArchiveInstaller_Install_Full(t *testing.T) {
+	home, _ := os.MkdirTemp("", "sl_home_full")
+	defer os.RemoveAll(home)
+	hh := paths.Home(home)
+	os.MkdirAll(hh.Plugins(), 0755)
+	os.MkdirAll(hh.CacheArchives(), 0755)
+
+	// Create a plugin directory to zip
+	plugDir, _ := os.MkdirTemp("", "plug_src")
+	defer os.RemoveAll(plugDir)
+	metadataContent := `name: arch-plugin
+version: 1.0.0
+`
+	os.WriteFile(filepath.Join(plugDir, plugin.MetadataFileName), []byte(metadataContent), 0644)
+
+	arcPath := filepath.Join(home, "arch-plugin.zip")
+	z := archiver.Zip{
+		ImplicitTopLevelFolder: false,
+	}
+	if err := z.Archive([]string{filepath.Join(plugDir, plugin.MetadataFileName)}, arcPath); err != nil {
+		t.Fatal(err)
+	}
+
+	log := logrus.New()
+	i, err := newArchiveInstaller(log, arcPath, hh, &InstallOption{Force: true})
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	plug, err := i.Install()
+	if err != nil {
+		t.Fatalf("Install failed: %v", err)
+	}
+
+	if plug.Metadata.Name != "arch-plugin" {
+		t.Errorf("expected arch-plugin, got %s", plug.Metadata.Name)
+	}
+}
+
+func TestArchiveInstaller_Errors(t *testing.T) {
+	hh := paths.Home("/non/existent/home")
+	log := logrus.New()
+	
+	// Non-existent source
+	i, err := newArchiveInstaller(log, "/non/existent/file.zip", hh, &InstallOption{})
+	if err != nil {
+		t.Fatal(err)
+	}
+	_, err = i.Install()
+	if err == nil {
+		t.Error("expected error for non-existent source")
+	}
+
+	// Download error
+	i, _ = newArchiveInstaller(log, "http://invalid-url-123.com/file.zip", hh, &InstallOption{})
+	_, err = i.Install()
+	if err == nil {
+		t.Error("expected error for download failure")
+	}
+}
+
+
+
