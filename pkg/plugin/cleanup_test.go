@@ -59,7 +59,7 @@ func TestNeedsToRemove(t *testing.T) {
 	tempHome, _ := os.MkdirTemp("", "sl-home-rem")
 	defer os.RemoveAll(tempHome)
 	hh := paths.Home(tempHome)
-	
+
 	// Case 1: non-special file
 	if !needsToRemove(log, hh, "/tmp/some-file") {
 		t.Error("expected true for random file")
@@ -68,14 +68,14 @@ func TestNeedsToRemove(t *testing.T) {
 	// Case 2: Repository file
 	repoFile := hh.CacheRepositoryFile()
 	os.MkdirAll(filepath.Dir(repoFile), 0755)
-	
+
 	r := &Repository{Expires: time.Now().Add(1 * time.Hour)}
 	r.save(repoFile)
-	
+
 	if needsToRemove(log, hh, repoFile) {
 		t.Error("expected false for fresh repository file")
 	}
-	
+
 	r.Expires = time.Now().Add(-1 * time.Hour)
 	r.save(repoFile)
 	if !needsToRemove(log, hh, repoFile) {
@@ -96,5 +96,3 @@ func TestCleanup_ConfigError(t *testing.T) {
 		t.Error("expected error for invalid config yaml")
 	}
 }
-
-

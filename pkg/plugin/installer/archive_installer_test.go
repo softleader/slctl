@@ -108,7 +108,7 @@ version: 1.0.0
 func TestArchiveInstaller_Errors(t *testing.T) {
 	hh := paths.Home("/non/existent/home")
 	log := logrus.New()
-	
+
 	// Non-existent source
 	i, err := newArchiveInstaller(log, "/non/existent/file.zip", hh, &InstallOption{})
 	if err != nil {
@@ -126,6 +126,3 @@ func TestArchiveInstaller_Errors(t *testing.T) {
 		t.Error("expected error for download failure")
 	}
 }
-
-
-

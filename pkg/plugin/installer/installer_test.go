@@ -149,7 +149,7 @@ func TestLocalInstaller_Errors(t *testing.T) {
 	pluginDir, _ := os.MkdirTemp("", "illegal")
 	defer os.RemoveAll(pluginDir)
 	os.WriteFile(filepath.Join(pluginDir, plugin.MetadataFileName), []byte("name: '!!'"), 0644)
-	
+
 	i := &localInstaller{log: log, home: hh, source: pluginDir, opt: &InstallOption{}}
 	_, err := i.Install()
 	if err != errIllegalPluginName {

@@ -71,7 +71,7 @@ func TestIsGlobalFlag(t *testing.T) {
 
 func TestPluginDirs(t *testing.T) {
 	s := settings{Home: "/tmp/sl"}
-	
+
 	// Default
 	os.Unsetenv("SL_PLUGIN")
 	if got := s.PluginDirs(); got != s.Home.Plugins() {

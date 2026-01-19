@@ -8,7 +8,7 @@ import (
 
 func TestYesNoQuestionFrom(t *testing.T) {
 	out := &bytes.Buffer{}
-	
+
 	// Yes
 	inY := strings.NewReader("y\n")
 	if !YesNoQuestionFrom(inY, out, "Continue?") {

@@ -14,7 +14,7 @@ func TestEnsureDirectory(t *testing.T) {
 
 	log := logrus.New()
 	target := filepath.Join(tempDir, "a/b/c")
-	
+
 	if err := EnsureDirectory(log, target); err != nil {
 		t.Fatalf("EnsureDirectory failed: %v", err)
 	}
@@ -37,7 +37,7 @@ func TestEnsureDirectories(t *testing.T) {
 
 	d1 := filepath.Join(tempDir, "d1")
 	d2 := filepath.Join(tempDir, "d2")
-	
+
 	if err := EnsureDirectories(logrus.New(), d1, d2); err != nil {
 		t.Fatal(err)
 	}
@@ -94,7 +94,7 @@ func TestHome(t *testing.T) {
 	if h.ContainsAnySpace() {
 		t.Error("expected false for /tmp/sl")
 	}
-	
+
 	h2 := Home("/tmp/sl space")
 	if !h2.ContainsAnySpace() {
 		t.Error("expected true for /tmp/sl space")

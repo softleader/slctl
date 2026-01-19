@@ -9,8 +9,8 @@ import (
 func TestPlainFormatter_Format(t *testing.T) {
 	f := &PlainFormatter{}
 	entry := &logrus.Entry{Message: "hello"}
-	
-got, err := f.Format(entry)
+
+	got, err := f.Format(entry)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -24,4 +24,3 @@ got, err := f.Format(entry)
 		t.Errorf("expected world\\n, got %q", string(got))
 	}
 }
-

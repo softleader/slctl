@@ -44,7 +44,7 @@ func TestReaderDownloader_Download(t *testing.T) {
 
 	content := "reader content"
 	var r io.Reader = strings.NewReader(content)
-	
+
 	d := newReaderDownloader(&r, hh, "test-reader.txt")
 	path, err := d.download()
 	if err != nil {
@@ -65,7 +65,7 @@ func TestReadCloserDownloader_Download(t *testing.T) {
 
 	content := "readcloser content"
 	rc := io.NopCloser(strings.NewReader(content))
-	
+
 	d := newReadCloserDownloader(&rc, len(content), hh, "test-rc.txt")
 	path, err := d.download()
 	if err != nil {
@@ -77,5 +77,3 @@ func TestReadCloserDownloader_Download(t *testing.T) {
 		t.Errorf("expected %s, got %s", content, string(got))
 	}
 }
-
-

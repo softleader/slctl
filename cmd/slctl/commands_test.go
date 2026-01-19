@@ -49,12 +49,12 @@ func TestNewCommands(t *testing.T) {
 func TestCleanupCmd_Run(t *testing.T) {
 	tempHome, _ := os.MkdirTemp("", "sl-home-cleanup")
 	defer os.RemoveAll(tempHome)
-	
+
 	c := &cleanupCmd{
 		home:   paths.Home(tempHome),
 		dryRun: true,
 	}
-	
+
 	// Ensure config file exists
 	os.MkdirAll(c.home.Config(), 0755)
 	os.WriteFile(c.home.ConfigFile(), []byte("cleanup: 2020-01-01T00:00:00Z"), 0644)
@@ -67,7 +67,7 @@ func TestCleanupCmd_Run(t *testing.T) {
 func TestHomeCmd_Run(t *testing.T) {
 	tempHome, _ := os.MkdirTemp("", "sl-home-home")
 	defer os.RemoveAll(tempHome)
-	
+
 	c := &homeCmd{
 		home: paths.Home(tempHome),
 	}
@@ -80,8 +80,8 @@ func TestHomeCmd_Run(t *testing.T) {
 	parent, _ := os.MkdirTemp("", "sl-home-parent")
 	defer os.RemoveAll(parent)
 	tempMove := filepath.Join(parent, "new-home")
-	
-c.move = tempMove
+
+	c.move = tempMove
 	if err := c.run(); err != nil {
 		t.Fatalf("run move failed: %v", err)
 	}
@@ -129,7 +129,7 @@ func TestPluginSearchCmd_Run(t *testing.T) {
 	tempHome, _ := os.MkdirTemp("", "sl-home-search")
 	defer os.RemoveAll(tempHome)
 	hh := paths.Home(tempHome)
-	
+
 	// Create cached repo file to avoid online fetch
 	repoFile := hh.CacheRepositoryFile()
 	os.MkdirAll(filepath.Dir(repoFile), 0755)
@@ -175,8 +175,8 @@ func TestPluginUpgradeCmd_Run(t *testing.T) {
 func TestPluginCreateCmd_Run(t *testing.T) {
 	tempDir, _ := os.MkdirTemp("", "sl-plugin-create-cmd")
 	defer os.RemoveAll(tempDir)
-	
-c := &pluginCreateCmd{
+
+	c := &pluginCreateCmd{
 		name:   "test-plugin",
 		lang:   "golang",
 		output: tempDir,
@@ -248,11 +248,11 @@ func TestPluginUpgradeCmd_Run_Full(t *testing.T) {
 		home: hh,
 		opt:  &installer.InstallOption{DryRun: true},
 	}
-	
+
 	// Offline will fail run()
 	environment.Settings.Offline = true
 	defer func() { environment.Settings.Offline = false }()
-	
+
 	if err := c.run(); err != nil {
 		// Expect error from RunE wrapper usually, but here we call run() directly.
 	}
@@ -287,14 +287,14 @@ func TestPluginSearchCmd_Run_Installed(t *testing.T) {
 	tempHome, _ := os.MkdirTemp("", "sl-home-search-inst")
 	defer os.RemoveAll(tempHome)
 	hh := paths.Home(tempHome)
-	
+
 	// Create cached repo file
 	repoFile := hh.CacheRepositoryFile()
 	os.MkdirAll(filepath.Dir(repoFile), 0755)
 	os.WriteFile(repoFile, []byte("repos:\n  - source: github.com/softleader/slctl\n    description: desc\nexpires: 2099-01-01T00:00:00Z"), 0644)
 
 	c := &pluginSearchCmd{
-		home: hh,
+		home:              hh,
 		onlyShowInstalled: true,
 	}
 	if err := c.run(); err != nil {
@@ -306,7 +306,7 @@ func TestPluginRemoveCmd_Run_Full(t *testing.T) {
 	tempHome, _ := os.MkdirTemp("", "sl-home-remove")
 	defer os.RemoveAll(tempHome)
 	hh := paths.Home(tempHome)
-	
+
 	// Set environment for PluginDirs
 	oldHome := environment.Settings.Home
 	environment.Settings.Home = hh
@@ -330,7 +330,7 @@ func TestPluginUnmountCmd_Run_Full(t *testing.T) {
 	tempHome, _ := os.MkdirTemp("", "sl-home-unmount")
 	defer os.RemoveAll(tempHome)
 	hh := paths.Home(tempHome)
-	
+
 	// Set environment for PluginDirs
 	oldHome := environment.Settings.Home
 	environment.Settings.Home = hh
@@ -367,7 +367,7 @@ func TestInstall_Error(t *testing.T) {
 func TestRootCmd_Execute(t *testing.T) {
 	tempHome, _ := os.MkdirTemp("", "sl-home-exec")
 	defer os.RemoveAll(tempHome)
-	
+
 	oldHome := environment.Settings.Home
 	environment.Settings.Home = paths.Home(tempHome)
 	defer func() { environment.Settings.Home = oldHome }()
@@ -383,7 +383,7 @@ func TestRootCmd_Execute(t *testing.T) {
 	defer func() { tokenClient = oldTokenClient }()
 
 	root, _ := newRootCmd([]string{"--home", tempHome, "--offline"})
-	
+
 	root.SetArgs([]string{"version"})
 	if err := root.Execute(); err != nil {
 		t.Fatalf("Execute version failed: %v", err)
@@ -422,7 +422,7 @@ func TestRootCmd_Execute(t *testing.T) {
 	repoFile := paths.Home(tempHome).CacheRepositoryFile()
 	os.MkdirAll(filepath.Dir(repoFile), 0755)
 	os.WriteFile(repoFile, []byte("repos:\n  - source: github.com/softleader/slctl\nexpires: 2099-01-01T00:00:00Z"), 0644)
-	
+
 	oldOffline := environment.Settings.Offline
 	environment.Settings.Offline = false // enable search
 	defer func() { environment.Settings.Offline = oldOffline }()
@@ -431,7 +431,7 @@ func TestRootCmd_Execute(t *testing.T) {
 	if err := root.Execute(); err != nil {
 		t.Fatalf("Execute plugin search failed: %v", err)
 	}
-	
+
 	root.SetArgs([]string{"plugin", "search", "-i"})
 	if err := root.Execute(); err != nil {
 		t.Fatalf("Execute plugin search installed failed: %v", err)
@@ -461,7 +461,7 @@ func TestRootCmd_Execute(t *testing.T) {
 
 	root.SetArgs([]string{"plugin", "open", "p1"})
 	// Open might fail in CI but we want to cover the code path
-	root.Execute() 
+	root.Execute()
 
 	root.SetArgs([]string{"home"})
 	if err := root.Execute(); err != nil {
@@ -482,7 +482,7 @@ func TestPluginWorkflow(t *testing.T) {
 	tempHome, _ := os.MkdirTemp("", "sl-home-workflow")
 	defer os.RemoveAll(tempHome)
 	hh := paths.Home(tempHome)
-	
+
 	oldHome := environment.Settings.Home
 	environment.Settings.Home = hh
 	defer func() { environment.Settings.Home = oldHome }()
@@ -503,7 +503,7 @@ func TestPluginWorkflow(t *testing.T) {
 		c := github.NewClient(server.Client())
 		u, _ := url.Parse(server.URL + "/")
 		c.BaseURL = u
-		
+
 		mux.HandleFunc("/user", func(w http.ResponseWriter, r *http.Request) {
 			w.Header().Set("X-OAuth-Scopes", "repo, user, read:org")
 			w.WriteHeader(http.StatusOK)
@@ -552,7 +552,7 @@ func TestRunHook(t *testing.T) {
 			},
 		},
 	}
-	
+
 	// Set up environment for SetupEnv
 	tempHome, _ := os.MkdirTemp("", "sl-home-hook")
 	defer os.RemoveAll(tempHome)
@@ -604,7 +604,7 @@ func TestPluginUpgradeCmd_Upgrade(t *testing.T) {
 }
 
 func TestRunCompletionZsh_Error(t *testing.T) {
-	// Root GenBashCompletion failure is hard to trigger, 
+	// Root GenBashCompletion failure is hard to trigger,
 	// but we can pass a dummy command that is not root.
 	cmd := &cobra.Command{Use: "test"}
 	if err := runCompletionZsh(cmd); err == nil {

@@ -15,7 +15,7 @@ import (
 func TestTransformToCommand(t *testing.T) {
 	p := &Plugin{
 		Metadata: &Metadata{
-			Name: "test-cmd",
+			Name:  "test-cmd",
 			Usage: "test usage",
 		},
 		Dir: "/tmp",
@@ -36,15 +36,15 @@ func TestTransformToCommand(t *testing.T) {
 	// Test RunE
 	tempHome, _ := os.MkdirTemp("", "sl-home-cmd")
 	defer os.RemoveAll(tempHome)
-	
+
 	oldHome := environment.Settings.Home
 	environment.Settings.Home = paths.Home(tempHome)
 	defer func() { environment.Settings.Home = oldHome }()
 
 	os.MkdirAll(environment.Settings.Home.Config(), 0755)
 	os.WriteFile(environment.Settings.Home.ConfigFile(), []byte("token: secret"), 0644)
-	
-p.Metadata.Exec.Command = "echo"
+
+	p.Metadata.Exec.Command = "echo"
 	err := cmd.RunE(cmd, []string{"hello"})
 	if err != nil {
 		t.Errorf("RunE failed: %v", err)
@@ -188,7 +188,7 @@ func TestLoadPluginCommands(t *testing.T) {
 func TestLoadPluginCommands_Off(t *testing.T) {
 	os.Setenv("SL_PLUGINS_OFF", "true")
 	defer os.Unsetenv("SL_PLUGINS_OFF")
-	
+
 	metadata := &release.Metadata{GitVersion: "1.0.0"}
 	cmds, err := LoadPluginCommands(metadata)
 	if err != nil {

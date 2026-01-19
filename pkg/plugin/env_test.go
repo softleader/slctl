@@ -13,7 +13,7 @@ import (
 func TestSetupEnv(t *testing.T) {
 	tempHome, _ := os.MkdirTemp("", "sl-home-env")
 	defer os.RemoveAll(tempHome)
-	
+
 	// Set global settings
 	oldHome := environment.Settings.Home
 	environment.Settings.Home = paths.Home(tempHome)
@@ -45,7 +45,7 @@ func TestSetupEnv(t *testing.T) {
 func TestSetupEnv_ConfigError(t *testing.T) {
 	tempHome, _ := os.MkdirTemp("", "sl-home-env-err")
 	defer os.RemoveAll(tempHome)
-	
+
 	oldHome := environment.Settings.Home
 	environment.Settings.Home = paths.Home(tempHome)
 	defer func() { environment.Settings.Home = oldHome }()

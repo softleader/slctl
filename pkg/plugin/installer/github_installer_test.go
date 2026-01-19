@@ -35,7 +35,7 @@ func TestNewGitHubInstaller(t *testing.T) {
 
 	org := "softleader"
 	repo := "slctl"
-	
+
 	mux.HandleFunc("/repos/"+org+"/"+repo+"/releases/latest", func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusOK)
 		fmt.Fprint(w, `{"tag_name": "v1.0.0", "assets": [{"id": 1, "name": "asset1", "browser_download_url": "http://gh.com/asset1"}]}`)
@@ -276,7 +276,7 @@ func TestFindRuntimeOsAsset(t *testing.T) {
 
 func TestPickAsset(t *testing.T) {
 	log := logrus.New()
-	
+
 	name1 := "asset1"
 	name2 := "asset2"
 	assets := []*github.ReleaseAsset{

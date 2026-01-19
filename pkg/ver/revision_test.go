@@ -13,7 +13,7 @@ func TestRevision_String(t *testing.T) {
 
 func TestRevision_IsGreaterThan(t *testing.T) {
 	r := Revision("1.2.3")
-	
+
 	tests := []struct {
 		other   string
 		want    bool

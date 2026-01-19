@@ -84,12 +84,12 @@ func TestPollAccessToken_Errors(t *testing.T) {
 			w.Header().Set("Content-Type", "application/json")
 			fmt.Fprintf(w, `{"error": "%s"}`, tt.githubError)
 		}))
-		
+
 		oldURL := accessTokenURL
 		oldClient := httpClient
 		accessTokenURL = server.URL
 		httpClient = server.Client()
-		
+
 		_, err := PollAccessToken(context.Background(), "", "dc123", 1)
 		if err == nil || err.Error() != tt.expectedErr {
 			t.Errorf("expected error %q, got %v", tt.expectedErr, err)
