@@ -6,6 +6,3 @@ This file tracks all major tracks for the project. Each track has its own detail
 ---
 
 ---
-
-- [x] **Track: 新增測試，直到測試覆蓋率超過80%**
-*Link: [./tracks/increase_coverage_20260119/](./tracks/increase_coverage_20260119/)*
