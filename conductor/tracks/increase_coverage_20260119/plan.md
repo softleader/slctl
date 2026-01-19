@@ -9,7 +9,7 @@
 - [x] Task: 建立低於 80% 的目標 Package 清單 88de776
 - [x] Task: Conductor - User Manual Verification 'Phase 1' (Protocol in workflow.md) 8b2131e
 
-## Phase 2: 提升核心邏輯 (pkg/) 覆蓋率
+## Phase 2: 提升核心邏輯 (pkg/) 覆蓋率 [checkpoint: 7f707f2]
 - [x] Task: 針對 `pkg/config` 補強測試並達成 >80% 覆蓋率 b6e05be
     - [ ] 撰寫測試涵蓋所有錯誤處理路徑
 - [x] Task: 針對 `pkg/environment` 補強測試並達成 >80% 覆蓋率 af31cb9
@@ -17,7 +17,7 @@
     - [ ] 確保 API 呼叫皆有 Mock 處理
 - [x] Task: 針對 `pkg/plugin` 及其子 package 補強測試並達成 >80% 覆蓋率 902c92f
 - [x] Task: 針對其餘 `pkg/` 下的 Package (paths, formatter, etc.) 進行補強 021730a
-- [ ] Task: Conductor - User Manual Verification 'Phase 2' (Protocol in workflow.md)
+- [x] Task: Conductor - User Manual Verification 'Phase 2' (Protocol in workflow.md) 7f707f2
 
 ## Phase 3: 提升 CLI 命令 (cmd/slctl/) 覆蓋率
 - [ ] Task: 針對 `cmd/slctl` 下的命令處理邏輯撰寫測試
