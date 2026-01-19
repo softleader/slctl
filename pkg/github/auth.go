@@ -13,7 +13,7 @@ import (
 	"github.com/google/go-github/v69/github"
 )
 
-const (
+var (
 	deviceCodeURL   = "https://github.com/login/device/code"
 	accessTokenURL  = "https://github.com/login/oauth/access_token"
 	defaultClientID = "Ov23li1SPkIjssKOzz2f"
@@ -22,6 +22,8 @@ const (
 var (
 	// Scopes represents the scopes required for slctl
 	Scopes = []github.Scope{github.ScopeReadOrg, github.ScopeUser, github.ScopeRepo}
+	// httpClient is used to make HTTP requests
+	httpClient = http.DefaultClient
 )
 
 // DeviceCodeResponse represents the response from GitHub device code endpoint
@@ -65,7 +67,7 @@ func RequestDeviceCode(ctx context.Context, clientID string, scopes []github.Sco
 	req.Header.Set("Accept", "application/json")
 	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
 
-	resp, err := http.DefaultClient.Do(req)
+	resp, err := httpClient.Do(req)
 	if err != nil {
 		return nil, err
 	}
@@ -112,7 +114,7 @@ func PollAccessToken(ctx context.Context, clientID, deviceCode string, interval 
 			req.Header.Set("Accept", "application/json")
 			req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
 
-			resp, err := http.DefaultClient.Do(req)
+			resp, err := httpClient.Do(req)
 			if err != nil {
 				return "", err
 			}
