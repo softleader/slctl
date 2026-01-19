@@ -10,7 +10,12 @@ import (
 
 // YesNoQuestion prompt out a yes-no question to Stdin
 func YesNoQuestion(out io.Writer, question string) bool {
-	r := bufio.NewReader(os.Stdin)
+	return YesNoQuestionFrom(os.Stdin, out, question)
+}
+
+// YesNoQuestionFrom prompt out a yes-no question from a given Reader
+func YesNoQuestionFrom(in io.Reader, out io.Writer, question string) bool {
+	r := bufio.NewReader(in)
 	for {
 		fmt.Fprint(out, fmt.Sprintf("%s [Y/n] ", question))
 		answer, _ := r.ReadString('\n')

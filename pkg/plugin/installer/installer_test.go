@@ -40,6 +40,12 @@ func TestNewInstaller(t *testing.T) {
 	if _, ok := i.(*archiveInstaller); !ok {
 		t.Error("expected archiveInstaller")
 	}
+
+	// Unsupported
+	_, err = NewInstaller(log, "unsupported://source", "", 0, home, opt)
+	if err == nil {
+		t.Error("expected error for unsupported source")
+	}
 }
 
 func TestNewLocalInstaller_Tilde(t *testing.T) {

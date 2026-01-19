@@ -2,6 +2,7 @@ package environment
 
 import (
 	"context"
+	"fmt"
 	"os"
 	"testing"
 	"time"
@@ -65,6 +66,14 @@ func TestCheckForUpdates(t *testing.T) {
 	err = CheckForUpdates(log, home, metadata, true)
 	if err != nil {
 		t.Fatalf("CheckForUpdates failed: %v", err)
+	}
+
+	// Test force=false, no need to update
+	future := time.Now().Add(24 * time.Hour)
+	os.WriteFile(configFile, []byte(fmt.Sprintf("token: secret\ncheckUpdates: %s", future.Format(time.RFC3339))), 0644)
+	err = CheckForUpdates(log, home, metadata, false)
+	if err != nil {
+		t.Fatal(err)
 	}
 }
 

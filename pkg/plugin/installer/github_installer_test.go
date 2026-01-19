@@ -160,6 +160,73 @@ func TestNewGitHubInstaller_DownloadAssetError(t *testing.T) {
 	}
 }
 
+func TestNewGitHubInstaller_NoAssetsError(t *testing.T) {
+	mux := http.NewServeMux()
+	server := httptest.NewServer(mux)
+	defer server.Close()
+
+	client := github.NewClient(nil)
+	u, _ := url.Parse(server.URL + "/")
+	client.BaseURL = u
+	client.UploadURL = u
+
+	oldTokenClient := tokenClient
+	tokenClient = func(ctx context.Context, token string) (*github.Client, error) {
+		return client, nil
+	}
+	defer func() { tokenClient = oldTokenClient }()
+
+	mux.HandleFunc("/repos/softleader/slctl/releases/latest", func(w http.ResponseWriter, r *http.Request) {
+		w.WriteHeader(http.StatusOK)
+		fmt.Fprint(w, `{"tag_name": "v1.0.0", "assets": []}`)
+	})
+
+	tempHome, _ := os.MkdirTemp("", "sl-home-ghi-nae")
+	defer os.RemoveAll(tempHome)
+	hh := paths.Home(tempHome)
+	os.MkdirAll(hh.Config(), 0755)
+	os.WriteFile(hh.ConfigFile(), []byte("token: secret"), 0644)
+
+	log := logrus.New()
+	_, err := newGitHubInstaller(log, "github.com/softleader/slctl", "", 0, hh, &InstallOption{})
+	if err == nil {
+		t.Error("expected error for no assets")
+	}
+}
+
+func TestNewGitHubInstaller_ReleaseByTagError(t *testing.T) {
+	mux := http.NewServeMux()
+	server := httptest.NewServer(mux)
+	defer server.Close()
+
+	client := github.NewClient(nil)
+	u, _ := url.Parse(server.URL + "/")
+	client.BaseURL = u
+	client.UploadURL = u
+
+	oldTokenClient := tokenClient
+	tokenClient = func(ctx context.Context, token string) (*github.Client, error) {
+		return client, nil
+	}
+	defer func() { tokenClient = oldTokenClient }()
+
+	mux.HandleFunc("/repos/softleader/slctl/releases/tags/v1.2.3", func(w http.ResponseWriter, r *http.Request) {
+		w.WriteHeader(http.StatusNotFound)
+	})
+
+	tempHome, _ := os.MkdirTemp("", "sl-home-ghi-rbe")
+	defer os.RemoveAll(tempHome)
+	hh := paths.Home(tempHome)
+	os.MkdirAll(hh.Config(), 0755)
+	os.WriteFile(hh.ConfigFile(), []byte("token: secret"), 0644)
+
+	log := logrus.New()
+	_, err := newGitHubInstaller(log, "github.com/softleader/slctl", "v1.2.3", 0, hh, &InstallOption{})
+	if err == nil {
+		t.Error("expected error for failed release fetch by tag")
+	}
+}
+
 func TestDismantle(t *testing.T) {
 
 	owner, repo := dismantle("github.com/softleader/slctl")
