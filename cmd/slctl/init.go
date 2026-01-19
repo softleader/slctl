@@ -19,6 +19,8 @@ import (
 	"github.com/spf13/cobra"
 )
 
+var tokenClient = gh.NewTokenClient
+
 // Mockable functions for testing
 var (
 	openBrowser      = open.Run
@@ -121,7 +123,7 @@ For more details: https://github.com/softleader/slctl/blob/master/docs/Home-Path
 			logrus.Println("Successfully authenticated.")
 		}
 
-		if client, err = gh.NewTokenClient(ctx, c.token); err != nil {
+		if client, err = tokenClient(ctx, c.token); err != nil {
 			return err
 		}
 
