@@ -19,12 +19,12 @@
 - [x] Task: 針對其餘 `pkg/` 下的 Package (paths, formatter, etc.) 進行補強 021730a
 - [x] Task: Conductor - User Manual Verification 'Phase 2' (Protocol in workflow.md) 7f707f2
 
-## Phase 3: 提升 CLI 命令 (cmd/slctl/) 覆蓋率
+## Phase 3: 提升 CLI 命令 (cmd/slctl/) 覆蓋率 [checkpoint: e7d44e0]
 - [x] Task: 針對 `cmd/slctl` 下的命令處理邏輯撰寫測試 c827849
     - [ ] 涵蓋 plugin 相關命令 (install, list, search, etc.)
     - [ ] 涵蓋 init 與 completion 命令
 - [x] Task: 確認 `cmd/slctl` 整合測試涵蓋核心流程 2e623d2
-- [ ] Task: Conductor - User Manual Verification 'Phase 3' (Protocol in workflow.md)
+- [x] Task: Conductor - User Manual Verification 'Phase 3' (Protocol in workflow.md) e7d44e0
 
 ## Phase 4: 最終驗證與交付
 - [ ] Task: 執行最終全專案覆蓋率報告
