@@ -6,7 +6,7 @@
 - [x] Task: 執行全專案覆蓋率掃描並產出初始報告 7b58c25
     - [ ] 執行 `go test -coverprofile=coverage.out ./...`
     - [ ] 使用 `go tool cover -func=coverage.out` 分析各 package 覆蓋率
-- [ ] Task: 建立低於 80% 的目標 Package 清單
+- [x] Task: 建立低於 80% 的目標 Package 清單 88de776
 - [ ] Task: Conductor - User Manual Verification 'Phase 1' (Protocol in workflow.md)
 
 ## Phase 2: 提升核心邏輯 (pkg/) 覆蓋率
