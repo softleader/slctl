@@ -13,7 +13,7 @@
 - [x] Task: 針對 `pkg/config` 補強測試並達成 >80% 覆蓋率 b6e05be
     - [ ] 撰寫測試涵蓋所有錯誤處理路徑
 - [x] Task: 針對 `pkg/environment` 補強測試並達成 >80% 覆蓋率 af31cb9
-- [ ] Task: 針對 `pkg/github` 及其子 package 補強測試並達成 >80% 覆蓋率
+- [x] Task: 針對 `pkg/github` 及其子 package 補強測試並達成 >80% 覆蓋率 f53d2ae
     - [ ] 確保 API 呼叫皆有 Mock 處理
 - [ ] Task: 針對 `pkg/plugin` 及其子 package 補強測試並達成 >80% 覆蓋率
 - [ ] Task: 針對其餘 `pkg/` 下的 Package (paths, formatter, etc.) 進行補強
