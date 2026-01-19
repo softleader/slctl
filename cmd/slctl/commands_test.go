@@ -478,6 +478,71 @@ func TestRootCmd_Execute(t *testing.T) {
 	environment.Settings.Home = paths.Home(tempHome) // restore for cleanup test
 }
 
+func TestPluginWorkflow(t *testing.T) {
+	tempHome, _ := os.MkdirTemp("", "sl-home-workflow")
+	defer os.RemoveAll(tempHome)
+	hh := paths.Home(tempHome)
+	
+	oldHome := environment.Settings.Home
+	environment.Settings.Home = hh
+	defer func() { environment.Settings.Home = oldHome }()
+
+	os.MkdirAll(hh.Config(), 0755)
+	os.MkdirAll(hh.Plugins(), 0755)
+	os.WriteFile(hh.ConfigFile(), []byte("token: secret"), 0644)
+
+	metadata = release.NewMetadata("1.0.0", "abcdef")
+
+	// Mock tokenClient
+	oldTokenClient := tokenClient
+	tokenClient = func(ctx context.Context, token string) (*github.Client, error) {
+		mux := http.NewServeMux()
+		server := httptest.NewServer(mux)
+		// We don't close server here as it's returned client.
+		// Actually github.NewClient(server.Client()) is better.
+		c := github.NewClient(server.Client())
+		u, _ := url.Parse(server.URL + "/")
+		c.BaseURL = u
+		
+		mux.HandleFunc("/user", func(w http.ResponseWriter, r *http.Request) {
+			w.Header().Set("X-OAuth-Scopes", "repo, user, read:org")
+			w.WriteHeader(http.StatusOK)
+			fmt.Fprint(w, `{"login": "test-user"}`)
+		})
+		return c, nil
+	}
+	defer func() { tokenClient = oldTokenClient }()
+
+	// 1. Create a plugin to install
+	pluginDir, _ := os.MkdirTemp("", "workflow-plug")
+	defer os.RemoveAll(pluginDir)
+	os.WriteFile(filepath.Join(pluginDir, "metadata.yaml"), []byte("name: wf-plug\nversion: 1.0.0\nexec:\n  command: echo hello"), 0644)
+
+	// 2. Install
+	if err := install(pluginDir, "", 0, hh, &installer.InstallOption{}); err != nil {
+		t.Fatalf("install failed: %v", err)
+	}
+
+	// 3. List
+	root, _ := newRootCmd([]string{"--home", tempHome, "--offline"})
+	root.SetArgs([]string{"plugin", "list"})
+	if err := root.Execute(); err != nil {
+		t.Fatalf("list failed: %v", err)
+	}
+
+	// 4. Run
+	root.SetArgs([]string{"wf-plug"})
+	if err := root.Execute(); err != nil {
+		t.Fatalf("run failed: %v", err)
+	}
+
+	// 5. Remove
+	root.SetArgs([]string{"plugin", "remove", "wf-plug"})
+	if err := root.Execute(); err != nil {
+		t.Fatalf("remove failed: %v", err)
+	}
+}
+
 func TestRunHook(t *testing.T) {
 	p := &plugin.Plugin{
 		Metadata: &plugin.Metadata{
