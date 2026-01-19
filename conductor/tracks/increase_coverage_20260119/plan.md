@@ -15,7 +15,7 @@
 - [x] Task: 針對 `pkg/environment` 補強測試並達成 >80% 覆蓋率 af31cb9
 - [x] Task: 針對 `pkg/github` 及其子 package 補強測試並達成 >80% 覆蓋率 f53d2ae
     - [ ] 確保 API 呼叫皆有 Mock 處理
-- [ ] Task: 針對 `pkg/plugin` 及其子 package 補強測試並達成 >80% 覆蓋率
+- [x] Task: 針對 `pkg/plugin` 及其子 package 補強測試並達成 >80% 覆蓋率 902c92f
 - [ ] Task: 針對其餘 `pkg/` 下的 Package (paths, formatter, etc.) 進行補強
 - [ ] Task: Conductor - User Manual Verification 'Phase 2' (Protocol in workflow.md)
 
