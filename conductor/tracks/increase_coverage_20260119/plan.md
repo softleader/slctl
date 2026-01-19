@@ -10,7 +10,7 @@
 - [x] Task: Conductor - User Manual Verification 'Phase 1' (Protocol in workflow.md) 8b2131e
 
 ## Phase 2: 提升核心邏輯 (pkg/) 覆蓋率
-- [ ] Task: 針對 `pkg/config` 補強測試並達成 >80% 覆蓋率
+- [x] Task: 針對 `pkg/config` 補強測試並達成 >80% 覆蓋率 b6e05be
     - [ ] 撰寫測試涵蓋所有錯誤處理路徑
 - [ ] Task: 針對 `pkg/environment` 補強測試並達成 >80% 覆蓋率
 - [ ] Task: 針對 `pkg/github` 及其子 package 補強測試並達成 >80% 覆蓋率
