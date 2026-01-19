@@ -8,7 +8,6 @@ import (
 	"github.com/sirupsen/logrus"
 	"github.com/softleader/slctl/pkg/config"
 	"github.com/softleader/slctl/pkg/environment"
-	gh "github.com/softleader/slctl/pkg/github"
 	"github.com/softleader/slctl/pkg/github/token"
 	"github.com/softleader/slctl/pkg/paths"
 	"github.com/softleader/slctl/pkg/plugin"
@@ -112,7 +111,7 @@ func install(source string, tag string, asset int, home paths.Home, opt *install
 		return err
 	}
 	ctx := context.Background()
-	client, err := gh.NewTokenClient(ctx, conf.Token)
+	client, err := tokenClient(ctx, conf.Token)
 	if err != nil {
 		return err
 	}

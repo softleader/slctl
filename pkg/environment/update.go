@@ -46,12 +46,17 @@ func needsToCheckOnline(dueDate time.Time) bool {
 	return dueDate.Before(time.Now())
 }
 
-func checkOnline(log *logrus.Logger, currentVersion string) (bool, error) {
-	log.Println("Checking for latest slctl version...")
+var latestRelease = func(ctx context.Context, log *logrus.Logger) (*github.RepositoryRelease, error) {
 	client := github.NewClient(nil)
-	ctx := context.Background()
 	log.Debugf("fetching the latest published release from github.com/%s/%s", owner, repo)
 	rr, _, err := client.Repositories.GetLatestRelease(ctx, owner, repo)
+	return rr, err
+}
+
+func checkOnline(log *logrus.Logger, currentVersion string) (bool, error) {
+	log.Println("Checking for latest slctl version...")
+	ctx := context.Background()
+	rr, err := latestRelease(ctx, log)
 	if err != nil {
 		return false, err
 	}
