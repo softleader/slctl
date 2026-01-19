@@ -10,6 +10,9 @@ import (
 
 // MoveHome moves home from "oldHome" to "newHome"
 func MoveHome(oldHome, newHome string) error {
+	if err := os.MkdirAll(filepath.Dir(newHome), 0755); err != nil {
+		return err
+	}
 	if err := os.Rename(oldHome, newHome); err != nil {
 		return err
 	}
