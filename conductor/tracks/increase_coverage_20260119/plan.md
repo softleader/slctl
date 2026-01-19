@@ -20,10 +20,10 @@
 - [x] Task: Conductor - User Manual Verification 'Phase 2' (Protocol in workflow.md) 7f707f2
 
 ## Phase 3: 提升 CLI 命令 (cmd/slctl/) 覆蓋率
-- [ ] Task: 針對 `cmd/slctl` 下的命令處理邏輯撰寫測試
+- [x] Task: 針對 `cmd/slctl` 下的命令處理邏輯撰寫測試 c827849
     - [ ] 涵蓋 plugin 相關命令 (install, list, search, etc.)
     - [ ] 涵蓋 init 與 completion 命令
-- [ ] Task: 確認 `cmd/slctl` 整合測試涵蓋核心流程
+- [x] Task: 確認 `cmd/slctl` 整合測試涵蓋核心流程 2e623d2
 - [ ] Task: Conductor - User Manual Verification 'Phase 3' (Protocol in workflow.md)
 
 ## Phase 4: 最終驗證與交付
