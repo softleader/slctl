@@ -1,16 +1,42 @@
 package installer
 
 import (
-	"compress/flate"
+	"archive/zip"
+	"io"
 	"os"
 	"path/filepath"
 	"testing"
 
-	"github.com/mholt/archiver"
 	"github.com/sirupsen/logrus"
 	"github.com/softleader/slctl/pkg/paths"
 	"github.com/softleader/slctl/pkg/plugin"
 )
+
+// Use the standard library to keep archive fixtures independent of the extractor.
+func writeTestZip(t *testing.T, destination string, source string) {
+	t.Helper()
+	out, err := os.Create(destination)
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer out.Close()
+	zw := zip.NewWriter(out)
+	in, err := os.Open(source)
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer in.Close()
+	w, err := zw.Create(filepath.Base(source))
+	if err != nil {
+		t.Fatal(err)
+	}
+	if _, err := io.Copy(w, in); err != nil {
+		t.Fatal(err)
+	}
+	if err := zw.Close(); err != nil {
+		t.Fatal(err)
+	}
+}
 
 func TestArchiveInstaller_Install(t *testing.T) {
 	home, err := os.MkdirTemp("", "sl_home")
@@ -19,14 +45,6 @@ func TestArchiveInstaller_Install(t *testing.T) {
 	}
 	defer os.RemoveAll(home)
 	hh := paths.Home(home)
-	z := archiver.Zip{
-		CompressionLevel:       flate.DefaultCompression,
-		MkdirAll:               true,
-		SelectiveCompression:   true,
-		ContinueOnError:        false,
-		OverwriteExisting:      false,
-		ImplicitTopLevelFolder: false,
-	}
 	arcName := "test.zip"
 	arcPath := filepath.Join(hh.String(), arcName)
 	arcSrc := filepath.Join(hh.String(), "file.txt")
@@ -34,10 +52,7 @@ func TestArchiveInstaller_Install(t *testing.T) {
 		t.Error(err)
 		return
 	}
-	if err := z.Archive([]string{arcSrc}, arcPath); err != nil {
-		t.Error(err)
-		return
-	}
+	writeTestZip(t, arcPath, arcSrc)
 
 	log := logrus.New()
 	i, err := newArchiveInstaller(log, arcPath, hh, &InstallOption{
@@ -82,12 +97,7 @@ version: 1.0.0
 	os.WriteFile(filepath.Join(plugDir, plugin.MetadataFileName), []byte(metadataContent), 0644)
 
 	arcPath := filepath.Join(home, "arch-plugin.zip")
-	z := archiver.Zip{
-		ImplicitTopLevelFolder: false,
-	}
-	if err := z.Archive([]string{filepath.Join(plugDir, plugin.MetadataFileName)}, arcPath); err != nil {
-		t.Fatal(err)
-	}
+	writeTestZip(t, arcPath, filepath.Join(plugDir, plugin.MetadataFileName))
 
 	log := logrus.New()
 	i, err := newArchiveInstaller(log, arcPath, hh, &InstallOption{Force: true})

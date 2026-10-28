@@ -5,12 +5,11 @@ import (
 	"fmt"
 	"net/http"
 	"net/http/httptest"
-	"net/url"
 	"os"
 	"path/filepath"
 	"testing"
 
-	"github.com/google/go-github/v69/github"
+	"github.com/google/go-github/v93/github"
 	"github.com/sirupsen/logrus"
 	"github.com/softleader/slctl/pkg/config"
 	"github.com/softleader/slctl/pkg/environment"
@@ -70,16 +69,19 @@ func TestLoadRepository_Mock(t *testing.T) {
 	// Note: In a real "Failing Test" scenario for a feature, we usually implement the call but assert the result.
 	// Here, we can't even tell it to use the mock.
 
-	// Create client with BaseURL pointing to mock
-	u, _ := url.Parse(server.URL + "/")
+	// Create a client pointing to the mock server.
 	ctx := context.Background()
 	ts := oauth2.StaticTokenSource(
 		&oauth2.Token{AccessToken: "mock-token"},
 	)
 	tc := oauth2.NewClient(ctx, ts)
-	client := github.NewClient(tc)
-	client.BaseURL = u
-	client.UploadURL = u
+	client, clientErr := github.NewClient(
+		github.WithHTTPClient(tc),
+		github.WithURLs(github.Ptr(server.URL+"/"), nil),
+	)
+	if clientErr != nil {
+		t.Fatal(clientErr)
+	}
 
 	t.Log("Attempting to load repository from mock...")
 	r, err := LoadRepository(context.Background(), logrus.StandardLogger(), home, "softleader", true, client)

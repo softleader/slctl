@@ -11,6 +11,7 @@ DIST := $(CURDIR)/_dist
 BUILD := $(CURDIR)/_build
 LDFLAGS := "-X main.version=${VERSION} -X main.commit=${COMMIT}"
 BINARY := slctl
+GOVULNCHECK_VERSION := v1.9.0
 MAIN := ./cmd/slctl
 CHOCO_DIST := $(DIST)/choco
 CHOCO_SERVER := http://choco-repo.cloud.softleader.com.tw/repository/choco/
@@ -63,6 +64,11 @@ endif
 govet:	## # Run go vet
 	go vet ./cmd/...
 	go vet ./pkg/...
+
+.PHONY: vuln
+vuln:	## # Check dependencies and test code for known Go vulnerabilities
+	go run golang.org/x/vuln/cmd/govulncheck@$(GOVULNCHECK_VERSION) -C cmd/slctl -scan=module
+	go run golang.org/x/vuln/cmd/govulncheck@$(GOVULNCHECK_VERSION) -test ./...
 
 .PHONY: build
 build:	## # Build binary for current OS and arch

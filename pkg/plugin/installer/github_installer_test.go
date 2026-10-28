@@ -5,12 +5,11 @@ import (
 	"fmt"
 	"net/http"
 	"net/http/httptest"
-	"net/url"
 	"os"
 	"runtime"
 	"testing"
 
-	"github.com/google/go-github/v69/github"
+	"github.com/google/go-github/v93/github"
 	"github.com/sirupsen/logrus"
 	"github.com/softleader/slctl/pkg/environment"
 	"github.com/softleader/slctl/pkg/paths"
@@ -21,10 +20,10 @@ func TestNewGitHubInstaller(t *testing.T) {
 	server := httptest.NewServer(mux)
 	defer server.Close()
 
-	client := github.NewClient(nil)
-	u, _ := url.Parse(server.URL + "/")
-	client.BaseURL = u
-	client.UploadURL = u
+	client, clientErr := github.NewClient(github.WithURLs(github.Ptr(server.URL+"/"), nil))
+	if clientErr != nil {
+		t.Fatal(clientErr)
+	}
 
 	// Mock tokenClient
 	oldTokenClient := tokenClient
@@ -95,10 +94,10 @@ func TestNewGitHubInstaller_LatestReleaseError(t *testing.T) {
 	server := httptest.NewServer(mux)
 	defer server.Close()
 
-	client := github.NewClient(nil)
-	u, _ := url.Parse(server.URL + "/")
-	client.BaseURL = u
-	client.UploadURL = u
+	client, clientErr := github.NewClient(github.WithURLs(github.Ptr(server.URL+"/"), nil))
+	if clientErr != nil {
+		t.Fatal(clientErr)
+	}
 
 	oldTokenClient := tokenClient
 	tokenClient = func(ctx context.Context, token string) (*github.Client, error) {
@@ -128,10 +127,10 @@ func TestNewGitHubInstaller_DownloadAssetError(t *testing.T) {
 	server := httptest.NewServer(mux)
 	defer server.Close()
 
-	client := github.NewClient(nil)
-	u, _ := url.Parse(server.URL + "/")
-	client.BaseURL = u
-	client.UploadURL = u
+	client, clientErr := github.NewClient(github.WithURLs(github.Ptr(server.URL+"/"), nil))
+	if clientErr != nil {
+		t.Fatal(clientErr)
+	}
 
 	oldTokenClient := tokenClient
 	tokenClient = func(ctx context.Context, token string) (*github.Client, error) {
@@ -165,10 +164,10 @@ func TestNewGitHubInstaller_NoAssetsError(t *testing.T) {
 	server := httptest.NewServer(mux)
 	defer server.Close()
 
-	client := github.NewClient(nil)
-	u, _ := url.Parse(server.URL + "/")
-	client.BaseURL = u
-	client.UploadURL = u
+	client, clientErr := github.NewClient(github.WithURLs(github.Ptr(server.URL+"/"), nil))
+	if clientErr != nil {
+		t.Fatal(clientErr)
+	}
 
 	oldTokenClient := tokenClient
 	tokenClient = func(ctx context.Context, token string) (*github.Client, error) {
@@ -199,10 +198,10 @@ func TestNewGitHubInstaller_ReleaseByTagError(t *testing.T) {
 	server := httptest.NewServer(mux)
 	defer server.Close()
 
-	client := github.NewClient(nil)
-	u, _ := url.Parse(server.URL + "/")
-	client.BaseURL = u
-	client.UploadURL = u
+	client, clientErr := github.NewClient(github.WithURLs(github.Ptr(server.URL+"/"), nil))
+	if clientErr != nil {
+		t.Fatal(clientErr)
+	}
 
 	oldTokenClient := tokenClient
 	tokenClient = func(ctx context.Context, token string) (*github.Client, error) {
@@ -284,7 +283,7 @@ func TestPickAsset(t *testing.T) {
 		{Name: &name2},
 	}
 	release := &github.RepositoryRelease{
-		TagName: github.Ptr("v1.0.0"),
+		TagName: "v1.0.0",
 		Assets:  assets,
 	}
 

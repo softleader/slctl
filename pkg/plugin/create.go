@@ -14,7 +14,7 @@ import (
 	gh "github.com/softleader/slctl/pkg/github"
 	"github.com/softleader/slctl/pkg/paths"
 	"github.com/softleader/slctl/pkg/strcase"
-	"gopkg.in/yaml.v2"
+	"go.yaml.in/yaml/v3"
 )
 
 var registeredCreators = []creator{

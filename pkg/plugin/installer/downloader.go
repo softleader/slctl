@@ -6,8 +6,8 @@ import (
 	"os"
 	"path/filepath"
 
+	"github.com/cheggaaa/pb/v3"
 	"github.com/softleader/slctl/pkg/paths"
-	"gopkg.in/cheggaaa/pb.v1"
 )
 
 const barWidth = 90
@@ -46,7 +46,7 @@ func (d *urlDownloader) download() (string, error) {
 	}
 	defer resp.Body.Close()
 	bar := pb.New64(resp.ContentLength).
-		SetUnits(pb.U_BYTES).
+		Set(pb.Bytes, true).
 		SetMaxWidth(barWidth).
 		Start()
 	defer bar.Finish()
@@ -114,7 +114,7 @@ func (d *readCloserDownloader) download() (string, error) {
 	}
 	defer out.Close()
 	bar := pb.New(d.size).
-		SetUnits(pb.U_BYTES).
+		Set(pb.Bytes, true).
 		SetMaxWidth(barWidth).
 		Start()
 	defer bar.Finish()

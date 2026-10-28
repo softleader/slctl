@@ -5,11 +5,10 @@ import (
 	"fmt"
 	"net/http"
 	"net/http/httptest"
-	"net/url"
 	"os"
 	"testing"
 
-	"github.com/google/go-github/v69/github"
+	"github.com/google/go-github/v93/github"
 	"github.com/sirupsen/logrus"
 	"github.com/softleader/slctl/pkg/environment"
 	gh "github.com/softleader/slctl/pkg/github"
@@ -20,10 +19,10 @@ func TestConfirmUnit(t *testing.T) {
 	server := httptest.NewServer(mux)
 	defer server.Close()
 
-	client := github.NewClient(nil)
-	u, _ := url.Parse(server.URL + "/")
-	client.BaseURL = u
-	client.UploadURL = u
+	client, clientErr := github.NewClient(github.WithURLs(github.Ptr(server.URL+"/"), nil))
+	if clientErr != nil {
+		t.Fatal(clientErr)
+	}
 
 	org := "test-org"
 
@@ -50,10 +49,10 @@ func TestConfirmUnit_Inactive(t *testing.T) {
 	server := httptest.NewServer(mux)
 	defer server.Close()
 
-	client := github.NewClient(nil)
-	u, _ := url.Parse(server.URL + "/")
-	client.BaseURL = u
-	client.UploadURL = u
+	client, clientErr := github.NewClient(github.WithURLs(github.Ptr(server.URL+"/"), nil))
+	if clientErr != nil {
+		t.Fatal(clientErr)
+	}
 
 	org := "test-org"
 

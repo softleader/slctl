@@ -1,12 +1,15 @@
 package installer
 
 import (
+	"context"
+	"errors"
 	"fmt"
 	"io"
 	"os"
 	"path/filepath"
+	"strings"
 
-	"github.com/mholt/archiver"
+	"github.com/mholt/archives"
 	"github.com/sirupsen/logrus"
 	"github.com/softleader/slctl/pkg/environment"
 	"github.com/softleader/slctl/pkg/paths"
@@ -81,15 +84,62 @@ func ensureDirEmpty(path string) error {
 	return os.RemoveAll(path)
 }
 
-func extract(source, destination string) (err error) {
-	if err = archiver.Unarchive(source, destination); err != nil { // find Unarchiver by header
-		var arc interface{}
-		if arc, err = archiver.ByExtension(source); err != nil { // try again to find by extension
-			return err
-		}
-		if err = arc.(archiver.Unarchiver).Unarchive(source, destination); err != nil {
-			return err
-		}
+func extract(source, destination string) error {
+	input, err := os.Open(source)
+	if err != nil {
+		return err
 	}
-	return
+	defer input.Close()
+
+	ctx := context.Background()
+	format, stream, err := archives.Identify(ctx, source, input)
+	if err != nil {
+		return err
+	}
+	extractor, ok := format.(archives.Extractor)
+	if !ok {
+		return fmt.Errorf("%s is not a supported archive", source)
+	}
+	if err := os.MkdirAll(destination, 0755); err != nil {
+		return err
+	}
+	root, err := os.OpenRoot(destination)
+	if err != nil {
+		return err
+	}
+	defer root.Close()
+
+	return extractor.Extract(ctx, stream, func(_ context.Context, file archives.FileInfo) error {
+		// Reject Windows separators, drive names and alternate data streams on
+		// every platform, so an archive has the same safety rules everywhere.
+		name := file.NameInArchive
+		if strings.ContainsAny(name, `\:`) || !filepath.IsLocal(name) {
+			return fmt.Errorf("unsafe archive path %q", name)
+		}
+		if file.LinkTarget != "" || (!file.IsDir() && !file.Mode().IsRegular()) {
+			return fmt.Errorf("unsupported archive entry %q: links and special files are not allowed", name)
+		}
+		name = filepath.FromSlash(name)
+		if file.IsDir() {
+			return root.MkdirAll(name, 0755)
+		}
+		if err := root.MkdirAll(filepath.Dir(name), 0755); err != nil {
+			return err
+		}
+		in, err := file.Open()
+		if err != nil {
+			return err
+		}
+		defer in.Close()
+
+		// Root confines filesystem operations even when an existing directory
+		// is a symlink. O_EXCL also prevents duplicate entries from overwriting
+		// files or following an existing file symlink/hard link.
+		out, err := root.OpenFile(name, os.O_WRONLY|os.O_CREATE|os.O_EXCL, file.Mode().Perm())
+		if err != nil {
+			return err
+		}
+		_, copyErr := io.Copy(out, in)
+		return errors.Join(copyErr, out.Close())
+	})
 }
