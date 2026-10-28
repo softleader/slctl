@@ -6,7 +6,7 @@ import (
 	"os"
 
 	"github.com/atotto/clipboard"
-	"github.com/google/go-github/v69/github"
+	"github.com/google/go-github/v93/github"
 	"github.com/sirupsen/logrus"
 	"github.com/skratchdot/open-golang/open"
 	"github.com/softleader/slctl/pkg/config"

@@ -5,13 +5,12 @@ import (
 	"fmt"
 	"net/http"
 	"net/http/httptest"
-	"net/url"
 	"os"
 	"strings"
 	"testing"
 	"time"
 
-	"github.com/google/go-github/v69/github"
+	"github.com/google/go-github/v93/github"
 	"github.com/sirupsen/logrus"
 	"github.com/softleader/slctl/pkg/environment"
 	"github.com/softleader/slctl/pkg/paths"
@@ -22,10 +21,10 @@ func TestLoadRepository_Unit(t *testing.T) {
 	server := httptest.NewServer(mux)
 	defer server.Close()
 
-	client := github.NewClient(nil)
-	u, _ := url.Parse(server.URL + "/")
-	client.BaseURL = u
-	client.UploadURL = u
+	client, clientErr := github.NewClient(github.WithURLs(github.Ptr(server.URL+"/"), nil))
+	if clientErr != nil {
+		t.Fatal(clientErr)
+	}
 
 	org := "softleader"
 	mux.HandleFunc("/search/repositories", func(w http.ResponseWriter, r *http.Request) {
@@ -112,10 +111,10 @@ func TestFetchOnline_SearchError(t *testing.T) {
 	server := httptest.NewServer(mux)
 	defer server.Close()
 
-	client := github.NewClient(nil)
-	u, _ := url.Parse(server.URL + "/")
-	client.BaseURL = u
-	client.UploadURL = u
+	client, clientErr := github.NewClient(github.WithURLs(github.Ptr(server.URL+"/"), nil))
+	if clientErr != nil {
+		t.Fatal(clientErr)
+	}
 
 	mux.HandleFunc("/search/repositories", func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusInternalServerError)

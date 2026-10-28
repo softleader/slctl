@@ -5,12 +5,11 @@ import (
 	"fmt"
 	"net/http"
 	"net/http/httptest"
-	"net/url"
 	"os"
 	"path/filepath"
 	"testing"
 
-	"github.com/google/go-github/v69/github"
+	"github.com/google/go-github/v93/github"
 	"github.com/softleader/slctl/pkg/environment"
 	"github.com/softleader/slctl/pkg/paths"
 	"github.com/softleader/slctl/pkg/plugin"
@@ -378,7 +377,7 @@ func TestRootCmd_Execute(t *testing.T) {
 	// Mock tokenClient
 	oldTokenClient := tokenClient
 	tokenClient = func(ctx context.Context, token string) (*github.Client, error) {
-		return github.NewClient(nil), nil
+		return github.NewClient()
 	}
 	defer func() { tokenClient = oldTokenClient }()
 
@@ -498,11 +497,14 @@ func TestPluginWorkflow(t *testing.T) {
 	tokenClient = func(ctx context.Context, token string) (*github.Client, error) {
 		mux := http.NewServeMux()
 		server := httptest.NewServer(mux)
-		// We don't close server here as it's returned client.
-		// Actually github.NewClient(server.Client()) is better.
-		c := github.NewClient(server.Client())
-		u, _ := url.Parse(server.URL + "/")
-		c.BaseURL = u
+		t.Cleanup(server.Close)
+		c, err := github.NewClient(
+			github.WithHTTPClient(server.Client()),
+			github.WithURLs(github.Ptr(server.URL+"/"), nil),
+		)
+		if err != nil {
+			return nil, err
+		}
 
 		mux.HandleFunc("/user", func(w http.ResponseWriter, r *http.Request) {
 			w.Header().Set("X-OAuth-Scopes", "repo, user, read:org")
@@ -618,10 +620,10 @@ func TestInstall_Full(t *testing.T) {
 	server := httptest.NewServer(mux)
 	defer server.Close()
 
-	client := github.NewClient(nil)
-	u, _ := url.Parse(server.URL + "/")
-	client.BaseURL = u
-	client.UploadURL = u
+	client, clientErr := github.NewClient(github.WithURLs(github.Ptr(server.URL+"/"), nil))
+	if clientErr != nil {
+		t.Fatal(clientErr)
+	}
 
 	oldTokenClient := tokenClient
 	tokenClient = func(ctx context.Context, token string) (*github.Client, error) {
@@ -635,21 +637,43 @@ func TestInstall_Full(t *testing.T) {
 		fmt.Fprint(w, `{"login": "test-user"}`)
 	})
 
-	tempHome, _ := os.MkdirTemp("", "sl-home-install-full")
-	defer os.RemoveAll(tempHome)
-	hh := paths.Home(tempHome)
-	os.MkdirAll(hh.Config(), 0755)
-	os.MkdirAll(hh.Plugins(), 0755)
-	os.WriteFile(hh.ConfigFile(), []byte("token: secret"), 0644)
+	hh := paths.Home(t.TempDir())
+	oldHome, oldMetadata := environment.Settings.Home, metadata
+	environment.Settings.Home = hh
+	metadata = release.NewMetadata("1.0.0", "abcdef")
+	t.Cleanup(func() {
+		environment.Settings.Home = oldHome
+		metadata = oldMetadata
+	})
+	// SetupEnv exports plugin variables; restore them when this test finishes.
+	for key := range plugin.Envs {
+		t.Setenv(key, os.Getenv(key))
+	}
+	for _, dir := range []string{hh.Config(), hh.Plugins()} {
+		if err := os.MkdirAll(dir, 0755); err != nil {
+			t.Fatal(err)
+		}
+	}
+	if err := os.WriteFile(hh.ConfigFile(), []byte("token: secret"), 0644); err != nil {
+		t.Fatal(err)
+	}
 
-	pluginDir, _ := os.MkdirTemp("", "plug-src-full")
-	defer os.RemoveAll(pluginDir)
-	os.WriteFile(filepath.Join(pluginDir, "metadata.yaml"), []byte("name: p1\nversion: 1.0.0"), 0644)
+	pluginDir := t.TempDir()
+	if err := os.WriteFile(filepath.Join(pluginDir, "metadata.yaml"), []byte("name: p1\nversion: 1.0.0"), 0644); err != nil {
+		t.Fatal(err)
+	}
 
 	opt := &installer.InstallOption{}
 	err := install(pluginDir, "", 0, hh, opt)
 	if err != nil {
 		t.Fatalf("install failed: %v", err)
+	}
+	installed, err := plugin.LoadDir(filepath.Join(hh.Plugins(), "p1"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	if installed.Metadata.Name != "p1" || installed.Metadata.Version != "1.0.0" {
+		t.Fatalf("unexpected installed plugin: %+v", installed.Metadata)
 	}
 }
 

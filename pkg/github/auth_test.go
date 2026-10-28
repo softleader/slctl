@@ -6,7 +6,7 @@ import (
 	"net/http/httptest"
 	"testing"
 
-	"github.com/google/go-github/v69/github"
+	"github.com/google/go-github/v93/github"
 )
 
 func TestRequestDeviceCode_Mock(t *testing.T) {

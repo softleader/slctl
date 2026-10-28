@@ -5,10 +5,9 @@ import (
 	"fmt"
 	"net/http"
 	"net/http/httptest"
-	"net/url"
 	"testing"
 
-	"github.com/google/go-github/v69/github"
+	"github.com/google/go-github/v93/github"
 )
 
 func TestPublicizeOrganization(t *testing.T) {
@@ -16,10 +15,10 @@ func TestPublicizeOrganization(t *testing.T) {
 	server := httptest.NewServer(mux)
 	defer server.Close()
 
-	client := github.NewClient(nil)
-	u, _ := url.Parse(server.URL + "/")
-	client.BaseURL = u
-	client.UploadURL = u
+	client, clientErr := github.NewClient(github.WithURLs(github.Ptr(server.URL+"/"), nil))
+	if clientErr != nil {
+		t.Fatal(clientErr)
+	}
 
 	org := "test-org"
 	username := "test-user"
@@ -46,10 +45,10 @@ func TestPublicizeOrganization_Error(t *testing.T) {
 	server := httptest.NewServer(mux)
 	defer server.Close()
 
-	client := github.NewClient(nil)
-	u, _ := url.Parse(server.URL + "/")
-	client.BaseURL = u
-	client.UploadURL = u
+	client, clientErr := github.NewClient(github.WithURLs(github.Ptr(server.URL+"/"), nil))
+	if clientErr != nil {
+		t.Fatal(clientErr)
+	}
 
 	mux.HandleFunc("/user", func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusUnauthorized)

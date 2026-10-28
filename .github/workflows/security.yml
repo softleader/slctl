@@ -1,0 +1,63 @@
+name: Security
+
+on:
+  push:
+  pull_request:
+  schedule:
+    - cron: '23 3 * * 1'
+  workflow_dispatch:
+  workflow_call:
+
+permissions:
+  contents: read
+
+env:
+  GOTOOLCHAIN: local
+
+jobs:
+  go:
+    name: Go checks (${{ matrix.os }})
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7.0.0
+        with:
+          go-version-file: go.mod
+      - run: go mod verify
+      - run: go build ./cmd/slctl
+      # Existing tests assert POSIX paths. Windows is built, vetted and scanned.
+      - run: go test ./...
+        if: runner.os != 'Windows'
+      - run: go vet ./...
+      - name: Check dependencies and test code for vulnerabilities
+        shell: bash
+        run: make vuln
+
+  container:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7.0.0
+        with:
+          go-version-file: go.mod
+      - name: Build sandbox image
+        run: |
+          CGO_ENABLED=0 go build -o _build/slctl ./cmd/slctl
+          docker build --pull -t slctl:security .
+          docker save -o "$RUNNER_TEMP/slctl-image.tar" slctl:security
+      - name: Scan all container and Go dependency severities
+        env:
+          TRIVY_IMAGE: aquasec/trivy:0.76.1@sha256:790fd66d1697395d8693d1acaa1ea702406a20f109b6fc7bac8db623eca6c06c
+        run: |
+          docker run --rm -v "$RUNNER_TEMP:/scan:ro" "$TRIVY_IMAGE" image \
+            --input /scan/slctl-image.tar --scanners vuln --exit-code 1
+          docker run --rm -v "$GITHUB_WORKSPACE:/src:ro" "$TRIVY_IMAGE" fs \
+            --scanners vuln --exit-code 1 --skip-dirs /src/.git /src

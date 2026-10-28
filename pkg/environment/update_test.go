@@ -7,7 +7,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/google/go-github/v69/github"
+	"github.com/google/go-github/v93/github"
 	"github.com/sirupsen/logrus"
 	"github.com/softleader/slctl/pkg/paths"
 	"github.com/softleader/slctl/pkg/release"
@@ -40,11 +40,9 @@ func TestCheckForUpdates(t *testing.T) {
 	defer func() { latestRelease = oldLatestRelease }()
 
 	latestRelease = func(ctx context.Context, log *logrus.Logger) (*github.RepositoryRelease, error) {
-		tag := "1.1.0"
-		commit := "abcdef"
 		return &github.RepositoryRelease{
-			TagName:         &tag,
-			TargetCommitish: &commit,
+			TagName:         "1.1.0",
+			TargetCommitish: "abcdef",
 		}, nil
 	}
 
@@ -55,11 +53,9 @@ func TestCheckForUpdates(t *testing.T) {
 
 	// Mock latestRelease to return same version
 	latestRelease = func(ctx context.Context, log *logrus.Logger) (*github.RepositoryRelease, error) {
-		tag := "1.0.0"
-		commit := "abcdef"
 		return &github.RepositoryRelease{
-			TagName:         &tag,
-			TargetCommitish: &commit,
+			TagName:         "1.0.0",
+			TargetCommitish: "abcdef",
 		}, nil
 	}
 

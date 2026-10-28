@@ -29,6 +29,8 @@ $ slctl plugin install /path/to/plugin-archive.zip
 $ slctl plugin install http://host/plugin-archive.zip
 ```
 
+為避免壓縮檔路徑穿越，解壓縮只接受目的目錄內的普通檔案與目錄，並保留檔案執行權限。絕對路徑、越界路徑、Windows 反斜線／磁碟代號／替代資料串流、符號連結、硬連結、特殊檔案及重複檔案項目都會被拒絕。打包 plugin 時請使用相對路徑與實體檔案，不要包含連結。
+
 ### GitHub Repo
 
 Plugin 也可以是一個 GitHub repo, 傳入 `github.com/OWNER/REPO`, slctl 會自動收尋最新一版的 release, 並從該 release 的所有下載檔中, 嘗試找出含有當前 OS 名稱的壓縮檔來安裝, 當找不到時會改下載第一個壓縮檔來安裝

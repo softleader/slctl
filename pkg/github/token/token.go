@@ -7,7 +7,7 @@ import (
 
 	"strings"
 
-	"github.com/google/go-github/v69/github"
+	"github.com/google/go-github/v93/github"
 	"github.com/sirupsen/logrus"
 )
 

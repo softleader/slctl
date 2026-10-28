@@ -6,7 +6,7 @@ import (
 
 	"github.com/softleader/slctl/pkg/release"
 
-	"github.com/google/go-github/v69/github"
+	"github.com/google/go-github/v93/github"
 	"github.com/sirupsen/logrus"
 	"github.com/softleader/slctl/pkg/config"
 	"github.com/softleader/slctl/pkg/paths"
@@ -47,7 +47,10 @@ func needsToCheckOnline(dueDate time.Time) bool {
 }
 
 var latestRelease = func(ctx context.Context, log *logrus.Logger) (*github.RepositoryRelease, error) {
-	client := github.NewClient(nil)
+	client, err := github.NewClient(github.WithEnvProxy())
+	if err != nil {
+		return nil, err
+	}
 	log.Debugf("fetching the latest published release from github.com/%s/%s", owner, repo)
 	rr, _, err := client.Repositories.GetLatestRelease(ctx, owner, repo)
 	return rr, err
